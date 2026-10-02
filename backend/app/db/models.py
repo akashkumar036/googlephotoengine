@@ -1,18 +1,17 @@
 """
-SQLAlchemy ORM models — all 15 tables as per architecture.md §5.
-Alembic migrations are generated from these models.
+SQLAlchemy ORM models — all 15 tables as per architecture.md §5 and migrations.
+Alembic migrations match these models with String(36) UUIDs and pgvector Vector(1536).
 """
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
 
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     Boolean, Column, DateTime, Float, ForeignKey,
     Integer, String, Text, func,
 )
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, relationship
 
 
@@ -28,7 +27,7 @@ class Base(DeclarativeBase):
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    id = Column(String(36), primary_key=True, default=_uuid)
     email = Column(String(255), unique=True, nullable=False, index=True)
     role = Column(String(20), nullable=False, default="viewer")  # admin | researcher | viewer
     hashed_password = Column(String(255), nullable=False)
@@ -41,11 +40,11 @@ class User(Base):
 class Source(Base):
     __tablename__ = "sources"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    id = Column(String(36), primary_key=True, default=_uuid)
     name = Column(String(100), unique=True, nullable=False)
     connector_type = Column(String(100), nullable=False)
     is_active = Column(Boolean, default=True)
-    config = Column(JSONB, default={})
+    config = Column(JSONB, default=dict)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     conversations = relationship("Conversation", back_populates="source")
@@ -55,8 +54,8 @@ class Source(Base):
 class Conversation(Base):
     __tablename__ = "conversations"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
-    source_id = Column(UUID(as_uuid=False), ForeignKey("sources.id"), nullable=True)
+    id = Column(String(36), primary_key=True, default=_uuid)
+    source_id = Column(String(36), ForeignKey("sources.id"), nullable=True)
     external_id = Column(String(500), nullable=True)
     url = Column(Text, nullable=True)
     author_hash = Column(String(64), nullable=True)   # SHA-256 of author
@@ -65,8 +64,8 @@ class Conversation(Base):
     text = Column(Text, nullable=False)
     cleaned_text = Column(Text, nullable=True)
     language = Column(String(10), nullable=True)
-    engagement = Column(JSONB, default={})
-    metadata_ = Column("metadata", JSONB, default={})
+    engagement = Column(JSONB, default=dict)
+    metadata_ = Column("metadata", JSONB, default=dict)
     dedup_status = Column(String(20), default="original")  # original | duplicate | possible_duplicate | cross_post
     dedup_hash = Column(String(64), nullable=True, index=True)
     is_cleaned = Column(Boolean, default=False)
@@ -90,18 +89,18 @@ class Conversation(Base):
 class AIAnalysis(Base):
     __tablename__ = "ai_analyses"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
-    conversation_id = Column(UUID(as_uuid=False), ForeignKey("conversations.id"), nullable=False, unique=True)
+    id = Column(String(36), primary_key=True, default=_uuid)
+    conversation_id = Column(String(36), ForeignKey("conversations.id"), nullable=False, unique=True)
     prompt_version = Column(String(100), nullable=True)
     relevance = Column(Float, nullable=True)
     primary_intent = Column(String(100), nullable=True)
-    memory_types = Column(JSONB, default=[])
-    retrieval_strategies = Column(JSONB, default=[])
-    failure_modes = Column(JSONB, default=[])
-    pain_points = Column(JSONB, default=[])
+    memory_types = Column(JSONB, default=list)
+    retrieval_strategies = Column(JSONB, default=list)
+    failure_modes = Column(JSONB, default=list)
+    pain_points = Column(JSONB, default=list)
     user_goal = Column(Text, nullable=True)
-    known_memory = Column(JSONB, default={})
-    unknown_memory = Column(JSONB, default={})
+    known_memory = Column(JSONB, default=dict)
+    unknown_memory = Column(JSONB, default=dict)
     frustration_level = Column(Float, nullable=True)
     severity = Column(Float, nullable=True)
     confidence = Column(Float, nullable=True)
@@ -118,7 +117,7 @@ class AIAnalysis(Base):
 class Cluster(Base):
     __tablename__ = "clusters"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    id = Column(String(36), primary_key=True, default=_uuid)
     label = Column(Text, nullable=True)
     description = Column(Text, nullable=True)
     member_count = Column(Integer, default=0)
@@ -134,8 +133,8 @@ class Cluster(Base):
 class ClusterMembership(Base):
     __tablename__ = "cluster_memberships"
 
-    conversation_id = Column(UUID(as_uuid=False), ForeignKey("conversations.id"), primary_key=True)
-    cluster_id = Column(UUID(as_uuid=False), ForeignKey("clusters.id"), primary_key=True)
+    conversation_id = Column(String(36), ForeignKey("conversations.id"), primary_key=True)
+    cluster_id = Column(String(36), ForeignKey("clusters.id"), primary_key=True)
     similarity_score = Column(Float, nullable=True)
 
     conversation = relationship("Conversation", back_populates="cluster_memberships")
@@ -146,10 +145,10 @@ class ClusterMembership(Base):
 class Problem(Base):
     __tablename__ = "problems"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    id = Column(String(36), primary_key=True, default=_uuid)
     title = Column(Text, nullable=False)
     statement = Column(Text, nullable=True)
-    taxonomy_categories = Column(JSONB, default=[])
+    taxonomy_categories = Column(JSONB, default=list)
     frequency = Column(Integer, default=0)
     source_count = Column(Integer, default=0)
     frustration_score = Column(Float, nullable=True)
@@ -161,7 +160,7 @@ class Problem(Base):
     is_emerging = Column(Boolean, default=False)
     is_approved = Column(Boolean, default=False)
     is_orphaned = Column(Boolean, default=False)
-    user_segments = Column(JSONB, default=[])
+    user_segments = Column(JSONB, default=list)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -174,9 +173,9 @@ class Problem(Base):
 class Evidence(Base):
     __tablename__ = "evidence"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
-    problem_id = Column(UUID(as_uuid=False), ForeignKey("problems.id"), nullable=False)
-    conversation_id = Column(UUID(as_uuid=False), ForeignKey("conversations.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=_uuid)
+    problem_id = Column(String(36), ForeignKey("problems.id"), nullable=False)
+    conversation_id = Column(String(36), ForeignKey("conversations.id"), nullable=False)
     excerpt = Column(Text, nullable=True)
     ai_interpretation = Column(Text, nullable=True)
     relevance_score = Column(Float, nullable=True)
@@ -190,8 +189,8 @@ class Evidence(Base):
 class Opportunity(Base):
     __tablename__ = "opportunities"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
-    problem_id = Column(UUID(as_uuid=False), ForeignKey("problems.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=_uuid)
+    problem_id = Column(String(36), ForeignKey("problems.id"), nullable=False)
     observed_problem = Column(Text, nullable=True)
     underlying_need = Column(Text, nullable=True)
     opportunity_area = Column(Text, nullable=True)
@@ -207,13 +206,13 @@ class Opportunity(Base):
 class Trend(Base):
     __tablename__ = "trends"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
-    problem_id = Column(UUID(as_uuid=False), ForeignKey("problems.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=_uuid)
+    problem_id = Column(String(36), ForeignKey("problems.id"), nullable=False)
     period_start = Column(DateTime(timezone=True), nullable=True)
     period_end = Column(DateTime(timezone=True), nullable=True)
     conversation_count = Column(Integer, default=0)
     growth_rate = Column(Float, nullable=True)
-    sources = Column(JSONB, default=[])
+    sources = Column(JSONB, default=list)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     problem = relationship("Problem", back_populates="trends")
@@ -223,13 +222,13 @@ class Trend(Base):
 class HumanReview(Base):
     __tablename__ = "human_reviews"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
-    reviewer_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True)
+    id = Column(String(36), primary_key=True, default=_uuid)
+    reviewer_id = Column(String(36), ForeignKey("users.id"), nullable=True)
     target_type = Column(String(50), nullable=False)    # conversation | problem | cluster | taxonomy
-    target_id = Column(UUID(as_uuid=False), nullable=False)
+    target_id = Column(String(36), nullable=False)
     action = Column(String(50), nullable=False)         # approve | correct | merge | split | invalidate | bookmark
-    original_value = Column(JSONB, default={})
-    corrected_value = Column(JSONB, default={})
+    original_value = Column(JSONB, default=dict)
+    corrected_value = Column(JSONB, default=dict)
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -240,11 +239,11 @@ class HumanReview(Base):
 class Job(Base):
     __tablename__ = "jobs"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    id = Column(String(36), primary_key=True, default=_uuid)
     type = Column(String(100), nullable=False)
     status = Column(String(20), default="queued")  # queued | running | done | failed | partial_success | dead_lettered
     progress = Column(Float, default=0.0)
-    payload = Column(JSONB, default={})
+    payload = Column(JSONB, default=dict)
     error = Column(Text, nullable=True)
     started_at = Column(DateTime(timezone=True), nullable=True)
     completed_at = Column(DateTime(timezone=True), nullable=True)
@@ -267,11 +266,11 @@ class PromptVersion(Base):
 class ResearchReport(Base):
     __tablename__ = "research_reports"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    id = Column(String(36), primary_key=True, default=_uuid)
     title = Column(Text, nullable=True)
-    content = Column(JSONB, default={})
+    content = Column(JSONB, default=dict)
     format = Column(String(20), default="markdown")  # markdown | pdf | json | csv
-    generated_by = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True)
+    generated_by = Column(String(36), ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -279,10 +278,10 @@ class ResearchReport(Base):
 class EvaluationBenchmark(Base):
     __tablename__ = "evaluation_benchmarks"
 
-    id = Column(UUID(as_uuid=False), primary_key=True, default=_uuid)
-    conversation_id = Column(UUID(as_uuid=False), ForeignKey("conversations.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=_uuid)
+    conversation_id = Column(String(36), ForeignKey("conversations.id"), nullable=False)
     ground_truth_intent = Column(String(100), nullable=True)
-    ground_truth_failure_modes = Column(JSONB, default=[])
+    ground_truth_failure_modes = Column(JSONB, default=list)
     ground_truth_relevance = Column(Boolean, nullable=True)
-    labeled_by = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True)
+    labeled_by = Column(String(36), ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
