@@ -1,0 +1,1942 @@
+# AI-Powered Photo Retrieval Discovery Engine
+
+## 1. Product Overview
+
+Build an AI-powered **Photo Retrieval Discovery Engine** that analyzes large volumes of publicly available user feedback and conversations to discover, understand, organize, and prioritize the problems people face when trying to retrieve old, forgotten, or difficult-to-find photos and videos.
+
+The goal is not to build a photo-search application itself.
+
+The goal is to build a **research and product-discovery system** that continuously analyzes real-world user conversations and transforms unstructured feedback into:
+
+* recurring photo-retrieval problems
+* unmet user needs
+* search/retrieval failure modes
+* user intents and behaviors
+* pain points and frustrations
+* emerging problems
+* potential product opportunities
+* evidence supporting each opportunity
+* trends over time
+
+The system should help a product team answer:
+
+> **"What are people struggling with when trying to find memories in their photo libraries, why are they struggling, how often does it happen, and what product opportunities could solve those problems?"**
+
+---
+
+# 2. Core Problem
+
+Users often remember a photo imperfectly.
+
+They may remember:
+
+* approximately when it was taken
+* where they were
+* who might be in it
+* what the occasion was
+* what the object looked like
+* what was happening in the photo
+* a partial text fragment
+* the feeling or memory associated with it
+
+but they may not remember:
+
+* the exact date
+* the exact filename
+* the exact location
+* the exact person name
+* the exact album
+* whether the image was a screenshot, photo, downloaded image, or video
+* which device captured it
+* what keywords would successfully retrieve it
+
+Traditional search systems are generally designed around information users explicitly know.
+
+This creates a **memory-to-retrieval gap**:
+
+> Users remember the experience or memory, while the retrieval system often expects metadata, keywords, or precise concepts.
+
+The Discovery Engine should identify these gaps by studying what real users say.
+
+---
+
+# 3. Primary Objective
+
+Create a system that can ingest, process, analyze, cluster, and visualize publicly available conversations related to:
+
+**photo search, photo retrieval, finding old photos, lost memories, forgotten photos, Google Photos search, Apple Photos search, photo organization, screenshot retrieval, video retrieval, memory retrieval, visual search, and related experiences.**
+
+The system must transform raw conversations into structured research insights.
+
+The output should be useful to:
+
+* Product Managers
+* UX Researchers
+* Designers
+* Researchers
+* Search/Relevance teams
+* AI/ML teams
+* Photo-storage/product teams
+
+---
+
+# 4. Data Sources
+
+The engine should support ingestion from publicly available sources such as:
+
+### Priority sources
+
+1. Google Play Store reviews
+2. Apple App Store reviews
+3. Reddit discussions
+4. Google Photos Help / Community discussions
+5. Google search-result discussions where legally and technically accessible
+6. YouTube comments
+7. Public social-media discussions
+8. Public forums
+9. Public blog comments/reviews
+10. Product review websites
+
+The architecture must be **source-agnostic**.
+
+Do not hard-code the analysis pipeline around one source.
+
+Create a normalized internal data format so new sources can be added later.
+
+---
+
+# 5. Important Compliance Requirement
+
+Only collect and process data that is legally and technically permissible.
+
+Respect:
+
+* website terms of service
+* API restrictions
+* robots.txt where applicable
+* rate limits
+* privacy requirements
+* copyright limitations
+* platform restrictions
+
+Prefer official APIs or permitted data-access methods where available.
+
+Do not design the system around bypassing authentication, anti-bot systems, CAPTCHAs, access controls, or other platform protections.
+
+---
+
+# 6. Target Users
+
+The primary user of the Discovery Engine is an internal research/product team.
+
+The product should have a web interface.
+
+Example users:
+
+### Product Manager
+
+Wants to know:
+
+> What are the most common photo retrieval frustrations?
+
+### UX Researcher
+
+Wants to know:
+
+> How do users describe their retrieval problem in their own words?
+
+### Search Engineer
+
+Wants to know:
+
+> Which types of queries systematically fail?
+
+### Designer
+
+Wants to know:
+
+> What mental models do users have when searching for memories?
+
+### Leadership
+
+Wants to know:
+
+> What new opportunity areas are emerging?
+
+---
+
+# 7. High-Level System Workflow
+
+Build the following pipeline:
+
+```text
+PUBLIC DATA SOURCES
+        ↓
+DATA COLLECTION
+        ↓
+RAW DATA STORAGE
+        ↓
+CLEANING + NORMALIZATION
+        ↓
+DUPLICATE DETECTION
+        ↓
+LANGUAGE / TEXT PROCESSING
+        ↓
+AI CLASSIFICATION
+        ↓
+INTENT EXTRACTION
+        ↓
+PAIN-POINT EXTRACTION
+        ↓
+FAILURE-MODE DETECTION
+        ↓
+SEMANTIC CLUSTERING
+        ↓
+PROBLEM DISCOVERY
+        ↓
+TREND DETECTION
+        ↓
+OPPORTUNITY GENERATION
+        ↓
+EVIDENCE + CITATIONS
+        ↓
+DISCOVERY DASHBOARD
+```
+
+---
+
+# 8. Data Collection Layer
+
+Create a modular ingestion architecture.
+
+Each source should have its own connector.
+
+Example:
+
+```text
+/connectors
+    /reddit
+    /google-play
+    /app-store
+    /youtube
+    /google-community
+    /forums
+```
+
+Each connector should transform source-specific information into a common schema.
+
+### Minimum normalized record
+
+```json
+{
+  "source": "reddit",
+  "source_id": "...",
+  "url": "...",
+  "author": "...",
+  "timestamp": "...",
+  "title": "...",
+  "text": "...",
+  "language": "...",
+  "engagement": {
+    "likes": 0,
+    "comments": 0,
+    "shares": 0
+  },
+  "metadata": {}
+}
+```
+
+Do not retain unnecessary personally identifiable information.
+
+---
+
+# 9. Data Cleaning
+
+Before AI analysis, normalize the dataset.
+
+The cleaning pipeline should:
+
+* remove duplicate content
+* detect near-duplicates
+* remove obvious spam
+* remove irrelevant advertisements
+* normalize whitespace
+* normalize encoding
+* detect language
+* preserve original meaning
+* remove unnecessary HTML/markup
+* identify quoted content
+* identify automated content
+* identify low-information posts
+* detect potentially sensitive personal information
+
+Do not aggressively remove conversational context.
+
+A short sentence such as:
+
+> "I remember everything about the photo except when it was taken."
+
+may contain extremely valuable research information.
+
+---
+
+# 10. Conversation Understanding
+
+Do not treat each piece of text simply as a "review."
+
+The system must determine the **user's underlying retrieval problem**.
+
+For every relevant conversation, identify:
+
+### A. User intent
+
+Examples:
+
+* find a specific photo
+* find a specific video
+* find a screenshot
+* find photos of a person
+* find photos from an event
+* find photos from a trip
+* find photos from a particular period
+* find something based on visual appearance
+* find something based on memory
+* retrieve deleted content
+* retrieve archived content
+* locate downloaded images
+* locate documents
+* locate memes
+* locate receipts
+* locate childhood photos
+* locate old family memories
+
+### B. Retrieval strategy
+
+Determine how the user attempted to find the item.
+
+Examples:
+
+* date search
+* location search
+* person search
+* object search
+* keyword search
+* natural-language description
+* album search
+* scrolling manually
+* visual similarity
+* OCR/text search
+* filename
+* device
+* folder
+* memory-based query
+
+### C. Failure reason
+
+Examples:
+
+* user doesn't know the exact date
+* user doesn't remember the exact location
+* search doesn't understand natural language
+* synonym mismatch
+* object not recognized
+* person not recognized
+* text not detected
+* OCR failure
+* visually similar objects confused
+* video difficult to find
+* screenshot not indexed correctly
+* deleted/archived item unclear
+* search ranking failure
+* too many irrelevant results
+* correct result buried
+* user doesn't know what query to write
+* search requires metadata the user doesn't remember
+* search works only with literal terminology
+* multiple memories are mixed together
+
+---
+
+# 11. Memory-Based Retrieval Analysis
+
+This is the most important capability.
+
+The system should identify situations where:
+
+```text
+WHAT USER REMEMBERS
+        ≠
+WHAT SEARCH SYSTEM REQUIRES
+```
+
+For example:
+
+User says:
+
+> "I remember a photo from a college trip where we were standing near a waterfall, but I don't remember the year."
+
+The engine should extract:
+
+```text
+Known memory:
+- event: college trip
+- scene: waterfall
+- people: friends
+- approximate period: college years
+
+Unknown:
+- exact date
+- exact location
+
+Potential retrieval challenge:
+- user has semantic/contextual memory rather than metadata memory
+```
+
+Store this as a structured **memory retrieval scenario**.
+
+---
+
+# 12. User Mental Model Extraction
+
+The system should identify how users naturally think about memories.
+
+For example:
+
+### Temporal memory
+
+"I think it was sometime around 2018."
+
+### Spatial memory
+
+"It was from our Goa trip."
+
+### Social memory
+
+"It's the photo where me and my college friends were together."
+
+### Visual memory
+
+"There was a red car in the background."
+
+### Event memory
+
+"It was the day we graduated."
+
+### Text memory
+
+"I remember there was a sign saying..."
+
+### Emotional memory
+
+"This was the photo from my first job."
+
+### Contextual memory
+
+"It was taken during the trip when we stayed at that resort."
+
+These memory dimensions should become first-class data fields.
+
+---
+
+# 13. Retrieval Problem Taxonomy
+
+Create a dynamic taxonomy rather than a completely fixed taxonomy.
+
+Start with categories such as:
+
+```text
+Temporal Retrieval
+Location Retrieval
+Person Retrieval
+Object Retrieval
+Event Retrieval
+Semantic Retrieval
+Visual Retrieval
+Text/OCR Retrieval
+Screenshot Retrieval
+Video Retrieval
+Document Retrieval
+Downloaded Media Retrieval
+Cross-Source Retrieval
+Deleted/Archived Retrieval
+Album/Organization Problems
+Search Query Formulation Problems
+Ranking/Relevance Problems
+Privacy/Permission Constraints
+Other
+```
+
+The AI should be able to:
+
+1. assign existing categories
+2. detect emerging categories
+3. propose new categories
+4. merge overlapping categories
+5. split broad categories into more useful subcategories
+
+The taxonomy must evolve based on evidence.
+
+---
+
+# 14. AI Analysis Pipeline
+
+Use an LLM/AI layer to analyze each relevant conversation.
+
+Possible models:
+
+* OpenAI GPT
+* Claude
+* Gemini
+* local/open-source models
+
+The architecture should make the model provider interchangeable.
+
+For each record, generate structured JSON.
+
+Example:
+
+```json
+{
+  "relevance": 0.94,
+  "primary_intent": "find_specific_photo",
+  "memory_type": [
+    "event",
+    "location",
+    "social"
+  ],
+  "retrieval_strategy": [
+    "keyword_search",
+    "manual_scrolling"
+  ],
+  "failure_modes": [
+    "unknown_date",
+    "semantic_search_failure"
+  ],
+  "pain_points": [
+    "cannot remember exact date",
+    "too many irrelevant results"
+  ],
+  "user_goal": "Find a specific photo from a college trip",
+  "frustration_level": 0.82,
+  "severity": 0.71,
+  "confidence": 0.91
+}
+```
+
+---
+
+# 15. Semantic Clustering
+
+Use embeddings/vector search to group semantically similar conversations.
+
+Do not cluster solely using keywords.
+
+For example, these should potentially belong to the same cluster:
+
+> "I can't remember when I took this."
+
+> "I have no idea what year this photo is from."
+
+> "I know the picture but not the date."
+
+> "I wish I could search by approximate time."
+
+They may describe the same underlying problem:
+
+**Retrieval when exact date is unknown.**
+
+The UI should allow researchers to inspect the individual conversations behind each cluster.
+
+---
+
+# 16. Problem Discovery
+
+The system should move beyond sentiment analysis.
+
+The key question is:
+
+> **What recurring problem is being expressed?**
+
+For each discovered problem, generate:
+
+### Problem title
+
+Example:
+
+**Users struggle to find memories when they remember the story but not the date.**
+
+### Problem statement
+
+A concise description of the underlying user difficulty.
+
+### Evidence
+
+Links to the conversations supporting the problem.
+
+### Frequency
+
+Number of relevant conversations.
+
+### Source diversity
+
+Number of different platforms where it appears.
+
+### Recurrence
+
+How consistently the problem appears over time.
+
+### User severity
+
+Estimated frustration/impact based on evidence.
+
+### User segments
+
+Examples:
+
+* casual users
+* heavy photo users
+* parents
+* travelers
+* students
+* professionals
+
+Only infer a segment when there is sufficient evidence.
+
+### Example queries
+
+Show what users actually attempted.
+
+---
+
+# 17. Opportunity Discovery
+
+After identifying problems, generate possible opportunity areas.
+
+Important:
+
+The system should distinguish:
+
+```text
+Observed problem
+        ↓
+Underlying user need
+        ↓
+Potential opportunity
+        ↓
+Possible solution hypothesis
+```
+
+Do not automatically assume that a generated solution is validated.
+
+Example:
+
+Observed problem:
+
+> Users remember an event but not the date.
+
+Underlying need:
+
+> Search using approximate contextual memory.
+
+Opportunity:
+
+> Memory-first photo retrieval.
+
+Possible solution hypothesis:
+
+> Allow natural-language searches describing a remembered event and infer candidate dates, people, places, objects, and visual context.
+
+The system should explicitly label these as **hypotheses**, not facts.
+
+---
+
+# 18. Evidence-Based Insights
+
+Every important AI-generated insight must be traceable back to source evidence.
+
+For every insight store:
+
+```text
+Insight
+↓
+Supporting conversations
+↓
+Source
+↓
+URL
+↓
+Date
+↓
+Relevant excerpt
+↓
+AI interpretation
+↓
+Confidence
+```
+
+Researchers must be able to click an insight and inspect the original evidence.
+
+Do not create unsupported conclusions.
+
+---
+
+# 19. Trend Detection
+
+The engine should analyze changes over time.
+
+Examples:
+
+* problems increasing over the last 6 months
+* newly emerging retrieval behaviors
+* growing complaints about video search
+* emerging use of AI-based search
+* changing terminology
+* recurring seasonal problems
+
+Create time-series views such as:
+
+```text
+Problem frequency
+         ↑
+         |
+         |          /\
+         |     /\  /  \
+         |____/  \/    \____
+         +--------------------→ Time
+```
+
+Allow users to choose:
+
+* 7 days
+* 30 days
+* 90 days
+* 6 months
+* 1 year
+* custom period
+
+---
+
+# 20. Cross-Platform Comparison
+
+A problem may appear differently on different platforms.
+
+For example:
+
+```text
+Reddit:
+"I can't find this photo even though I know what it looks like."
+
+App Store:
+"Search doesn't understand descriptions."
+
+Google Community:
+"How do I find a photo when I don't remember the date?"
+```
+
+The engine should detect these as potentially related signals.
+
+Show:
+
+```text
+Underlying problem
+        ↓
+Reddit evidence
+App Store evidence
+Community evidence
+YouTube evidence
+```
+
+This helps determine whether a problem is isolated or widespread across different contexts.
+
+---
+
+# 21. Query Mining
+
+Extract the actual search queries users attempted.
+
+Examples:
+
+```text
+"old photo of me in college"
+"red car beach picture"
+"photos from Goa trip"
+"picture with my cousin"
+"photo from around 2017"
+"Screenshot of flight ticket"
+```
+
+Analyze:
+
+* query length
+* query structure
+* entities
+* objects
+* people
+* locations
+* temporal expressions
+* events
+* uncertainty
+* synonyms
+* ambiguity
+
+Identify patterns in how people naturally formulate memory-based searches.
+
+---
+
+# 22. Query Failure Analysis
+
+Where evidence exists, identify why attempted searches failed.
+
+Classify failure into:
+
+```text
+Query formulation problem
+Intent understanding problem
+Entity recognition problem
+Temporal reasoning problem
+Location reasoning problem
+Visual recognition problem
+OCR problem
+Ranking problem
+Recall problem
+Precision problem
+User expectation problem
+```
+
+Example:
+
+```text
+User query:
+"photo from my Goa trip with college friends"
+
+Potential system challenge:
+- "Goa" → location
+- "college friends" → social context
+- "trip" → event
+- exact date unknown
+```
+
+This becomes a useful research signal.
+
+---
+
+# 23. Insight Scoring
+
+Do not use a single arbitrary "importance score."
+
+Instead calculate transparent dimensions such as:
+
+```text
+Frequency
+Cross-source recurrence
+Growth
+Severity
+Evidence diversity
+Confidence
+```
+
+Display the individual dimensions so researchers can understand why something surfaced.
+
+Avoid presenting a black-box ranking without explanation.
+
+---
+
+# 24. Discovery Dashboard
+
+Build a modern research dashboard.
+
+The home screen should show:
+
+### Overview
+
+```text
+Total conversations analyzed
+Relevant conversations
+Sources
+Problems discovered
+Emerging problems
+User intents
+Retrieval failure modes
+```
+
+### Top Problem Areas
+
+Show:
+
+```text
+Problem
+Frequency
+Growth
+Sources
+Example evidence
+```
+
+### Emerging Problems
+
+Show problems with rapidly increasing occurrence.
+
+### Memory Dimensions
+
+Visualize:
+
+```text
+Date
+Location
+People
+Events
+Objects
+Text
+Context
+Emotion
+```
+
+### Retrieval Failures
+
+Visualize:
+
+```text
+Unknown date
+Unknown location
+Poor semantic understanding
+Poor ranking
+OCR issues
+Visual similarity issues
+Video retrieval
+etc.
+```
+
+---
+
+# 25. Problem Detail Page
+
+Clicking a problem should open a dedicated research page.
+
+Example:
+
+```text
+PROBLEM
+
+Finding photos when the user remembers the event
+but not the exact date
+
+--------------------------------
+
+Frequency
+1,248 conversations
+
+Sources
+Reddit
+App Store
+Google Community
+YouTube
+
+Growth
++23% vs previous period
+
+--------------------------------
+
+Underlying User Need
+
+Search memories using approximate contextual information.
+
+--------------------------------
+
+Common Memory Signals
+
+Event
+People
+Location
+Approximate time
+
+--------------------------------
+
+Typical Queries
+
+"photo from my college trip"
+"picture of us at the waterfall"
+"photos from around 2018"
+
+--------------------------------
+
+Failure Modes
+
+Unknown exact date
+Search relies heavily on metadata
+Semantic mismatch
+
+--------------------------------
+
+Evidence
+
+[Conversation 1]
+[Conversation 2]
+[Conversation 3]
+
+--------------------------------
+
+Potential Opportunities
+
+Memory-first retrieval
+Approximate temporal search
+Context-based search
+
+--------------------------------
+
+AI Confidence
+
+...
+```
+
+---
+
+# 26. Research Evidence Viewer
+
+Researchers should be able to inspect raw evidence without leaving the application.
+
+Each evidence card should display:
+
+* source
+* date
+* title
+* original text
+* URL
+* extracted intent
+* extracted pain point
+* detected memory dimensions
+* cluster
+* AI confidence
+
+Allow:
+
+**"Show original context"**
+
+to view more surrounding text.
+
+---
+
+# 27. Search the Research Dataset
+
+Add a natural-language search interface.
+
+Example:
+
+> "Show conversations where users couldn't find a photo because they didn't remember the date."
+
+or:
+
+> "Find problems involving screenshots."
+
+or:
+
+> "What retrieval problems are increasing among users discussing old family photos?"
+
+The engine should perform semantic retrieval over the research dataset.
+
+---
+
+# 28. AI Research Assistant
+
+Add an AI assistant inside the dashboard.
+
+The assistant should answer questions using only the collected dataset and source evidence.
+
+Examples:
+
+> What are the most common reasons people fail to find old photos?
+
+> What types of memory do people rely on when exact metadata is unavailable?
+
+> Show evidence for users searching by life events.
+
+> What new retrieval problems appeared in the last six months?
+
+> Compare photo-search problems across Reddit and App Store reviews.
+
+> Give me 10 unmet needs related to forgotten photos.
+
+Every factual answer should provide supporting evidence links.
+
+The assistant must distinguish:
+
+**Evidence**
+
+from
+
+**Interpretation**
+
+from
+
+**Hypothesis**
+
+---
+
+# 29. Research Brief Generator
+
+Allow the user to generate a structured research report.
+
+Example output:
+
+```text
+PHOTO RETRIEVAL DISCOVERY BRIEF
+
+Executive Summary
+
+Key User Problems
+
+Top Retrieval Failure Modes
+
+Memory Models
+
+Representative User Quotes
+
+Cross-Platform Evidence
+
+Emerging Trends
+
+Unmet Needs
+
+Opportunity Areas
+
+Open Questions
+
+Research Gaps
+```
+
+Allow export to:
+
+* Markdown
+* PDF
+* CSV
+* JSON
+
+---
+
+# 30. Human-in-the-Loop Review
+
+AI analysis should not be considered automatically correct.
+
+Build a review workflow where researchers can:
+
+* approve classification
+* correct classification
+* merge clusters
+* split clusters
+* rename problems
+* mark insight as invalid
+* mark evidence as irrelevant
+* modify taxonomy
+* add notes
+* bookmark insights
+
+Store human corrections so they can improve future classification.
+
+---
+
+# 31. Feedback Learning Loop
+
+Create a feedback system:
+
+```text
+AI Classification
+       ↓
+Human Review
+       ↓
+Correction
+       ↓
+Stored Feedback
+       ↓
+Prompt / Model Improvement
+       ↓
+Better Future Classification
+```
+
+Do not automatically retrain models from tiny samples.
+
+Track corrections as evaluation data.
+
+---
+
+# 32. Architecture
+
+Use a modular architecture.
+
+Recommended structure:
+
+```text
+Frontend
+    ↓
+API Layer
+    ↓
+Research Orchestration Layer
+    ↓
+ ┌───────────────┬──────────────────┐
+ │               │                  │
+Data Connectors  AI Analysis        Search
+ │               │                  │
+ ↓               ↓                  ↓
+Raw Storage   LLM + Embeddings   Vector DB
+ │               │                  │
+ └───────────────┴──────────────────┘
+                 ↓
+            Insight Store
+                 ↓
+             Dashboard
+```
+
+Possible technology choices:
+
+### Frontend
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+
+### Backend
+
+* Python / FastAPI
+  or
+* Node.js / TypeScript
+
+### Database
+
+* PostgreSQL
+
+### Vector Search
+
+* pgvector
+  or
+* Pinecone
+  or
+* Weaviate
+  or
+* another vector database
+
+Prefer PostgreSQL + pgvector for the initial MVP where practical.
+
+### AI
+
+Create a model abstraction layer supporting:
+
+* OpenAI
+* Anthropic
+* Google
+* local models
+
+### Background processing
+
+Use:
+
+* Celery
+* Temporal
+* BullMQ
+* n8n
+* or another workflow engine
+
+The implementation should remain modular.
+
+---
+
+# 33. Suggested Database Entities
+
+Create normalized entities such as:
+
+```text
+Source
+Conversation
+Author
+Topic
+Intent
+MemoryDimension
+FailureMode
+Problem
+Opportunity
+Cluster
+Evidence
+AIAnalysis
+Trend
+HumanReview
+ResearchReport
+```
+
+Relationships should allow:
+
+```text
+Conversation
+    → Intent
+    → Memory Dimension
+    → Failure Mode
+    → Cluster
+    → Problem
+
+Problem
+    → Evidence
+    → Trends
+    → Opportunities
+```
+
+---
+
+# 34. Deduplication
+
+Duplicate detection is extremely important.
+
+The same discussion may appear:
+
+* reposted
+* quoted
+* syndicated
+* cross-posted
+* summarized
+* referenced by another platform
+
+Use both:
+
+### Exact matching
+
+For identical text.
+
+### Semantic similarity
+
+For paraphrases and reposts.
+
+Maintain an indication of:
+
+```text
+original
+duplicate
+possible duplicate
+cross-post
+```
+
+Do not accidentally inflate problem frequency because one conversation appears multiple times.
+
+---
+
+# 35. Source Weighting
+
+Do not assume:
+
+> 1,000 App Store reviews = 1,000 independent users.
+
+The system should clearly distinguish:
+
+* raw volume
+* unique conversation count
+* source distribution
+* approximate evidence diversity
+
+Avoid treating the dataset as statistically representative of all photo users unless an appropriate sampling methodology exists.
+
+The dashboard should include an **Evidence Limitations** section.
+
+---
+
+# 36. Privacy
+
+The system must be designed with privacy in mind.
+
+Avoid storing unnecessary:
+
+* usernames
+* emails
+* profile information
+* personal identifiers
+
+Where possible, use:
+
+```text
+anonymous source identifier
+```
+
+rather than personally identifying information.
+
+Provide configurable data-retention controls.
+
+---
+
+# 37. Multilingual Support
+
+The architecture should support multiple languages.
+
+At minimum, design the system so that additional languages can be added later.
+
+Pipeline:
+
+```text
+Original Language
+        ↓
+Language Detection
+        ↓
+Analysis
+        ↓
+Normalized Semantic Representation
+```
+
+Do not rely on simple keyword matching for multilingual data.
+
+---
+
+# 38. Explainability
+
+Every AI-generated insight should answer:
+
+### Why was this classified this way?
+
+Show:
+
+* detected signals
+* supporting text
+* confidence
+* related conversations
+* cluster membership
+* reasoning summary
+
+Do not expose private chain-of-thought.
+
+Instead provide concise, auditable evidence-based explanations.
+
+---
+
+# 39. Important Product Principle
+
+The system should discover **problems before solutions**.
+
+Do not force every conversation into a predefined solution.
+
+For example:
+
+Bad:
+
+```text
+Users want AI search.
+```
+
+Better:
+
+```text
+Users frequently describe photos through events,
+relationships, approximate dates, and visual context
+rather than exact searchable metadata.
+```
+
+Then derive possible opportunities from the evidence.
+
+---
+
+# 40. Emerging-Problem Detection
+
+Add an algorithm that looks for problems that are:
+
+* new
+* rapidly growing
+* appearing across multiple sources
+* appearing with strong user frustration
+* poorly represented in the existing taxonomy
+
+The engine should periodically generate:
+
+```text
+Potential New Problem
+
+Why it is new
+Evidence
+First observed
+Growth
+Sources
+Confidence
+```
+
+A human should approve it before it becomes a permanent taxonomy category.
+
+---
+
+# 41. "Unknown Unknowns" Capability
+
+The engine should actively search for problems that researchers did not explicitly define beforehand.
+
+Use:
+
+* unsupervised clustering
+* embeddings
+* topic discovery
+* anomaly detection
+* semantic outlier detection
+* temporal change detection
+
+The system should periodically surface:
+
+> "We are seeing a recurring pattern that does not fit the current taxonomy."
+
+This is a core feature rather than an optional enhancement.
+
+---
+
+# 42. Example End-to-End Scenario
+
+Input:
+
+```text
+"I've been trying to find a photo from my first college trip.
+I remember it was near a waterfall and I'm standing with
+three of my friends. I don't remember the year though.
+Google Photos keeps showing random waterfall pictures."
+```
+
+The engine should identify:
+
+```text
+Intent:
+Find a specific photo
+
+Memory dimensions:
+Event
+Location/context
+People
+Visual scene
+
+Known information:
+College trip
+Waterfall
+Three friends
+
+Unknown information:
+Exact date/year
+
+Attempted strategy:
+Semantic description
+
+Failure:
+Poor contextual retrieval
+Poor ranking
+Date uncertainty
+
+Underlying need:
+Retrieve a memory using incomplete contextual recollection
+
+Potential opportunity:
+Memory-first contextual retrieval
+```
+
+The original conversation should remain linked as evidence.
+
+---
+
+# 43. MVP Scope
+
+Build the MVP around a manageable subset.
+
+### MVP data sources
+
+Start with:
+
+* Reddit
+* Google Play reviews
+* App Store reviews
+* Google Photos Community
+
+### MVP capabilities
+
+The first working version must support:
+
+1. Data ingestion
+2. Normalization
+3. Deduplication
+4. Relevance classification
+5. Intent extraction
+6. Memory-dimension extraction
+7. Failure-mode extraction
+8. Embedding generation
+9. Semantic clustering
+10. Problem generation
+11. Evidence linking
+12. Trend analysis
+13. Search
+14. Dashboard
+15. AI research assistant
+16. Human review
+
+---
+
+# 44. Dashboard MVP
+
+The initial dashboard should contain:
+
+### Page 1 — Overview
+
+* conversations analyzed
+* relevant conversations
+* source distribution
+* problem count
+* emerging problem count
+* recent trends
+
+### Page 2 — Problems
+
+Searchable/filterable list of discovered problems.
+
+### Page 3 — Problem Detail
+
+Evidence + patterns + trends + opportunities.
+
+### Page 4 — Conversations
+
+Raw conversations with AI annotations.
+
+### Page 5 — Trends
+
+Time-based analysis.
+
+### Page 6 — Explore
+
+Natural-language research assistant.
+
+---
+
+# 45. Filters
+
+Allow researchers to filter by:
+
+* source
+* date range
+* topic
+* intent
+* memory type
+* failure mode
+* confidence
+* problem
+* language
+* trend status
+
+---
+
+# 46. Technical Requirements
+
+The application must be:
+
+* modular
+* scalable
+* observable
+* testable
+* secure
+* API-driven
+* model-provider agnostic
+
+Implement:
+
+* structured logging
+* retry logic
+* rate-limit handling
+* job status tracking
+* ingestion monitoring
+* AI processing monitoring
+* error reporting
+
+Long-running data-processing jobs should run asynchronously.
+
+---
+
+# 47. AI Cost Management
+
+AI analysis can become expensive.
+
+Implement:
+
+* batching
+* caching
+* deduplication before LLM processing
+* model routing
+* configurable models
+* configurable analysis depth
+* embedding reuse
+* prompt versioning
+
+Example:
+
+```text
+Cheap model
+↓
+Relevance filtering
+↓
+More expensive model
+↓
+Deep problem extraction
+```
+
+Do not send irrelevant content to expensive models.
+
+---
+
+# 48. Prompt Versioning
+
+Store the AI prompt version used for each analysis.
+
+Example:
+
+```text
+analysis_prompt_version:
+"photo-retrieval-v1.3"
+```
+
+This allows future reprocessing and evaluation.
+
+---
+
+# 49. Evaluation System
+
+Create an evaluation framework for AI quality.
+
+Maintain a small manually labeled benchmark dataset.
+
+Evaluate:
+
+* relevance accuracy
+* intent accuracy
+* failure-mode accuracy
+* clustering quality
+* problem extraction quality
+* evidence grounding
+* hallucination rate
+
+Create an internal evaluation page showing model performance.
+
+---
+
+# 50. API Design
+
+Expose APIs such as:
+
+```text
+POST /ingest
+GET /conversations
+GET /problems
+GET /problems/:id
+GET /clusters
+GET /trends
+GET /evidence/:id
+POST /reviews
+POST /research/query
+POST /reports
+```
+
+Use a clean API contract.
+
+Document APIs.
+
+---
+
+# 51. Example Research Query API
+
+Input:
+
+```json
+{
+  "query": "Why do users struggle to find photos when they don't remember the date?"
+}
+```
+
+Output should contain:
+
+```json
+{
+  "answer": "...",
+  "evidence": [
+    {
+      "conversation_id": "...",
+      "source": "reddit",
+      "url": "...",
+      "excerpt": "..."
+    }
+  ],
+  "problems": [],
+  "confidence": 0.89
+}
+```
+
+Answers must be grounded in the internal research dataset.
+
+---
+
+# 52. Frontend UX
+
+The visual design should feel like a modern AI research product rather than an analytics-heavy enterprise dashboard.
+
+Prioritize:
+
+* clean information hierarchy
+* readable evidence
+* fast filtering
+* visual clustering
+* interactive exploration
+* easy navigation from insight → evidence
+* minimal unnecessary decoration
+
+The most important artifact on screen should be the **user evidence and discovered problem**.
+
+---
+
+# 53. Seed Dataset
+
+Create a small seed/demo dataset so that the application works immediately after setup.
+
+The demo dataset should simulate conversations from multiple sources and demonstrate:
+
+* different intents
+* different memory types
+* different failure modes
+* multiple clusters
+* trends
+* emerging problems
+* evidence chains
+
+Clearly label simulated data as:
+
+**DEMO DATA**
+
+Do not represent synthetic conversations as real user evidence.
+
+---
+
+# 54. Security
+
+Implement:
+
+* authentication
+* role-based access
+* protected APIs
+* environment-variable based secrets
+* no API keys in frontend code
+* secure database access
+
+Support at least:
+
+```text
+Admin
+Researcher
+Viewer
+```
+
+---
+
+# 55. Configuration
+
+Make these configurable without changing application code:
+
+```text
+AI provider
+AI model
+embedding model
+batch size
+crawler limits
+rate limits
+retention period
+similarity thresholds
+clustering thresholds
+confidence thresholds
+analysis frequency
+```
+
+---
+
+# 56. Future Extensibility
+
+Architect the system so future versions can incorporate:
+
+* browser search behavior
+* anonymized product telemetry
+* support tickets
+* customer interviews
+* survey responses
+* internal research
+* direct user feedback
+* search-query logs
+* experiment results
+
+The same research schema should be able to combine these sources.
+
+---
+
+# 57. Final Product Goal
+
+At the end of the build, a researcher should be able to open the application and go from:
+
+```text
+Millions of unstructured conversations
+                ↓
+"What are users struggling with?"
+                ↓
+Discovered problem
+                ↓
+Underlying user need
+                ↓
+Evidence
+                ↓
+User behavior
+                ↓
+Failure mode
+                ↓
+Emerging trend
+                ↓
+Opportunity hypothesis
+```
+
+The product should function as an **AI-powered continuous discovery engine for photo retrieval**, turning scattered user conversations into structured, evidence-backed insights that can inform future photo-search and memory-retrieval products.
+
+---
+
+# 58. Build Instructions for the Coding Agent
+
+Build this as a **working full-stack web application**, not merely a prototype screen or static mockup.
+
+The coding agent should:
+
+1. Create the complete application architecture.
+2. Implement the backend and database.
+3. Implement the frontend dashboard.
+4. Implement the ingestion pipeline abstraction.
+5. Implement AI analysis using configurable LLM providers.
+6. Implement embeddings and semantic search.
+7. Implement clustering and problem discovery.
+8. Implement evidence traceability.
+9. Implement human review.
+10. Implement trend detection.
+11. Implement the research assistant.
+12. Seed the application with clearly labeled demo data.
+13. Add authentication and basic roles.
+14. Add automated tests for critical workflows.
+15. Add README and setup instructions.
+16. Use environment variables for secrets.
+17. Make the application runnable locally with a simple setup process.
+
+Do not build only the UI first.
+
+Build the underlying data model and processing pipeline so that the dashboard is connected to real structured data.
+
+When a capability cannot be implemented because a source requires an unavailable API or permission, create the connector interface and a mock/demo implementation rather than hard-coding fake production behavior.
+
+---
+
+# 59. Definition of Done
+
+The MVP is complete when a user can:
+
+```text
+1. Load/import conversation data
+2. Process the data with AI
+3. Search the dataset semantically
+4. See identified user intents
+5. See memory dimensions
+6. See retrieval failure modes
+7. See automatically generated problem clusters
+8. Open a problem
+9. Trace the problem back to evidence
+10. Explore trends
+11. Discover emerging problem areas
+12. Ask the AI research assistant questions
+13. Review/correct AI classifications
+14. Generate a research brief
+```
+
+The final application should demonstrate the complete loop:
+
+**Data → Understanding → Clustering → Problem Discovery → Evidence → Research Insight → Opportunity.**
