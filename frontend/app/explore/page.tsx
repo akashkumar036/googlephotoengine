@@ -1,156 +1,344 @@
 "use client";
+import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import {
+  Sparkles,
+  Send,
+  Bot,
+  User,
+  ExternalLink,
+  ChevronDown,
+  ChevronUp,
+  ShieldCheck,
+  AlertCircle,
+  Lightbulb,
+  FileText,
+  Clock,
+  ArrowRight,
+  Database,
+} from "lucide-react";
+import { ApiService } from "@/lib/api";
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 
-import { useState } from "react";
-import { Compass, Search, Sparkles, Sliders, Database, Layers, ArrowRight } from "lucide-react";
-
-interface SemanticCluster {
+interface ChatMessage {
   id: string;
-  name: string;
-  exemplarQuote: string;
-  memberCount: number;
-  cohesionScore: number;
-  topTerms: string[];
+  sender: "user" | "assistant";
+  text: string;
+  answerType?: "evidence_grounded" | "interpretation" | "hypothesis";
+  confidence?: number;
+  evidence?: any[];
+  relatedProblems?: any[];
+  keyInsights?: string[];
+  openQuestions?: string[];
+  timestamp: string;
 }
 
-const MOCK_CLUSTERS: SemanticCluster[] = [
-  {
-    id: "CLUST-14",
-    name: "Multi-Attribute Temporal Search Dropouts",
-    exemplarQuote: "I try searching for 'blue dress Italy vacation 2022' and it matches any picture with blue sky.",
-    memberCount: 284,
-    cohesionScore: 0.88,
-    topTerms: ["temporal", "conjunctions", "false_positives", "attributes"],
-  },
-  {
-    id: "CLUST-09",
-    name: "Cloud Sync Collisions & Ghost Albums",
-    exemplarQuote: "Google Photos and iCloud fighting over local storage causing photos to vanish from recent gallery.",
-    memberCount: 196,
-    cohesionScore: 0.84,
-    topTerms: ["sync", "conflict", "icloud", "ghost_album"],
-  },
-  {
-    id: "CLUST-22",
-    name: "Analog EXIF Metadata Injection",
-    exemplarQuote: "Need a way to automatically predict camera and date for scanned negatives based on surrounding roll context.",
-    memberCount: 142,
-    cohesionScore: 0.79,
-    topTerms: ["scans", "negatives", "exif", "backdating"],
-  },
-];
+export default function ExploreAssistantPage() {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [inputQuery, setInputQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [starters, setStarters] = useState<string[]>([]);
+  const [expandedCitation, setExpandedCitation] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-export default function ExplorePage() {
-  const [similarityQuery, setSimilarityQuery] = useState("");
-  const [threshold, setThreshold] = useState(0.82);
+  useEffect(() => {
+    async function loadStarters() {
+      try {
+        const res = await ApiService.getResearchStarters();
+        setStarters(res?.starters || []);
+      } catch {
+        setStarters([
+          "What are the most common reasons people fail to find old photos?",
+          "Which failure modes are increasing the fastest across Reddit and YouTube?",
+          "Give me 5 unmet needs related to forgotten photos and screenshots.",
+          "How do users describe lost memories when searching without exact dates?",
+        ]);
+      }
+    }
+    loadStarters();
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isLoading]);
+
+  const handleSubmit = async (queryText: string) => {
+    const q = queryText.trim();
+    if (!q || isLoading) return;
+
+    const userMsg: ChatMessage = {
+      id: `user-${Date.now()}`,
+      sender: "user",
+      text: q,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setInputQuery("");
+    setIsLoading(true);
+
+    try {
+      const historyPayload = messages.map((m) => ({
+        role: m.sender === "user" ? "user" : "assistant",
+        content: m.text,
+      }));
+
+      const res = await ApiService.askResearchAssistant(q, historyPayload);
+
+      const assistantMsg: ChatMessage = {
+        id: `assistant-${Date.now()}`,
+        sender: "assistant",
+        text: res.answer,
+        answerType: res.answer_type || "evidence_grounded",
+        confidence: res.confidence,
+        evidence: res.evidence || [],
+        relatedProblems: res.related_problems || [],
+        keyInsights: res.key_insights || [],
+        openQuestions: res.open_questions || [],
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+
+      setMessages((prev) => [...prev, assistantMsg]);
+    } catch (err: any) {
+      const errorMsg: ChatMessage = {
+        id: `assistant-${Date.now()}`,
+        sender: "assistant",
+        text: "I encountered an error querying the research knowledge base. Please ensure the backend is running and try again.",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+      setMessages((prev) => [...prev, errorMsg]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold tracking-tight text-white">Semantic Explorer</h1>
-          <span className="text-xs font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
-            pgvector HNSW Cosine
-          </span>
-        </div>
-        <p className="text-xs text-slate-400 mt-1">
-          Explore semantic clusters, query the 1536-dimensional embedding space, and discover latent photo problems.
-        </p>
-      </div>
-
-      {/* Query Bar & Vector Controls */}
-      <div className="p-6 rounded-xl bg-slate-900/60 border border-slate-800 space-y-4 shadow-xl">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
-            <input
-              type="text"
-              placeholder="Enter hypothetical user frustration or query (e.g., 'can't search by pet name without tag')..."
-              value={similarityQuery}
-              onChange={(e) => setSimilarityQuery(e.target.value)}
-              className="w-full bg-slate-950/70 border border-slate-800 rounded-lg pl-10 pr-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-            />
+    <div className="max-w-5xl mx-auto space-y-6 pb-20">
+      {/* Top Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              AI Research Assistant
+            </h1>
+            <Badge variant="purple" size="sm">
+              <Database className="w-3 h-3 mr-1 inline" />
+              Grounded RAG
+            </Badge>
           </div>
-          <button className="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Vector Match</span>
-          </button>
-        </div>
-
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 text-xs text-slate-400 border-t border-slate-800/60">
-          <div className="flex items-center gap-3">
-            <Sliders className="w-3.5 h-3.5 text-slate-500" />
-            <span>Cosine Similarity Cutoff:</span>
-            <input
-              type="range"
-              min="0.5"
-              max="0.95"
-              step="0.01"
-              value={threshold}
-              onChange={(e) => setThreshold(parseFloat(e.target.value))}
-              className="w-32 accent-indigo-500 cursor-pointer"
-            />
-            <span className="font-mono text-indigo-400 font-bold">{threshold}</span>
-          </div>
-
-          <div className="flex items-center gap-4 text-[11px] font-mono text-slate-500">
-            <span>Metric: vector_cosine_ops</span>
-            <span>Index: HNSW (m=16, ef=64)</span>
-          </div>
+          <p className="text-xs text-slate-400 mt-1 max-w-2xl">
+            Ask complex UX research questions. Answers are synthesized exclusively from indexed conversation evidence with verifiable inline citations.
+          </p>
         </div>
       </div>
 
-      {/* Discovered Semantic Clusters */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-            <Layers className="w-4 h-4 text-indigo-400" />
-            Discovered DBSCAN Semantic Clusters
-          </h2>
-          <span className="text-xs text-slate-400">12 Active Clusters Found</span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {MOCK_CLUSTERS.map((cluster) => (
-            <div
-              key={cluster.id}
-              className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all space-y-3 flex flex-col justify-between"
-            >
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-indigo-400 font-semibold">{cluster.id}</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">
-                    Cohesion: {(cluster.cohesionScore * 100).toFixed(0)}%
-                  </span>
-                </div>
-                <h3 className="text-sm font-bold text-slate-100">{cluster.name}</h3>
-                <p className="text-xs text-slate-400 italic bg-slate-950/50 p-3 rounded-lg border border-slate-800/40">
-                  "{cluster.exemplarQuote}"
+      {/* Chat Container */}
+      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl min-h-[500px] flex flex-col shadow-2xl overflow-hidden backdrop-blur-md">
+        {/* Messages Body */}
+        <div className="flex-1 p-6 space-y-6 overflow-y-auto max-h-[65vh]">
+          {messages.length === 0 ? (
+            <div className="py-12 px-4 text-center space-y-6">
+              <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto shadow-inner">
+                <Bot className="w-7 h-7" />
+              </div>
+              <div className="space-y-1.5 max-w-md mx-auto">
+                <h3 className="text-base font-semibold text-white">Ask the Photo Discovery Knowledge Base</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Query across all synthesized clusters, retrieval failure modes, and user quotes with automated evidence grounding.
                 </p>
               </div>
 
-              <div className="space-y-3 pt-2">
-                <div className="flex flex-wrap gap-1">
-                  {cluster.topTerms.map((term, i) => (
-                    <span
-                      key={i}
-                      className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700/50"
+              {/* Starter Questions */}
+              <div className="max-w-xl mx-auto space-y-2 pt-2 text-left">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block px-1">
+                  Suggested Research Questions
+                </span>
+                <div className="grid grid-cols-1 gap-2">
+                  {starters.map((starter, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleSubmit(starter)}
+                      className="text-left text-xs text-slate-300 hover:text-white p-3 rounded-xl bg-slate-950/80 hover:bg-slate-800/80 border border-slate-800 transition-all flex items-center justify-between group"
                     >
-                      #{term}
-                    </span>
+                      <span className="line-clamp-1">{starter}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-indigo-400 transition-colors flex-shrink-0 ml-2" />
+                    </button>
                   ))}
-                </div>
-
-                <div className="pt-2 border-t border-slate-800/70 flex items-center justify-between text-xs text-slate-400">
-                  <span>{cluster.memberCount} members</span>
-                  <button className="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1 text-xs">
-                    <span>Inspect</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
                 </div>
               </div>
             </div>
-          ))}
+          ) : (
+            messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex gap-3.5 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+              >
+                {msg.sender === "assistant" && (
+                  <div className="w-8 h-8 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center flex-shrink-0 mt-1">
+                    <Bot className="w-4 h-4" />
+                  </div>
+                )}
+
+                <div className={`space-y-3 max-w-2xl ${msg.sender === "user" ? "items-end" : "items-start"}`}>
+                  <div
+                    className={`p-5 rounded-2xl text-sm leading-relaxed ${
+                      msg.sender === "user"
+                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 ml-12 rounded-br-none"
+                        : "bg-slate-950/90 border border-slate-800 text-slate-200 rounded-bl-none shadow-md"
+                    }`}
+                  >
+                    {/* Header for assistant message */}
+                    {msg.sender === "assistant" && msg.answerType && (
+                      <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-800/80">
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant={
+                              msg.answerType === "evidence_grounded"
+                                ? "emerald"
+                                : msg.answerType === "interpretation"
+                                ? "indigo"
+                                : "amber"
+                            }
+                            size="sm"
+                          >
+                            {msg.answerType.replace("_", " ").toUpperCase()}
+                          </Badge>
+                          {msg.confidence !== undefined && (
+                            <span className="text-[11px] text-slate-400">
+                              Confidence: {Math.round(msg.confidence * 100)}%
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[10px] text-slate-500">{msg.timestamp}</span>
+                      </div>
+                    )}
+
+                    {/* Answer text */}
+                    <div className="whitespace-pre-wrap">{msg.text}</div>
+
+                    {/* Key Insights Pills */}
+                    {msg.keyInsights && msg.keyInsights.length > 0 && (
+                      <div className="mt-4 pt-3 border-t border-slate-800/80 space-y-1.5">
+                        <span className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider block">
+                          Key Insights
+                        </span>
+                        <div className="space-y-1">
+                          {msg.keyInsights.map((insight, i) => (
+                            <div key={i} className="text-xs text-slate-300 flex items-start gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0" />
+                              <span>{insight}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Evidence Cards Tray */}
+                  {msg.evidence && msg.evidence.length > 0 && (
+                    <div className="space-y-2 pt-1 pl-1">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+                        <FileText className="w-3.5 h-3.5 text-indigo-400" />
+                        <span>Supporting Evidence Records ({msg.evidence.length})</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {msg.evidence.map((ev, i) => (
+                          <div
+                            key={i}
+                            className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 text-xs space-y-1.5 hover:border-slate-700 transition-colors cursor-pointer"
+                            onClick={() =>
+                              setExpandedCitation(expandedCitation === ev.citation_id ? null : ev.citation_id)
+                            }
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-mono text-indigo-400 font-bold">[{ev.citation_id}]</span>
+                              <Badge variant="default" size="sm">{ev.source?.toUpperCase() || "SOURCE"}</Badge>
+                            </div>
+                            <p className="text-slate-300 line-clamp-2 italic leading-relaxed">
+                              "{ev.excerpt}"
+                            </p>
+                            {expandedCitation === ev.citation_id && (
+                              <div className="pt-2 mt-2 border-t border-slate-800 text-[11px] text-slate-400 space-y-1 animate-in fade-in">
+                                <div><strong>Intent:</strong> {ev.intent}</div>
+                                <div><strong>Failure Modes:</strong> {(ev.failure_modes || []).join(", ") || "None"}</div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Related Problems */}
+                  {msg.relatedProblems && msg.relatedProblems.length > 0 && (
+                    <div className="pt-2 pl-1 flex flex-wrap items-center gap-2 text-xs">
+                      <span className="text-slate-500">Related Problems:</span>
+                      {msg.relatedProblems.map((p: any) => (
+                        <Link
+                          key={p.id}
+                          href={`/problems/${p.id}`}
+                          className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-indigo-300 hover:text-white hover:border-indigo-500 transition-colors line-clamp-1"
+                        >
+                          {p.title}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {msg.sender === "user" && (
+                  <div className="w-8 h-8 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center flex-shrink-0 mt-1">
+                    <User className="w-4 h-4" />
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+
+          {isLoading && (
+            <div className="flex gap-3.5 items-start">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center flex-shrink-0 animate-pulse">
+                <Bot className="w-4 h-4" />
+              </div>
+              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs text-slate-400 flex items-center gap-3">
+                <Sparkles className="w-4 h-4 animate-spin text-indigo-400" />
+                <span>Searching vector embeddings and synthesizing evidence-grounded answer...</span>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input Bar */}
+        <div className="p-4 bg-slate-950 border-t border-slate-800">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(inputQuery);
+            }}
+            className="flex items-center gap-3"
+          >
+            <input
+              type="text"
+              placeholder="Ask a question (e.g., 'What causes users to abandon search when looking for vacation photos?')..."
+              value={inputQuery}
+              onChange={(e) => setInputQuery(e.target.value)}
+              disabled={isLoading}
+              className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+            />
+            <Button
+              type="submit"
+              variant="glow"
+              size="md"
+              disabled={!inputQuery.trim() || isLoading}
+              icon={<Send className="w-4 h-4" />}
+            >
+              Ask
+            </Button>
+          </form>
         </div>
       </div>
     </div>

@@ -134,6 +134,107 @@ async def list_conversations(
     }
 
 
+@router.get("/search", summary="Natural-language semantic vector and keyword search across conversations")
+async def search_conversations(
+    q: str = Query(..., min_length=1, description="Natural language search query"),
+    limit: int = Query(20, ge=1, le=100),
+    min_similarity: float = Query(0.0, ge=0.0, le=1.0),
+    db: AsyncSession = Depends(get_db),
+    _: None = RequireViewer,
+):
+    """
+    Semantic ANN search across conversation embeddings and text.
+    Returns ranked results with similarity scores and highlighted excerpts.
+    """
+    import math
+    from app.models.router import get_model_router
+
+    # 1. Embed query
+    query_vec = None
+    try:
+        router = get_model_router()
+        provider = router.get_provider()
+        emb_res = await provider.embed([q])
+        if emb_res and len(emb_res) > 0:
+            query_vec = emb_res[0]
+    except Exception:
+        query_vec = None
+
+    # 2. Fetch conversations
+    stmt = (
+        select(Conversation)
+        .options(
+            selectinload(Conversation.source),
+            selectinload(Conversation.analysis),
+        )
+        .limit(200)
+    )
+    result = await db.execute(stmt)
+    convs = result.scalars().all()
+
+    def calc_cosine(v1, v2):
+        if not v1 or not v2 or len(v1) != len(v2):
+            return 0.0
+        dot = sum(a * b for a, b in zip(v1, v2))
+        norm1 = math.sqrt(sum(a * a for a in v1))
+        norm2 = math.sqrt(sum(b * b for b in v2))
+        if norm1 == 0 or norm2 == 0:
+            return 0.0
+        return dot / (norm1 * norm2)
+
+    def extract_excerpt(text: str, query: str, window: int = 160) -> str:
+        if not text:
+            return ""
+        q_terms = [w.lower() for w in query.split() if len(w) > 2]
+        idx = -1
+        for term in q_terms:
+            pos = text.lower().find(term)
+            if pos != -1:
+                idx = pos
+                break
+        if idx == -1:
+            return text[:window] + ("..." if len(text) > window else "")
+        start = max(0, idx - 40)
+        end = min(len(text), idx + window)
+        prefix = "..." if start > 0 else ""
+        suffix = "..." if end < len(text) else ""
+        return f"{prefix}{text[start:end]}{suffix}"
+
+    scored_items = []
+    q_words = set(q.lower().split())
+
+    for c in convs:
+        # Base semantic similarity
+        sim = 0.0
+        if query_vec and c.embedding is not None:
+            # Handle list vs pgvector representation
+            emb_list = list(c.embedding) if hasattr(c.embedding, "__iter__") else []
+            sim = max(0.0, calc_cosine(query_vec, emb_list))
+        
+        # Keyword boost
+        full_text = f"{c.title or ''} {c.cleaned_text or c.text or ''}".lower()
+        overlap = sum(1 for w in q_words if w in full_text)
+        keyword_score = min(1.0, overlap / max(1, len(q_words)))
+
+        # Blended score
+        combined_score = (sim * 0.7) + (keyword_score * 0.3) if query_vec and c.embedding is not None else keyword_score
+
+        if combined_score >= min_similarity:
+            item = _to_dict(c)
+            item["similarity_score"] = round(combined_score, 4)
+            item["highlighted_excerpt"] = extract_excerpt(c.cleaned_text or c.text or "", q)
+            scored_items.append(item)
+
+    scored_items.sort(key=lambda x: x["similarity_score"], reverse=True)
+    ranked = scored_items[:limit]
+
+    return {
+        "query": q,
+        "total": len(ranked),
+        "data": ranked,
+    }
+
+
 @router.get("/{conversation_id}", summary="Get a single conversation with full AI analysis")
 async def get_conversation(
     conversation_id: str,

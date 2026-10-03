@@ -1,187 +1,441 @@
 "use client";
-
-import { useState } from "react";
-import { MessageSquare, ExternalLink, Filter, Calendar, Tag, ShieldCheck, Sparkles } from "lucide-react";
-
-interface ConversationItem {
-  id: string;
-  source: string;
-  sourceUrl: string;
-  author: string;
-  date: string;
-  rawText: string;
-  sentiment: "negative" | "frustrated" | "neutral" | "positive";
-  intent: "pain_point" | "feature_request" | "workaround_discussion";
-  isDemo: boolean;
-  relevanceScore: number;
-}
-
-const MOCK_CONVERSATIONS: ConversationItem[] = [
-  {
-    id: "CONV-8821",
-    source: "Reddit (r/googlephotos)",
-    sourceUrl: "https://reddit.com/r/googlephotos/example1",
-    author: "pixel_enthusiast",
-    date: "2026-09-28",
-    rawText: "Is anyone else completely unable to find pictures of their dog from last year? I type 'golden retriever beach summer 2025' and it literally shows pictures of cats from 2019. The semantic search feels like it broke recently.",
-    sentiment: "frustrated",
-    intent: "pain_point",
-    isDemo: true,
-    relevanceScore: 0.94,
-  },
-  {
-    id: "CONV-8822",
-    source: "Apple Support Community",
-    sourceUrl: "https://discussions.apple.com/example2",
-    author: "sarah_m_photo",
-    date: "2026-09-29",
-    rawText: "I have shared photo library turned on with my husband. Whenever we both take photos of our daughter's birthday party, iCloud duplicates both sets into my main gallery. I spent 4 hours deleting duplicates manually last night.",
-    sentiment: "negative",
-    intent: "pain_point",
-    isDemo: true,
-    relevanceScore: 0.91,
-  },
-  {
-    id: "CONV-8823",
-    source: "Reddit (r/photography)",
-    sourceUrl: "https://reddit.com/r/photography/example3",
-    author: "lens_crafter",
-    date: "2026-09-30",
-    rawText: "I found a workaround for indexing analog scans: I write the ISO, lens, and location directly in the caption and use an external script to sync it with EXIF. Wish native apps supported smart tags for scanned film.",
-    sentiment: "neutral",
-    intent: "workaround_discussion",
-    isDemo: true,
-    relevanceScore: 0.86,
-  },
-  {
-    id: "CONV-8824",
-    source: "Reddit (r/ios)",
-    sourceUrl: "https://reddit.com/r/ios/example4",
-    author: "tech_curious_99",
-    date: "2026-10-01",
-    rawText: "Can we please have an option to completely exclude screenshots and PDF receipts from Memories? My memory reel for last week had my tax return and grocery receipts mixed with my anniversary dinner.",
-    sentiment: "frustrated",
-    intent: "feature_request",
-    isDemo: true,
-    relevanceScore: 0.97,
-  },
-];
+import React, { useEffect, useState, useMemo } from "react";
+import {
+  MessageSquare,
+  Search,
+  SlidersHorizontal,
+  ExternalLink,
+  Sparkles,
+  Calendar,
+  Layers,
+  CheckCircle2,
+  ShieldAlert,
+  X,
+  Code2,
+} from "lucide-react";
+import { ApiService } from "@/lib/api";
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Modal } from "@/components/ui/Modal";
+import { Skeleton, EmptyState } from "@/components/ui/EmptyState";
 
 export default function ConversationsPage() {
-  const [selectedIntent, setSelectedIntent] = useState<string>("all");
+  const [conversations, setConversations] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchingNL, setIsSearchingNL] = useState(false);
+  const [selectedSource, setSelectedSource] = useState("all");
+  const [selectedIntent, setSelectedIntent] = useState("all");
+  const [selectedMemory, setSelectedMemory] = useState("all");
+  const [selectedFailure, setSelectedFailure] = useState("all");
+  const [relevantOnly, setRelevantOnly] = useState(true);
+  const [activeModalConv, setActiveModalConv] = useState<any | null>(null);
 
-  const filtered = MOCK_CONVERSATIONS.filter((c) => {
-    if (selectedIntent !== "all" && c.intent !== selectedIntent) return false;
-    return true;
-  });
+  const loadConversations = async () => {
+    setIsLoading(true);
+    try {
+      const res = await ApiService.getConversations({
+        limit: 100,
+        is_relevant: relevantOnly ? true : undefined,
+      });
+      setConversations(res?.data || []);
+    } catch (err) {
+      console.error("Failed to load conversations", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadConversations();
+  }, [relevantOnly]);
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) {
+      loadConversations();
+      return;
+    }
+
+    setIsSearchingNL(true);
+    setIsLoading(true);
+    try {
+      const res = await ApiService.searchConversations(searchQuery.trim(), 40);
+      setConversations(res?.data || []);
+    } catch (err) {
+      console.error("Semantic search failed", err);
+    } finally {
+      setIsLoading(false);
+      setIsSearchingNL(false);
+    }
+  };
+
+  // Filter conversations
+  const filteredList = useMemo(() => {
+    return conversations.filter((c) => {
+      if (selectedSource !== "all" && c.source?.toLowerCase() !== selectedSource.toLowerCase()) {
+        return false;
+      }
+      const analysis = c.analysis;
+      if (selectedIntent !== "all" && analysis?.primary_intent !== selectedIntent) {
+        return false;
+      }
+      if (selectedMemory !== "all") {
+        const mems = (analysis?.memory_types || []).map((m: string) => m.toLowerCase());
+        if (!mems.includes(selectedMemory.toLowerCase())) return false;
+      }
+      if (selectedFailure !== "all") {
+        const fails = (analysis?.failure_modes || []).map((f: string) => f.toLowerCase());
+        if (!fails.includes(selectedFailure.toLowerCase())) return false;
+      }
+      return true;
+    });
+  }, [conversations, selectedSource, selectedIntent, selectedMemory, selectedFailure]);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white">Ingested Conversations</h1>
-            <span className="text-xs font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-              14,820 Records
-            </span>
-          </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Raw user feedback and community discussions normalized and processed through Groq LLaMA pipeline.
+          <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            Indexed Conversations & Feedback
+          </h1>
+          <p className="text-xs text-slate-400 mt-1 max-w-xl">
+            Normalized user posts, reviews, and comment threads enriched with two-stage LLM intent extraction, memory dimensions, and failure modes.
           </p>
         </div>
+      </div>
 
-        {/* Demo Data Badge Notice */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono">
-          <ShieldCheck className="w-4 h-4 text-amber-400" />
-          <span>SYNTHETIC DEMO DATA LABELED</span>
+      {/* Semantic Search Box */}
+      <Card className="p-4 bg-slate-900/80 border-slate-800">
+        <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search semantically (e.g., 'users who cannot find photos from a wedding or vacation')..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-11 pr-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Button type="submit" variant="primary" size="md" isLoading={isSearchingNL}>
+              Vector Search
+            </Button>
+            {searchQuery && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="md"
+                onClick={() => {
+                  setSearchQuery("");
+                  loadConversations();
+                }}
+              >
+                Clear
+              </Button>
+            )}
+          </div>
+        </form>
+      </Card>
+
+      {/* Main Layout: Filters + List */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Filters Sidebar */}
+        <div className="lg:col-span-1 space-y-6">
+          <Card className="p-5 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider">
+                <SlidersHorizontal className="w-4 h-4 text-indigo-400" />
+                <span>Filters</span>
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedSource("all");
+                  setSelectedIntent("all");
+                  setSelectedMemory("all");
+                  setSelectedFailure("all");
+                }}
+                className="text-[11px] text-slate-400 hover:text-white"
+              >
+                Reset
+              </button>
+            </div>
+
+            {/* Relevant Only Toggle */}
+            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-950/80 border border-slate-800">
+              <label htmlFor="conv-relevant-toggle" className="text-xs font-medium text-slate-200 cursor-pointer">
+                Photo Discovery Relevant
+              </label>
+              <input
+                id="conv-relevant-toggle"
+                type="checkbox"
+                checked={relevantOnly}
+                onChange={(e) => setRelevantOnly(e.target.checked)}
+                className="w-4 h-4 accent-indigo-600 rounded cursor-pointer"
+              />
+            </div>
+
+            {/* Platform Source */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
+                Source Channel
+              </label>
+              <select
+                value={selectedSource}
+                onChange={(e) => setSelectedSource(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+              >
+                <option value="all">All Sources</option>
+                <option value="reddit">Reddit</option>
+                <option value="youtube">YouTube</option>
+                <option value="google_play">Google Play Store</option>
+                <option value="demo">Synthetic Demo Dataset</option>
+              </select>
+            </div>
+
+            {/* Intent */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
+                Primary Intent
+              </label>
+              <select
+                value={selectedIntent}
+                onChange={(e) => setSelectedIntent(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+              >
+                <option value="all">All Intents</option>
+                <option value="find_photo">Find Photo</option>
+                <option value="find_video">Find Video</option>
+                <option value="find_screenshot">Find Screenshot</option>
+                <option value="cleanup_duplicates">Cleanup Duplicates</option>
+                <option value="album_organization">Album Organization</option>
+              </select>
+            </div>
+
+            {/* Memory Anchor */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
+                Memory Anchor
+              </label>
+              <select
+                value={selectedMemory}
+                onChange={(e) => setSelectedMemory(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+              >
+                <option value="all">All Dimensions</option>
+                <option value="temporal">Temporal (Dates / Seasons)</option>
+                <option value="spatial">Spatial (Location / Places)</option>
+                <option value="social">Social (People / Faces)</option>
+                <option value="visual">Visual (Colors / Composition)</option>
+                <option value="event">Event (Trips / Weddings)</option>
+                <option value="semantic">Semantic (Activities / Concepts)</option>
+              </select>
+            </div>
+
+            {/* Failure Mode */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
+                Failure Mode
+              </label>
+              <select
+                value={selectedFailure}
+                onChange={(e) => setSelectedFailure(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+              >
+                <option value="all">All Failure Modes</option>
+                <option value="keyword_mismatch">Keyword Mismatch</option>
+                <option value="temporal_drift">Temporal Drift</option>
+                <option value="no_results">Zero Results</option>
+                <option value="false_positive">False Positives</option>
+                <option value="face_failure">Face Recognition Failure</option>
+                <option value="poor_ranking">Poor Result Ranking</option>
+              </select>
+            </div>
+          </Card>
+        </div>
+
+        {/* Conversation Cards List */}
+        <div className="lg:col-span-3 space-y-4">
+          <div className="flex items-center justify-between text-xs text-slate-400 px-1">
+            <span>Showing {filteredList.length} indexed conversations</span>
+            <span>{relevantOnly ? "Filtered to Photo Retrieval" : "All Records"}</span>
+          </div>
+
+          {isLoading ? (
+            <div className="space-y-4">
+              {[1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} className="h-44 w-full" />
+              ))}
+            </div>
+          ) : filteredList.length === 0 ? (
+            <EmptyState
+              title="No conversations found"
+              description="Try broadening your filters or executing a different semantic query."
+            />
+          ) : (
+            <div className="space-y-4">
+              {filteredList.map((conv) => {
+                const analysis = conv.analysis;
+                const source = conv.source || "demo";
+                const isDemo = conv.is_demo;
+
+                return (
+                  <Card
+                    key={conv.id}
+                    hover
+                    className="p-6 relative overflow-hidden"
+                    onClick={() => setActiveModalConv(conv)}
+                  >
+                    {/* DEMO DATA Watermark for mock records */}
+                    {isDemo && (
+                      <div className="absolute top-2 right-2 select-none pointer-events-none">
+                        <Badge variant="demo">DEMO DATA</Badge>
+                      </div>
+                    )}
+
+                    <div className="space-y-3">
+                      {/* Top Meta */}
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge variant="default" size="sm">
+                          {source.toUpperCase()}
+                        </Badge>
+                        {analysis?.primary_intent && (
+                          <Badge variant="indigo" size="sm">
+                            Intent: {analysis.primary_intent}
+                          </Badge>
+                        )}
+                        {conv.similarity_score !== undefined && (
+                          <Badge variant="purple" size="sm">
+                            Match: {Math.round(conv.similarity_score * 100)}%
+                          </Badge>
+                        )}
+                        <span className="text-[11px] text-slate-500 ml-auto mr-16 sm:mr-0">
+                          {conv.timestamp ? new Date(conv.timestamp).toLocaleDateString() : "Unknown date"}
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="text-base font-bold text-white line-clamp-1">
+                        {conv.title || "User Conversation"}
+                      </h3>
+
+                      {/* Excerpt */}
+                      <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">
+                        {conv.highlighted_excerpt || conv.cleaned_text || conv.text}
+                      </p>
+
+                      {/* Annotation Badges */}
+                      {analysis && (
+                        <div className="pt-2 flex flex-wrap items-center gap-1.5">
+                          {(analysis.memory_types || []).map((m: string, i: number) => (
+                            <Badge key={i} variant="purple" size="sm">
+                              {m}
+                            </Badge>
+                          ))}
+                          {(analysis.failure_modes || []).map((f: string, i: number) => (
+                            <Badge key={i} variant="rose" size="sm">
+                              {f.replace("_", " ")}
+                            </Badge>
+                          ))}
+                          {analysis.confidence !== undefined && (
+                            <span className="text-[11px] text-slate-500 ml-auto">
+                              AI Confidence: {Math.round((analysis.confidence || 0) * 100)}%
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-        {[
-          { id: "all", label: "All Intent Types" },
-          { id: "pain_point", label: "Pain Points" },
-          { id: "feature_request", label: "Feature Requests" },
-          { id: "workaround_discussion", label: "Workarounds" },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setSelectedIntent(tab.id)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              selectedIntent === tab.id
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Conversation Feed */}
-      <div className="space-y-4">
-        {filtered.map((item) => (
-          <div
-            key={item.id}
-            className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700/80 transition-all space-y-3"
-          >
-            <div className="flex items-center justify-between gap-4 flex-wrap text-xs">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-slate-200">{item.author}</span>
-                <span className="text-slate-500 font-mono text-[11px]">via {item.source}</span>
-                <span className="text-slate-600">•</span>
-                <span className="text-slate-500 flex items-center gap-1 text-[11px]">
-                  <Calendar className="w-3 h-3" /> {item.date}
-                </span>
+      {/* Conversation Detail Modal */}
+      {activeModalConv && (
+        <Modal
+          isOpen={!!activeModalConv}
+          onClose={() => setActiveModalConv(null)}
+          title={activeModalConv.title || "Conversation Details"}
+          description={`Source: ${activeModalConv.source?.toUpperCase() || "UNKNOWN"} • ID: ${activeModalConv.id}`}
+          maxWidth="2xl"
+        >
+          <div className="space-y-6 max-h-[75vh] overflow-y-auto pr-1">
+            {activeModalConv.is_demo && (
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-center justify-between">
+                <span>Synthetic dataset benchmark record.</span>
+                <Badge variant="demo">DEMO DATA</Badge>
               </div>
+            )}
 
-              <div className="flex items-center gap-2">
-                {item.isDemo && (
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                    DEMO DATA
-                  </span>
+            {/* Raw Cleaned Text */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                Full Conversation Text
+              </h4>
+              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 leading-relaxed whitespace-pre-wrap font-mono max-h-52 overflow-y-auto">
+                {activeModalConv.cleaned_text || activeModalConv.text}
+              </div>
+            </div>
+
+            {/* AI Analysis Breakdown */}
+            {activeModalConv.analysis ? (
+              <div className="space-y-4">
+                <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-wider">
+                  AI Semantic Analysis (Stage 1 & 2)
+                </h4>
+
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+                    <span className="text-slate-500">Primary Intent</span>
+                    <p className="font-semibold text-white">{activeModalConv.analysis.primary_intent || "N/A"}</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+                    <span className="text-slate-500">Confidence</span>
+                    <p className="font-semibold text-emerald-400">
+                      {Math.round((activeModalConv.analysis.confidence || 0) * 100)}%
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <span className="text-xs font-semibold text-slate-400">Memory Dimensions</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(activeModalConv.analysis.memory_types || []).map((m: string, i: number) => (
+                      <Badge key={i} variant="purple">{m}</Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <span className="text-xs font-semibold text-slate-400">Retrieval Failure Modes</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(activeModalConv.analysis.failure_modes || []).map((f: string, i: number) => (
+                      <Badge key={i} variant="rose">{f.replace("_", " ")}</Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {activeModalConv.analysis.reasoning_summary && (
+                  <div className="p-3.5 rounded-xl bg-indigo-950/20 border border-indigo-500/20 text-xs text-indigo-200">
+                    <span className="font-bold block mb-1">Reasoning Summary:</span>
+                    <p>{activeModalConv.analysis.reasoning_summary}</p>
+                  </div>
                 )}
-                <span
-                  className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded font-bold ${
-                    item.sentiment === "frustrated" || item.sentiment === "negative"
-                      ? "bg-rose-500/20 text-rose-300 border border-rose-500/30"
-                      : "bg-slate-800 text-slate-300 border border-slate-700"
-                  }`}
-                >
-                  {item.sentiment}
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-950/60 text-indigo-300 border border-indigo-800/40">
-                  Rel: {(item.relevanceScore * 100).toFixed(0)}%
-                </span>
               </div>
-            </div>
-
-            <p className="text-xs text-slate-200 leading-relaxed font-sans bg-slate-950/40 p-3.5 rounded-lg border border-slate-800/50">
-              "{item.rawText}"
-            </p>
-
-            <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
-              <div className="flex items-center gap-2">
-                <Tag className="w-3 h-3 text-slate-500" />
-                <span className="font-mono text-indigo-400 capitalize">
-                  {item.intent.replace("_", " ")}
-                </span>
+            ) : (
+              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-500 text-center">
+                No AI analysis record generated for this conversation yet.
               </div>
-              <a
-                href={item.sourceUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-slate-400 hover:text-slate-200 flex items-center gap-1 hover:underline"
-              >
-                <span>Original Thread</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
+            )}
           </div>
-        ))}
-      </div>
+        </Modal>
+      )}
     </div>
   );
 }

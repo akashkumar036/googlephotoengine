@@ -22,7 +22,7 @@ const NAV_ITEMS = [
   { href: "/problems", label: "Problems & Needs", icon: AlertCircle, badge: "P0/P1" },
   { href: "/conversations", label: "Conversations", icon: MessageSquare, badge: null },
   { href: "/trends", label: "Emerging Trends", icon: TrendingUp, badge: "Velocity" },
-  { href: "/explore", label: "Semantic Explorer", icon: Compass, badge: "Vector" },
+  { href: "/explore", label: "AI Assistant", icon: Compass, badge: "RAG" },
   { href: "/review", label: "Human Review", icon: CheckSquare, badge: "HITL" },
 ];
 

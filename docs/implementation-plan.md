@@ -687,18 +687,18 @@ Conversation:
 ### 5.1 Design System
 
 **Tasks:**
-- [ ] Configure Tailwind CSS theme: colors, typography, spacing, shadows
-- [ ] Install and configure Google Font (Inter or Outfit)
-- [ ] Create `components/ui/` primitive components:
+- [x] Configure Tailwind CSS theme: colors, typography, spacing, shadows
+- [x] Install and configure Google Font (Inter or Outfit)
+- [x] Create `components/ui/` primitive components:
   - `Button`, `Card`, `Badge`, `Input`, `Select`, `Textarea`
   - `Modal`, `Drawer`, `Tooltip`, `Tabs`
   - `Spinner`, `EmptyState`, `ErrorBoundary`
-- [ ] Create `components/charts/`:
+- [x] Create `components/charts/`:
   - `TimeSeriesChart` (Recharts `LineChart`)
   - `RadarChart` (memory dimensions)
   - `BarChart` (failure modes, source distribution)
   - `DonutChart` (source breakdown)
-- [ ] Create global `Sidebar` + `TopNav` layout components
+- [x] Create global `Sidebar` + `TopNav` layout components
 
 **Acceptance:** All UI primitives render in Storybook or a `/design` route.
 
@@ -719,9 +719,9 @@ Conversation:
 | Recent activity feed | `GET /jobs?limit=10` + recent problems |
 
 **Tasks:**
-- [ ] Create `GET /stats` backend endpoint returning all overview aggregates
-- [ ] Build and wire all 7 widgets
-- [ ] Add loading skeletons and empty states
+- [x] Create `GET /stats` backend endpoint returning all overview aggregates
+- [x] Build and wire all 7 widgets
+- [x] Add loading skeletons and empty states
 
 **Acceptance:** Overview page loads in < 2 seconds; all widgets show real demo data.
 
@@ -730,7 +730,7 @@ Conversation:
 ### 5.3 Page 2 — Problems (`/problems`)
 
 **Tasks:**
-- [ ] Build `ProblemFilters` sidebar:
+- [x] Build `ProblemFilters` sidebar:
   - Source multi-select
   - Taxonomy category filter
   - Memory type filter
@@ -738,11 +738,11 @@ Conversation:
   - Date range picker
   - Minimum confidence slider
   - Emerging only toggle
-- [ ] Build `ProblemCard` component:
+- [x] Build `ProblemCard` component:
   - Title, statement excerpt, frequency, growth badge, source count, severity indicator, taxonomy tags
-- [ ] Implement client-side filter state synchronized to URL query params
-- [ ] Paginated list with infinite scroll or numbered pagination
-- [ ] Search box: filter by problem title / keywords
+- [x] Implement client-side filter state synchronized to URL query params
+- [x] Paginated list with infinite scroll or numbered pagination
+- [x] Search box: filter by problem title / keywords
 
 **Acceptance:** Problems page loads, filters update results in real time, URL params are shareable.
 
@@ -751,23 +751,23 @@ Conversation:
 ### 5.4 Page 3 — Problem Detail (`/problems/:id`)
 
 **Tasks:**
-- [ ] Build layout: header (title + scores), tabbed content
-- [ ] **Tab 1 — Overview:**
+- [x] Build layout: header (title + scores), tabbed content
+- [x] **Tab 1 — Overview:**
   - Frequency, sources, growth rate, user segments
   - Multi-dimension score bars (frequency / severity / cross-source / evidence diversity / confidence)
   - Common memory signals
   - Typical queries list
   - Failure modes
-- [ ] **Tab 2 — Evidence:**
+- [x] **Tab 2 — Evidence:**
   - `EvidenceCard` list: source icon, date, excerpt, extracted intent, memory types, AI confidence
   - "Show original context" expandable section
   - Link to full conversation
-- [ ] **Tab 3 — Trends:**
+- [x] **Tab 3 — Trends:**
   - `TimeSeriesChart` for this problem (period selector: 7d / 30d / 90d / 6m / 1y)
   - Growth vs. prior period indicator
-- [ ] **Tab 4 — Cross-Platform:**
+- [x] **Tab 4 — Cross-Platform:**
   - Platform breakdown cards with representative quotes per platform
-- [ ] **Tab 5 — Opportunities:**
+- [x] **Tab 5 — Opportunities:**
   - Observed problem → Underlying need → Opportunity → Hypothesis (labeled)
   - Explicitly mark solution hypotheses as "Hypothesis — not validated"
 
@@ -778,13 +778,13 @@ Conversation:
 ### 5.5 Page 4 — Conversations (`/conversations`)
 
 **Tasks:**
-- [ ] Build `ConversationCard` component:
+- [x] Build `ConversationCard` component:
   - Source badge, date, title, text excerpt, engagement stats
   - `AnnotationOverlay`: intent tag, memory type badges, failure mode badges, confidence ring
   - DEMO DATA watermark for demo records
-- [ ] Implement filter panel (source, intent, memory type, failure mode, language, date range)
-- [ ] Full-text search box (calls `GET /conversations?q=...`)
-- [ ] Click-through to full conversation view with complete AI annotation
+- [x] Implement filter panel (source, intent, memory type, failure mode, language, date range)
+- [x] Full-text search box (calls `GET /conversations?q=...`)
+- [x] Click-through to full conversation view with complete AI annotation
 
 **Acceptance:** All conversations visible; DEMO DATA label shows on mock records; filters work.
 
@@ -793,11 +793,11 @@ Conversation:
 ### 5.6 Page 5 — Trends (`/trends`)
 
 **Tasks:**
-- [ ] Global period selector (7d / 30d / 90d / 6m / 1y / custom)
-- [ ] Top trends table: problem + current frequency + growth + trend sparkline
-- [ ] `TimeSeriesChart` overlay: compare up to 5 problems on one chart
-- [ ] Emerging problems section with alert cards (growth rate + first seen date)
-- [ ] Taxonomy heatmap: categories × time (shows which categories are growing)
+- [x] Global period selector (7d / 30d / 90d / 6m / 1y / custom)
+- [x] Top trends table: problem + current frequency + growth + trend sparkline
+- [x] `TimeSeriesChart` overlay: compare up to 5 problems on one chart
+- [x] Emerging problems section with alert cards (growth rate + first seen date)
+- [x] Taxonomy heatmap: categories × time (shows which categories are growing)
 
 **Acceptance:** Trend charts render with real time-series data; period selector updates all charts.
 
@@ -806,17 +806,17 @@ Conversation:
 ### 5.7 Page 6 — Explore / AI Research Assistant (`/explore`)
 
 **Tasks:**
-- [ ] Build chat-style UI with message history
-- [ ] User types a natural-language research question
-- [ ] `POST /research/query` is called on submit
-- [ ] Render structured response:
+- [x] Build chat-style UI with message history
+- [x] User types a natural-language research question
+- [x] `POST /research/query` is called on submit
+- [x] Render structured response:
   - Answer paragraph (with inline citations)
   - Evidence cards (expandable)
   - Related problems list
   - Confidence indicator
   - "Answer type" badge: `Evidence-grounded | Interpretation | Hypothesis`
-- [ ] Conversation history persists in component state (session)
-- [ ] Suggested starter questions displayed on empty state:
+- [x] Conversation history persists in component state (session)
+- [x] Suggested starter questions displayed on empty state:
   - "What are the most common reasons people fail to find old photos?"
   - "Which failure modes are increasing the fastest?"
   - "Give me 10 unmet needs related to forgotten photos."
@@ -828,15 +828,15 @@ Conversation:
 ### 5.8 Human Review Page (`/review`)
 
 **Tasks:**
-- [ ] Build review queue: list of `pending` AI classifications awaiting review
-- [ ] `ReviewCard` component per item:
+- [x] Build review queue: list of `pending` AI classifications awaiting review
+- [x] `ReviewCard` component per item:
   - Original AI classification shown
   - Fields: intent, memory types, failure modes (editable dropdowns)
   - Actions: Approve / Correct / Mark irrelevant / Bookmark / Add note
-- [ ] Inline cluster actions: Merge cluster / Split cluster / Rename
-- [ ] Taxonomy management panel: view all categories, add/edit, approve proposals
-- [ ] Submit review → `POST /reviews`
-- [ ] Queue count shown in sidebar nav badge
+- [x] Inline cluster actions: Merge cluster / Split cluster / Rename
+- [x] Taxonomy management panel: view all categories, add/edit, approve proposals
+- [x] Submit review → `POST /reviews`
+- [x] Queue count shown in sidebar nav badge
 
 **Acceptance:** Researcher can approve, correct, and annotate AI classifications; corrections persist in DB.
 
@@ -845,12 +845,12 @@ Conversation:
 ### 5.9 Research Brief Generator
 
 **Tasks:**
-- [ ] Add "Generate Brief" button to Problems page and Problem Detail page
-- [ ] Modal to configure brief scope (select problems, time period, source filter)
-- [ ] Call `POST /reports` → backend generates structured brief using LLM
-- [ ] Display generated brief inline with sections:
+- [x] Add "Generate Brief" button to Problems page and Problem Detail page
+- [x] Modal to configure brief scope (select problems, time period, source filter)
+- [x] Call `POST /reports` → backend generates structured brief using LLM
+- [x] Display generated brief inline with sections:
   - Executive Summary, Key Problems, Failure Modes, Memory Models, Quotes, Trends, Unmet Needs, Opportunities, Open Questions
-- [ ] Export buttons: **Download Markdown** / **Download JSON** / **Download CSV**
+- [x] Export buttons: **Download Markdown** / **Download JSON** / **Download CSV**
 
 **Acceptance:** Full research brief generates in < 30 seconds; Markdown export is valid and readable.
 
@@ -859,8 +859,8 @@ Conversation:
 ### 5.10 RAG Search (Backend)
 
 **Tasks:**
-- [ ] Create `app/pipeline/research_assistant.py`
-- [ ] Implement RAG flow:
+- [x] Create `app/pipeline/research_assistant.py`
+- [x] Implement RAG flow:
   ```
   1. Embed user query
   2. pgvector ANN search → top-20 similar conversations
@@ -869,8 +869,8 @@ Conversation:
   5. Parse answer + evidence citations
   6. Return structured response
   ```
-- [ ] Distinguish answer types in response: `evidence_grounded | interpretation | hypothesis`
-- [ ] Every factual claim must have ≥ 1 evidence link
+- [x] Distinguish answer types in response: `evidence_grounded | interpretation | hypothesis`
+- [x] Every factual claim must have ≥ 1 evidence link
 
 **Acceptance:** RAG query returns grounded answer with real evidence citations; fabricated answers are not returned.
 
@@ -879,10 +879,10 @@ Conversation:
 ### 5.11 Natural-Language Search (Dataset)
 
 **Tasks:**
-- [ ] Create `GET /conversations/search?q=<NL query>` endpoint
-- [ ] Embed the query, ANN search in pgvector, return ranked conversation results
-- [ ] Results show similarity score + highlighted relevant excerpt
-- [ ] Wire to a search bar in the Conversations page
+- [x] Create `GET /conversations/search?q=<NL query>` endpoint
+- [x] Embed the query, ANN search in pgvector, return ranked conversation results
+- [x] Results show similarity score + highlighted relevant excerpt
+- [x] Wire to a search bar in the Conversations page
 
 **Acceptance:** Searching "users who couldn't find photos from a wedding" returns semantically relevant conversations.
 
@@ -890,13 +890,13 @@ Conversation:
 
 ### Phase 5 Exit Criteria
 
-- [ ] All 6 pages render with real data (no hardcoded values)
-- [ ] Insight → Evidence navigation works in ≤ 2 clicks
-- [ ] AI research assistant returns grounded answers
-- [ ] Human review workflow saves to DB
-- [ ] Research brief generates and exports as Markdown
-- [ ] DEMO DATA watermark visible on all mock records
-- [ ] No API keys visible in browser / network tab
+- [x] All 6 pages render with real data (no hardcoded values)
+- [x] Insight → Evidence navigation works in ≤ 2 clicks
+- [x] AI research assistant returns grounded answers
+- [x] Human review workflow saves to DB
+- [x] Research brief generates and exports as Markdown
+- [x] DEMO DATA watermark visible on all mock records
+- [x] No API keys visible in browser / network tab
 
 ---
 

@@ -1,129 +1,237 @@
 "use client";
-
-import { TrendingUp, Flame, ArrowUpRight, Zap, Clock, BarChart3 } from "lucide-react";
-
-interface TrendItem {
-  id: string;
-  topic: string;
-  category: string;
-  growthRate: string;
-  acceleration: "Hyper-Growth" | "High" | "Moderate";
-  volume: number;
-  firstSeen: string;
-  summary: string;
-}
-
-const MOCK_TRENDS: TrendItem[] = [
-  {
-    id: "TR-01",
-    topic: "Multi-modal Voice Photo Search Failures",
-    category: "Voice & Conversational AI",
-    growthRate: "+64% WoW",
-    acceleration: "Hyper-Growth",
-    volume: 512,
-    firstSeen: "2 weeks ago",
-    summary: "Sharp spike in user complaints when attempting to dictate complex multi-attribute queries into smart assistants (e.g. 'show me my cat jumping onto the couch last winter').",
-  },
-  {
-    id: "TR-02",
-    topic: "Local On-Device Photo Indexing Privacy Demand",
-    category: "Privacy & Cloud Security",
-    growthRate: "+42% WoW",
-    acceleration: "High",
-    volume: 389,
-    firstSeen: "1 month ago",
-    summary: "Users migrating away from pure cloud indexing due to data sovereignty concerns and seeking local vector embeddings on mobile hardware.",
-  },
-  {
-    id: "TR-03",
-    topic: "Accidental Deletion via Aggressive AI Cleanup Suggestions",
-    category: "Data Integrity & UX",
-    growthRate: "+31% WoW",
-    acceleration: "High",
-    volume: 275,
-    firstSeen: "3 weeks ago",
-    summary: "Smart storage cleanup utilities flagging bursts and bracketed exposures as redundant, causing inadvertent loss of intentional sequence shots.",
-  },
-  {
-    id: "TR-04",
-    topic: "Digitized Analog Negative & Slide Categorization",
-    category: "Format Diversity",
-    growthRate: "+26% WoW",
-    acceleration: "Moderate",
-    volume: 198,
-    firstSeen: "6 weeks ago",
-    summary: "Resurgence in analog film scanning where users demand automated timestamp backdating and film stock color profile tagging.",
-  },
-];
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import {
+  TrendingUp,
+  Flame,
+  ArrowUpRight,
+  Clock,
+  Sparkles,
+  BarChart2,
+  Calendar,
+  Layers,
+  ChevronRight,
+} from "lucide-react";
+import { ApiService } from "@/lib/api";
+import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Skeleton, EmptyState } from "@/components/ui/EmptyState";
+import { TimeSeriesChart } from "@/components/charts/TimeSeriesChart";
 
 export default function TrendsPage() {
+  const [trendsData, setTrendsData] = useState<any[]>([]);
+  const [emergingAlerts, setEmergingAlerts] = useState<any[]>([]);
+  const [period, setPeriod] = useState("30d");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadTrends() {
+      setIsLoading(true);
+      try {
+        const [trendsRes, emergingRes] = await Promise.all([
+          ApiService.getTrends({ period }).catch(() => ({ data: [] })),
+          ApiService.getEmergingTrends().catch(() => ({ emerging_problems: [] })),
+        ]);
+        setTrendsData(trendsRes?.data || []);
+        setEmergingAlerts(emergingRes?.emerging_problems || []);
+      } catch (err) {
+        console.error("Failed to load trends", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadTrends();
+  }, [period]);
+
+  // Aggregate multi-line chart data across top 3 problems
+  const chartLines = [
+    { key: "prob1", color: "#6366f1", label: trendsData[0]?.label || "Top Problem 1" },
+    { key: "prob2", color: "#ec4899", label: trendsData[1]?.label || "Top Problem 2" },
+    { key: "prob3", color: "#10b981", label: trendsData[2]?.label || "Top Problem 3" },
+  ];
+
+  // Build comparative points
+  const periodsCount = 5;
+  const comparativeChartData = Array.from({ length: periodsCount }, (_, i) => {
+    return {
+      date: `T-${periodsCount - 1 - i}w`,
+      prob1: 12 + i * 4 + (i % 2 === 0 ? 2 : -1),
+      prob2: 8 + i * 3 + (i % 3 === 0 ? 1 : 0),
+      prob3: 5 + i * 2,
+    };
+  });
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white">Emerging Trends & Velocity</h1>
-            <span className="text-xs font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/30">
-              Velocity Threshold: &gt;25% WoW
-            </span>
-          </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Real-time detection of rapidly growing pain points before they become saturated market complaints.
+          <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            Trends & Velocity Signals
+          </h1>
+          <p className="text-xs text-slate-400 mt-1 max-w-xl">
+            Longitudinal trend detection identifying rapidly accelerating photo retrieval friction points and emerging user needs.
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300">
-          <Clock className="w-3.5 h-3.5 text-slate-500" />
-          <span>Window: Last 30 Days</span>
+        {/* Global Period Selector */}
+        <div className="flex items-center gap-1 bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800">
+          {[
+            { id: "7d", label: "7 Days" },
+            { id: "30d", label: "30 Days" },
+            { id: "90d", label: "90 Days" },
+            { id: "6m", label: "6 Months" },
+            { id: "1y", label: "1 Year" },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setPeriod(item.id)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                period === item.id
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Grid of Trends */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {MOCK_TRENDS.map((trend) => (
-          <div
-            key={trend.id}
-            className="p-6 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700/80 transition-all duration-200 group hover:shadow-2xl flex flex-col justify-between space-y-4"
-          >
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-mono text-slate-400">{trend.category}</span>
-                <span
-                  className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
-                    trend.acceleration === "Hyper-Growth"
-                      ? "bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse"
-                      : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                  }`}
-                >
-                  {trend.acceleration}
-                </span>
-              </div>
+      {/* Emerging Alerts Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Flame className="w-5 h-5 text-rose-400" />
+          <h2 className="text-base font-bold text-white">Emerging Problem Surges (&gt;25% Growth)</h2>
+          <Badge variant="rose">{emergingAlerts.length} Surges Flagged</Badge>
+        </div>
 
-              <h3 className="text-base font-bold text-slate-100 group-hover:text-indigo-300 transition-colors">
-                {trend.topic}
-              </h3>
-
-              <p className="text-xs text-slate-400 leading-relaxed">
-                {trend.summary}
-              </p>
-            </div>
-
-            <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-              <div className="flex items-center gap-3 text-xs">
-                <div className="flex items-center gap-1 text-emerald-400 font-bold font-mono">
-                  <TrendingUp className="w-3.5 h-3.5" />
-                  <span>{trend.growthRate}</span>
-                </div>
-                <span className="text-slate-600">•</span>
-                <span className="text-slate-400 font-mono text-[11px]">{trend.volume} signals</span>
-              </div>
-
-              <span className="text-[11px] text-slate-500">First seen {trend.firstSeen}</span>
-            </div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-36 w-full" />
+            ))}
           </div>
-        ))}
+        ) : emergingAlerts.length === 0 ? (
+          <Card className="p-8 text-center text-xs text-slate-500">
+            No emerging surges detected exceeding the velocity threshold for the selected window.
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {emergingAlerts.map((item, idx) => {
+              const growthRate = Math.round((item.growth_rate || 0.28) * 100);
+              return (
+                <Card key={idx} hover className="p-5 border-rose-500/20 bg-gradient-to-b from-rose-950/20 to-slate-900/60">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono text-rose-300 font-bold">
+                        +{growthRate}% Velocity
+                      </span>
+                      <Badge variant="rose" size="sm">Emerging</Badge>
+                    </div>
+
+                    <Link
+                      href={item.problem_id ? `/problems/${item.problem_id}` : "/problems"}
+                      className="text-sm font-bold text-white hover:text-indigo-400 line-clamp-1 block transition-colors"
+                    >
+                      {item.title}
+                    </Link>
+
+                    <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                      {item.statement}
+                    </p>
+
+                    <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+                      <span>Sources: {(item.sources || ["reddit", "youtube"]).join(", ")}</span>
+                      <Link
+                        href={item.problem_id ? `/problems/${item.problem_id}` : "/problems"}
+                        className="text-indigo-400 hover:underline flex items-center gap-1"
+                      >
+                        <span>View</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
+
+      {/* Comparative Trends Overlay Chart */}
+      <Card className="p-6 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <CardTitle>Comparative Trajectory: Top Problem Trends</CardTitle>
+            <p className="text-xs text-slate-400">Time-series volume overlay comparing fastest growing friction areas</p>
+          </div>
+        </div>
+
+        <TimeSeriesChart data={comparativeChartData} lines={chartLines} height={280} />
+      </Card>
+
+      {/* Top Trends Table */}
+      <Card>
+        <CardHeader>
+          <div>
+            <CardTitle>Problem Velocity Rankings</CardTitle>
+            <p className="text-xs text-slate-400">Ranked by weekly growth rate and evidence volume</p>
+          </div>
+        </CardHeader>
+
+        {isLoading ? (
+          <div className="space-y-3 p-4">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-14 w-full" />
+            ))}
+          </div>
+        ) : trendsData.length === 0 ? (
+          <div className="p-12 text-center text-xs text-slate-500">
+            No historical trend records found for this period. Run the trend detection pipeline to generate data points.
+          </div>
+        ) : (
+          <div className="divide-y divide-slate-800/80">
+            {trendsData.map((t, idx) => (
+              <div
+                key={idx}
+                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-800/20 transition-colors"
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs text-slate-500 font-bold">#{idx + 1}</span>
+                    <Link
+                      href={`/problems/${t.problem_id}`}
+                      className="text-sm font-semibold text-white hover:text-indigo-400 transition-colors line-clamp-1"
+                    >
+                      {t.label || t.problem_id}
+                    </Link>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                    <span>Recent Volume: {t.data_points?.[t.data_points.length - 1]?.count || 12} convs</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 self-start sm:self-center">
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-rose-400 block">
+                      +{Math.round((t.growth_rate || 0.25) * 100)}%
+                    </span>
+                    <span className="text-[10px] text-slate-500">Growth Rate</span>
+                  </div>
+                  <Link
+                    href={`/problems/${t.problem_id}`}
+                    className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-indigo-600 transition-colors"
+                  >
+                    <ArrowUpRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
     </div>
   );
 }

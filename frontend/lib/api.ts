@@ -7,7 +7,7 @@ export const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 15000,
+  timeout: 30000,
 });
 
 // Attach JWT access token if available
@@ -87,35 +87,120 @@ export const ApiService = {
     return res.data;
   },
 
-  // Resources
-  getProblems: async () => {
-    const res = await api.get("/problems");
+  // Stats (Overview)
+  getStats: async () => {
+    const res = await api.get("/stats");
     return res.data;
   },
-  getConversations: async () => {
-    const res = await api.get("/conversations");
+
+  // Problems
+  getProblems: async (params?: Record<string, any>) => {
+    const res = await api.get("/problems", { params });
     return res.data;
   },
-  getTrends: async () => {
-    const res = await api.get("/trends");
+  getProblem: async (id: string) => {
+    const res = await api.get(`/problems/${id}`);
     return res.data;
   },
+  getProblemCrossPlatform: async (id: string) => {
+    const res = await api.get(`/problems/${id}/cross-platform`);
+    return res.data;
+  },
+
+  // Clusters
   getClusters: async () => {
     const res = await api.get("/clusters");
     return res.data;
   },
-  getReviews: async () => {
-    const res = await api.get("/reviews");
+  getCluster: async (id: string) => {
+    const res = await api.get(`/clusters/${id}`);
     return res.data;
   },
-  getResearch: async () => {
-    const res = await api.get("/research");
+
+  // Trends
+  getTrends: async (params?: { period?: string; granularity?: string }) => {
+    const res = await api.get("/trends", { params });
     return res.data;
   },
-  getReports: async () => {
+  getEmergingTrends: async () => {
+    const res = await api.get("/trends/emerging");
+    return res.data;
+  },
+
+  // Conversations
+  getConversations: async (params?: Record<string, any>) => {
+    const res = await api.get("/conversations", { params });
+    return res.data;
+  },
+  searchConversations: async (q: string, limit = 20) => {
+    const res = await api.get("/conversations/search", { params: { q, limit } });
+    return res.data;
+  },
+  getConversation: async (id: string) => {
+    const res = await api.get(`/conversations/${id}`);
+    return res.data;
+  },
+
+  // AI Research Assistant (RAG)
+  askResearchAssistant: async (query: string, history?: any[], limit = 8) => {
+    const res = await api.post("/research/query", { query, history, limit });
+    return res.data;
+  },
+  getResearchStarters: async () => {
+    const res = await api.get("/research/starters");
+    return res.data;
+  },
+
+  // Human Review & Curation
+  getReviewQueue: async (params?: { skip?: number; limit?: number; min_confidence?: number }) => {
+    const res = await api.get("/reviews/queue", { params });
+    return res.data;
+  },
+  submitReview: async (reviewData: {
+    conversation_id: string;
+    action: string;
+    intent?: string;
+    memory_types?: string[];
+    failure_modes?: string[];
+    is_relevant?: boolean;
+    notes?: string;
+  }) => {
+    const res = await api.post("/reviews", reviewData);
+    return res.data;
+  },
+  getTaxonomyReview: async () => {
+    const res = await api.get("/reviews/taxonomy");
+    return res.data;
+  },
+  handleProposalAction: async (proposalId: string, action: "approve" | "reject", notes?: string) => {
+    const res = await api.post(`/reviews/taxonomy/proposals/${proposalId}/action`, { action, notes });
+    return res.data;
+  },
+  handleClusterAction: async (clusterId: string, action: string, data: Record<string, any>) => {
+    const res = await api.post(`/reviews/clusters/${clusterId}/action`, { action, ...data });
+    return res.data;
+  },
+
+  // Research Briefs / Reports
+  generateResearchBrief: async (params?: { problem_ids?: string[]; source_filter?: string; time_period?: string }) => {
+    const res = await api.post("/reports/brief", params || {});
+    return res.data;
+  },
+  listReports: async () => {
     const res = await api.get("/reports");
     return res.data;
   },
-};
+  getReport: async (id: string) => {
+    const res = await api.get(`/reports/${id}`);
+    return res.data;
+  },
+  exportReportUrl: (id: string, format = "markdown") => {
+    return `${API_BASE_URL}/reports/${id}/export?format=${format}`;
+  },
 
-export default api;
+  // Jobs
+  getJobs: async (limit = 10) => {
+    const res = await api.get("/jobs", { params: { limit } });
+    return res.data;
+  },
+};
