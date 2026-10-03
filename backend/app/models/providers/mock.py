@@ -62,6 +62,12 @@ class MockProvider(BaseModelProvider):
             )
             return out.model_dump()
 
+        if "taxonomy architect" in lower_prompt or "outlier user feedback" in lower_prompt:
+            return {
+                "category_name": "SD Card & Hardware Corruption",
+                "description": "Users encountering partial media corruption and broken headers on external storage.",
+            }
+
         # Stage 2: Deep Analysis
         # Detect memory types
         memory_types = []

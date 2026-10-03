@@ -285,3 +285,17 @@ class EvaluationBenchmark(Base):
     ground_truth_relevance = Column(Boolean, nullable=True)
     labeled_by = Column(String(36), ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+# ─── taxonomy_proposals ──────────────────────────────────────────────────
+class TaxonomyProposal(Base):
+    __tablename__ = "taxonomy_proposals"
+
+    id = Column(String(36), primary_key=True, default=_uuid)
+    category_name = Column(String(100), unique=True, nullable=False)
+    description = Column(Text, nullable=True)
+    evidence_count = Column(Integer, default=1)
+    proposed_by = Column(String(50), default="ai_pipeline")  # ai_pipeline | researcher
+    is_approved = Column(Boolean, default=False)
+    is_rejected = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

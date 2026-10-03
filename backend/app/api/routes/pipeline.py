@@ -89,3 +89,124 @@ async def trigger_pipeline(
         "source": payload.source,
         "message": f"Full pipeline queued for source '{payload.source}'",
     }
+
+
+@router.post("/cluster", summary="Trigger semantic clustering and problem discovery")
+async def trigger_clustering(
+    db: AsyncSession = Depends(get_db),
+    _: None = RequireResearcher,
+):
+    job_id = _uuid()
+    job = Job(
+        id=job_id,
+        type="clustering",
+        status="queued",
+        progress=0.0,
+        payload={},
+    )
+    db.add(job)
+    await db.commit()
+
+    dispatched = False
+    try:
+        from app.worker.tasks import cluster_conversations
+        cluster_conversations.apply_async(kwargs={"job_id": job_id})
+        dispatched = True
+    except Exception:
+        pass
+
+    if not dispatched:
+        async def _background_cluster(jid: str):
+            from app.db.session import AsyncSessionLocal
+            from app.pipeline.clustering import run_semantic_clustering
+            from app.pipeline.problem_discovery import run_problem_discovery
+            from app.pipeline.taxonomy import run_taxonomy_assignment
+            from app.pipeline.unknown_unknowns import run_unknown_unknowns_detection
+            from app.pipeline.ingestion import update_job_status
+            try:
+                async with AsyncSessionLocal() as session:
+                    await update_job_status(session, jid, "running", 0.1)
+                    await session.commit()
+                    c_res = await run_semantic_clustering(session)
+                    await update_job_status(session, jid, "running", 0.4)
+                    await session.commit()
+                    p_res = await run_problem_discovery(session)
+                    await update_job_status(session, jid, "running", 0.7)
+                    await session.commit()
+                    t_res = await run_taxonomy_assignment(session)
+                    u_res = await run_unknown_unknowns_detection(session)
+                    res = {
+                        "clusters": c_res,
+                        "problems": p_res,
+                        "taxonomy": t_res,
+                        "unknown_unknowns": u_res,
+                    }
+                    await update_job_status(session, jid, "done", 1.0, payload_update=res)
+                    await session.commit()
+            except Exception as e:
+                async with AsyncSessionLocal() as session:
+                    await update_job_status(session, jid, "failed", error=str(e))
+                    await session.commit()
+
+        asyncio.create_task(_background_cluster(job_id))
+
+    return {
+        "job_id": job_id,
+        "status": "queued",
+        "message": "Clustering and problem discovery job queued",
+    }
+
+
+@router.post("/trends", summary="Trigger trend and emerging problem detection")
+async def trigger_trends(
+    db: AsyncSession = Depends(get_db),
+    _: None = RequireResearcher,
+):
+    job_id = _uuid()
+    job = Job(
+        id=job_id,
+        type="trend_detection",
+        status="queued",
+        progress=0.0,
+        payload={},
+    )
+    db.add(job)
+    await db.commit()
+
+    dispatched = False
+    try:
+        from app.worker.tasks import detect_trends
+        detect_trends.apply_async(kwargs={"job_id": job_id})
+        dispatched = True
+    except Exception:
+        pass
+
+    if not dispatched:
+        async def _background_trends(jid: str):
+            from app.db.session import AsyncSessionLocal
+            from app.pipeline.trend_detection import run_trend_detection
+            from app.pipeline.emerging_detection import run_emerging_detection
+            from app.pipeline.ingestion import update_job_status
+            try:
+                async with AsyncSessionLocal() as session:
+                    await update_job_status(session, jid, "running", 0.2)
+                    await session.commit()
+                    t_res = await run_trend_detection(session)
+                    await update_job_status(session, jid, "running", 0.7)
+                    await session.commit()
+                    e_res = await run_emerging_detection(session)
+                    res = {"trends": t_res, "emerging": e_res}
+                    await update_job_status(session, jid, "done", 1.0, payload_update=res)
+                    await session.commit()
+            except Exception as e:
+                async with AsyncSessionLocal() as session:
+                    await update_job_status(session, jid, "failed", error=str(e))
+                    await session.commit()
+
+        asyncio.create_task(_background_trends(job_id))
+
+    return {
+        "job_id": job_id,
+        "status": "queued",
+        "message": "Trend detection job queued",
+    }

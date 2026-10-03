@@ -520,8 +520,8 @@ Conversation:
 ### 4.1 Semantic Clustering Job
 
 **Tasks:**
-- [ ] Create `app/pipeline/clustering.py`
-- [ ] Implement clustering algorithm:
+- [x] Create `app/pipeline/clustering.py`
+- [x] Implement clustering algorithm:
   ```python
   def cluster_conversations():
       # 1. Load all embeddings from pgvector
@@ -531,10 +531,10 @@ Conversation:
       # 5. Store cluster in `clusters` table
       # 6. Store memberships in `cluster_memberships` table
   ```
-- [ ] Use configurable `CLUSTERING_ALGORITHM` (`dbscan` default)
-- [ ] DBSCAN params: `CLUSTER_EPSILON`, `CLUSTER_MIN_SAMPLES` from config
-- [ ] For outlier conversations (DBSCAN label = -1): flag for "unknown unknowns" detection
-- [ ] Generate cluster label via LLM: *"In one sentence, what photo retrieval problem do these conversations share?"*
+- [x] Use configurable `CLUSTERING_ALGORITHM` (`dbscan` default)
+- [x] DBSCAN params: `CLUSTER_EPSILON`, `CLUSTER_MIN_SAMPLES` from config
+- [x] For outlier conversations (DBSCAN label = -1): flag for "unknown unknowns" detection
+- [x] Generate cluster label via LLM: *"In one sentence, what photo retrieval problem do these conversations share?"*
 
 **Acceptance:** After clustering 50+ conversations, `clusters` table has ≥ 5 distinct clusters; each cluster has an AI-generated label.
 
@@ -543,8 +543,8 @@ Conversation:
 ### 4.2 Problem Discovery Job
 
 **Tasks:**
-- [ ] Create `app/pipeline/problem_discovery.py`
-- [ ] For each cluster (or group of high-similarity clusters):
+- [x] Create `app/pipeline/problem_discovery.py`
+- [x] For each cluster (or group of high-similarity clusters):
   - Sample up to 10 representative conversations
   - Prompt LLM: synthesize a structured `Problem` record
   - Calculate composite scores:
@@ -556,8 +556,8 @@ Conversation:
     - `evidence_diversity_score` = source entropy
     - `confidence` = mean `confidence` of member analyses
   - Create or update `problems` table row
-- [ ] Create `evidence` links: one row per supporting conversation
-- [ ] Create initial `opportunities` records from LLM-suggested opportunity areas
+- [x] Create `evidence` links: one row per supporting conversation
+- [x] Create initial `opportunities` records from LLM-suggested opportunity areas
 
 **Acceptance:** `problems` table has at least 5 rows; each has ≥ 3 evidence links; scores are populated.
 
@@ -566,12 +566,12 @@ Conversation:
 ### 4.3 Taxonomy Assignment
 
 **Tasks:**
-- [ ] Create `app/pipeline/taxonomy.py`
-- [ ] Implement taxonomy assignment:
+- [x] Create `app/pipeline/taxonomy.py`
+- [x] Implement taxonomy assignment:
   - For each problem, assign 1–3 taxonomy categories from the predefined list (see `context.md §13`)
   - LLM assigns categories; if none fit well, flag as `"Other"` + generate a proposed new category name
-- [ ] Store proposed new categories in a separate `taxonomy_proposals` table requiring admin approval
-- [ ] Create `GET /taxonomy` endpoint listing all categories + proposal count
+- [x] Store proposed new categories in a separate `taxonomy_proposals` table requiring admin approval
+- [x] Create `GET /taxonomy` endpoint listing all categories + proposal count
 
 **Acceptance:** Every problem has at least one taxonomy category; proposed new categories require admin approval before use.
 
@@ -580,14 +580,14 @@ Conversation:
 ### 4.4 Trend Detection
 
 **Tasks:**
-- [ ] Create `app/pipeline/trend_detection.py`
-- [ ] For each problem:
+- [x] Create `app/pipeline/trend_detection.py`
+- [x] For each problem:
   - Group its linked conversations by time bucket (week/month)
   - Calculate conversation count per bucket
   - Calculate `growth_rate` = (current period count − prior period count) / prior period count
   - Store in `trends` table
-- [ ] Schedule trend recalculation as a periodic Celery beat task (daily)
-- [ ] Create `GET /trends` API endpoint:
+- [x] Schedule trend recalculation as a periodic Celery beat task (daily)
+- [x] Create `GET /trends` API endpoint:
   - Query params: `period` (`7d | 30d | 90d | 6m | 1y`), `granularity` (`day | week | month`)
   - Returns: `{ problem_id, label, data_points: [{ date, count }], growth_rate }`
 
@@ -598,20 +598,20 @@ Conversation:
 ### 4.5 Emerging Problem Detection
 
 **Tasks:**
-- [ ] Create `app/pipeline/emerging_detection.py`
-- [ ] Define "emerging" as:
+- [x] Create `app/pipeline/emerging_detection.py`
+- [x] Define "emerging" as:
   - Problem `growth_rate > EMERGING_PROBLEM_GROWTH_THRESHOLD` (default: 25%)
   - AND appearing in ≥ 2 sources
   - AND `frequency > 5`
-- [ ] Set `problems.is_emerging = True` for qualifying problems
-- [ ] Generate an "Emerging Problem Alert" record with:
+- [x] Set `problems.is_emerging = True` for qualifying problems
+- [x] Generate an "Emerging Problem Alert" record with:
   - Why it is emerging (evidence)
   - First observed date
   - Growth rate
   - Sources
   - Confidence
-- [ ] New emerging problems require human approval (`is_approved = False` until reviewed)
-- [ ] Create `GET /trends/emerging` endpoint returning current emerging problem alerts
+- [x] New emerging problems require human approval (`is_approved = False` until reviewed)
+- [x] Create `GET /trends/emerging` endpoint returning current emerging problem alerts
 
 **Acceptance:** At least 1 problem in demo dataset is flagged as emerging; it appears in `GET /trends/emerging`.
 
@@ -620,13 +620,13 @@ Conversation:
 ### 4.6 Unknown Unknowns Detection
 
 **Tasks:**
-- [ ] Identify all outlier conversations (DBSCAN label = -1 or similarity < 0.4 to nearest cluster)
-- [ ] Run BERTopic or LDA over outlier embeddings to find sub-patterns
-- [ ] For each detected outlier pattern:
+- [x] Identify all outlier conversations (DBSCAN label = -1 or similarity < 0.4 to nearest cluster)
+- [x] Run BERTopic or LDA over outlier embeddings to find sub-patterns
+- [x] For each detected outlier pattern:
   - Prompt LLM: *"What recurring user problem do these outlier conversations share that doesn't fit our current taxonomy?"*
   - Generate a `taxonomy_proposals` record
   - Notify researchers via dashboard alert
-- [ ] Run as periodic job (weekly)
+- [x] Run as periodic job (weekly)
 
 **Acceptance:** Outlier conversations are identifiable; at least 1 taxonomy proposal generated from demo data.
 
@@ -635,8 +635,8 @@ Conversation:
 ### 4.7 Cross-Platform Comparison
 
 **Tasks:**
-- [ ] For each problem, group its evidence by `source`
-- [ ] Expose `GET /problems/:id/cross-platform`:
+- [x] For each problem, group its evidence by `source`
+- [x] Expose `GET /problems/:id/cross-platform`:
   ```json
   {
     "problem_id": "...",
@@ -647,7 +647,7 @@ Conversation:
     }
   }
   ```
-- [ ] Detect if a problem is **isolated** (1 source) or **widespread** (≥ 3 sources)
+- [x] Detect if a problem is **isolated** (1 source) or **widespread** (≥ 3 sources)
 
 **Acceptance:** Cross-platform breakdown is available per problem; isolation flag is set correctly.
 
@@ -656,11 +656,11 @@ Conversation:
 ### 4.8 Problem & Cluster APIs
 
 **Tasks:**
-- [ ] `GET /problems` — paginated, filterable by taxonomy, source, severity, growth, emerging flag
-- [ ] `GET /problems/:id` — full problem record with evidence, trends, opportunities, cross-platform data
-- [ ] `GET /clusters` — list clusters with member count and label
-- [ ] `GET /clusters/:id` — cluster detail with representative conversations
-- [ ] `GET /evidence/:id` — evidence record with full conversation context
+- [x] `GET /problems` — paginated, filterable by taxonomy, source, severity, growth, emerging flag
+- [x] `GET /problems/:id` — full problem record with evidence, trends, opportunities, cross-platform data
+- [x] `GET /clusters` — list clusters with member count and label
+- [x] `GET /clusters/:id` — cluster detail with representative conversations
+- [x] `GET /evidence/:id` — evidence record with full conversation context
 
 **Acceptance:** All endpoints return well-structured JSON; filtering works correctly.
 
@@ -668,13 +668,13 @@ Conversation:
 
 ### Phase 4 Exit Criteria
 
-- [ ] Clustering produces ≥ 5 distinct, labeled clusters
-- [ ] Problem discovery synthesizes ≥ 5 problems with full evidence chains
-- [ ] Every problem has taxonomy categories assigned
-- [ ] Trend data is available for all problems
-- [ ] At least 1 emerging problem is flagged and detectable
-- [ ] Outlier conversations are identified and surface as taxonomy proposals
-- [ ] All problem and cluster APIs return correct data
+- [x] Clustering produces ≥ 5 distinct, labeled clusters
+- [x] Problem discovery synthesizes ≥ 5 problems with full evidence chains
+- [x] Every problem has taxonomy categories assigned
+- [x] Trend data is available for all problems
+- [x] At least 1 emerging problem is flagged and detectable
+- [x] Outlier conversations are identified and surface as taxonomy proposals
+- [x] All problem and cluster APIs return correct data
 
 ---
 

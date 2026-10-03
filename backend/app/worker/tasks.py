@@ -218,13 +218,100 @@ def run_pipeline_chain(self, source, query="", since=None, limit=500, job_id=Non
         raise self.retry(exc=exc, countdown=60)
 
 
-@celery_app.task(name="worker.tasks.cluster_conversations", bind=True)
-def cluster_conversations(self):
-    log.info("task_cluster_stub")
-    return {"status": "stub", "message": "Clustering implemented in Phase 4"}
+@celery_app.task(name="worker.tasks.cluster_conversations", bind=True, max_retries=3)
+def cluster_conversations(self, job_id=None):
+    from app.db.session import AsyncSessionLocal
+    from app.pipeline.clustering import run_semantic_clustering
+    from app.pipeline.problem_discovery import run_problem_discovery
+    from app.pipeline.taxonomy import run_taxonomy_assignment
+    from app.pipeline.unknown_unknowns import run_unknown_unknowns_detection
+    from app.pipeline.ingestion import update_job_status
+
+    async def _run():
+        async with AsyncSessionLocal() as session:
+            if job_id:
+                await update_job_status(session, job_id, "running", 0.1)
+                await session.commit()
+
+            c_res = await run_semantic_clustering(session)
+            if job_id:
+                await update_job_status(session, job_id, "running", 0.4)
+                await session.commit()
+
+            p_res = await run_problem_discovery(session)
+            if job_id:
+                await update_job_status(session, job_id, "running", 0.7)
+                await session.commit()
+
+            t_res = await run_taxonomy_assignment(session)
+            u_res = await run_unknown_unknowns_detection(session)
+
+            res = {
+                "clusters": c_res,
+                "problems": p_res,
+                "taxonomy": t_res,
+                "unknown_unknowns": u_res,
+            }
+            if job_id:
+                await update_job_status(session, job_id, "done", 1.0, payload_update=res)
+                await session.commit()
+            return res
+
+    try:
+        return _run_async(_run())
+    except Exception as exc:
+        log.error("cluster_conversations_error", error=str(exc))
+        if job_id:
+            async def _fail():
+                async with AsyncSessionLocal() as session:
+                    await update_job_status(session, job_id, "failed", error=str(exc))
+                    await session.commit()
+            try:
+                _run_async(_fail())
+            except Exception:
+                pass
+        raise self.retry(exc=exc, countdown=60)
 
 
-@celery_app.task(name="worker.tasks.detect_trends", bind=True)
-def detect_trends(self):
-    log.info("task_trends_stub")
-    return {"status": "stub", "message": "Trend detection implemented in Phase 4"}
+@celery_app.task(name="worker.tasks.detect_trends", bind=True, max_retries=3)
+def detect_trends(self, job_id=None):
+    from app.db.session import AsyncSessionLocal
+    from app.pipeline.trend_detection import run_trend_detection
+    from app.pipeline.emerging_detection import run_emerging_detection
+    from app.pipeline.ingestion import update_job_status
+
+    async def _run():
+        async with AsyncSessionLocal() as session:
+            if job_id:
+                await update_job_status(session, job_id, "running", 0.2)
+                await session.commit()
+
+            trends_res = await run_trend_detection(session)
+            if job_id:
+                await update_job_status(session, job_id, "running", 0.7)
+                await session.commit()
+
+            emerging_res = await run_emerging_detection(session)
+            res = {
+                "trends": trends_res,
+                "emerging": emerging_res,
+            }
+            if job_id:
+                await update_job_status(session, job_id, "done", 1.0, payload_update=res)
+                await session.commit()
+            return res
+
+    try:
+        return _run_async(_run())
+    except Exception as exc:
+        log.error("detect_trends_error", error=str(exc))
+        if job_id:
+            async def _fail():
+                async with AsyncSessionLocal() as session:
+                    await update_job_status(session, job_id, "failed", error=str(exc))
+                    await session.commit()
+            try:
+                _run_async(_fail())
+            except Exception:
+                pass
+        raise self.retry(exc=exc, countdown=60)

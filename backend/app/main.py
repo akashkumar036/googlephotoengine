@@ -26,6 +26,7 @@ from app.api.routes import (
     reports,
     ingest,
     pipeline,
+    taxonomy,
 )
 from app.db.seed import seed_admin_user, seed_sources, seed_prompts
 
@@ -123,3 +124,4 @@ app.include_router(reviews.router, prefix="/reviews", tags=["Reviews"])
 app.include_router(research.router, prefix="/research", tags=["Research"])
 app.include_router(reports.router, prefix="/reports", tags=["Reports"])
 app.include_router(pipeline.router, prefix="/pipeline", tags=["Pipeline"])
+app.include_router(taxonomy.router, prefix="/taxonomy", tags=["Taxonomy"])
