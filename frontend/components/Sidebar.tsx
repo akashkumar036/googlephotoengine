@@ -12,13 +12,6 @@ const NAV_ITEMS = [
     badge: null,
   },
   {
-    href: "/problems",
-    label: "Problems & Clusters",
-    icon: "layers",
-    badge: "4 active",
-    badgeClass: "bg-surface-container-highest text-on-surface-variant",
-  },
-  {
     href: "/conversations",
     label: "Live Feed",
     icon: "rss_feed",
@@ -31,12 +24,6 @@ const NAV_ITEMS = [
     icon: "auto_awesome",
     badge: "Groq 3.3",
     badgeClass: "bg-primary/20 text-primary",
-  },
-  {
-    href: "/trends",
-    label: "Trends",
-    icon: "trending_up",
-    badge: null,
   },
 ];
 

@@ -302,22 +302,6 @@ export default function ExplorePage() {
                 </div>
               )}
 
-              {/* Related Problems */}
-              {msg.relatedProblems && msg.relatedProblems.length > 0 && (
-                <div className="pt-2 pl-1 flex flex-wrap items-center gap-2 text-body-sm max-w-3xl">
-                  <span className="text-on-surface-variant text-[11px]">Related Clusters:</span>
-                  {msg.relatedProblems.map((p: any) => (
-                    <Link
-                      key={p.id}
-                      href="/problems"
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface text-[11px] transition-colors"
-                    >
-                      <span className="truncate max-w-[200px]">{p.title}</span>
-                      <ArrowUpRight className="w-3 h-3 text-primary flex-shrink-0" />
-                    </Link>
-                  ))}
-                </div>
-              )}
             </div>
           ))}
 

@@ -8,11 +8,11 @@ interface Citation {
   quote: string;
 }
 
-const PROBLEM_CLUSTERS = [
+const RETRIEVAL_GAP_CATEGORIES = [
   {
-    id: "tax-01",
+    id: "gap-01",
     title: "Temporal Chapter Blur (Chrono-Ambiguity)",
-    tag: "TAX-01: Temporal Semantics",
+    tag: "Temporal Semantics",
     tagClass: "text-primary bg-primary/10",
     category: "Semantic Indexing",
     frequency: 684,
@@ -40,9 +40,9 @@ const PROBLEM_CLUSTERS = [
     ],
   },
   {
-    id: "tax-02",
+    id: "gap-02",
     title: "Visual Attribute Mismatch (Color/Garment)",
-    tag: "TAX-02: Multi-Modal Vision",
+    tag: "Multi-Modal Vision",
     tagClass: "text-secondary bg-secondary/10",
     category: "Semantic Indexing",
     frequency: 512,
@@ -70,9 +70,9 @@ const PROBLEM_CLUSTERS = [
     ],
   },
   {
-    id: "tax-03",
+    id: "gap-03",
     title: "Social Graph & Entity Ambiguity",
-    tag: "TAX-03: People & Cohorts",
+    tag: "People & Cohorts",
     tagClass: "text-tertiary bg-tertiary-container/10",
     category: "Metadata Failures",
     frequency: 394,
@@ -101,9 +101,9 @@ const PROBLEM_CLUSTERS = [
     ],
   },
   {
-    id: "tax-04",
+    id: "gap-04",
     title: "Spatial Hierarchy Failure (Cabin vs Address)",
-    tag: "TAX-04: Geo-Spatial",
+    tag: "Geo-Spatial",
     tagClass: "text-secondary bg-secondary/10",
     category: "Metadata Failures",
     frequency: 266,
@@ -155,7 +155,7 @@ export default function OverviewPage() {
         community_forums: 199,
         youtube_commentaries: 147,
       },
-      clusters: PROBLEM_CLUSTERS.map((c) => ({
+      categories: RETRIEVAL_GAP_CATEGORIES.map((c) => ({
         tag: c.tag,
         title: c.title,
         frequency: c.frequency,
@@ -186,11 +186,11 @@ export default function OverviewPage() {
     setIsExporting(false);
   };
 
-  const filteredClusters = PROBLEM_CLUSTERS.filter((cluster) => {
+  const filteredCategories = RETRIEVAL_GAP_CATEGORIES.filter((category) => {
     if (tableFilter === "All") return true;
-    if (tableFilter === "Critical Growth") return cluster.isCritical;
-    if (tableFilter === "Semantic Indexing") return cluster.category === "Semantic Indexing";
-    if (tableFilter === "Metadata Failures") return cluster.category === "Metadata Failures";
+    if (tableFilter === "Critical Growth") return category.isCritical;
+    if (tableFilter === "Semantic Indexing") return category.category === "Semantic Indexing";
+    if (tableFilter === "Metadata Failures") return category.category === "Metadata Failures";
     return true;
   });
 
@@ -348,30 +348,30 @@ export default function OverviewPage() {
         <div className="flex flex-col justify-between p-space-lg rounded-xl bg-surface-container-low shadow-sm relative overflow-hidden group hover:bg-surface-container transition-all">
           <div className="flex items-center justify-between">
             <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-              Problem Clusters
+              Cognitive Anchors
             </span>
             <span className="px-2 py-0.5 rounded bg-primary-container/20 text-primary font-label-sm text-label-sm">
-              +2 Emerging
+              6 Dimensions
             </span>
           </div>
           <div className="my-space-sm">
             <div className="flex items-baseline gap-1.5">
               <span className="font-display-lg text-display-lg text-on-surface font-headline-md tracking-tight">
-                4
+                6
               </span>
               <span className="font-headline-sm text-headline-sm text-on-surface-variant">
                 Core
               </span>
             </div>
             <div className="font-body-sm text-body-sm text-on-surface-variant">
-              6 total thematic nodes
+              Temporal, Visual, Social &amp; Spatial
             </div>
           </div>
           <div className="flex items-center gap-1 text-on-surface-variant font-mono-metric text-mono-metric truncate">
             <span className="material-symbols-outlined text-[16px] text-primary">
-              hub
+              psychology
             </span>
-            <span className="truncate">Embedding Sim &gt; 0.88</span>
+            <span className="truncate">Episodic Mapping &gt; 92%</span>
           </div>
         </div>
 
@@ -699,17 +699,17 @@ export default function OverviewPage() {
         </div>
       </section>
 
-      {/* 4. Middle Section (2 Columns: Ranked Clusters Table (66%) & Telemetry Breakdown (34%)) */}
+      {/* 4. Middle Section (2 Columns: Ranked Retrieval Gaps Table (66%) & Telemetry Breakdown (34%)) */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
-        {/* Column A: Ranked Problem Clusters Table (8 cols / ~66%) */}
+        {/* Column A: Ranked Retrieval Gaps Table (8 cols / ~66%) */}
         <div className="lg:col-span-8 flex flex-col gap-space-md p-space-lg rounded-xl bg-surface-container-low shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-xs">
             <div className="flex flex-col">
               <h3 className="font-headline-md text-headline-md text-on-surface">
-                Ranked Problem Clusters &amp; Friction Taxonomy
+                Synthesized Memory Retrieval Gaps &amp; Friction Taxonomy
               </h3>
               <span className="font-body-sm text-body-sm text-on-surface-variant">
-                Derived from unsupervised K-Means (k=6) + embedding cosine similarity &gt; 0.88
+                Cross-platform telemetry breakdown across 2,050 ingested search failure reports
               </span>
             </div>
             {/* Table Filter Chips */}
@@ -736,7 +736,7 @@ export default function OverviewPage() {
             <table className="w-full text-left font-body-sm text-body-sm">
               <thead>
                 <tr className="bg-surface-container font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-                  <th className="py-3 px-space-md rounded-l-lg">Cluster &amp; Taxonomy Tag</th>
+                  <th className="py-3 px-space-md rounded-l-lg">Retrieval Friction &amp; Cognitive Tag</th>
                   <th className="py-3 px-space-md">Frequency &amp; Share</th>
                   <th className="py-3 px-space-md">30-Day Growth</th>
                   <th className="py-3 px-space-md">Severity Score</th>
@@ -744,64 +744,64 @@ export default function OverviewPage() {
                 </tr>
               </thead>
               <tbody className="divide-y-0">
-                {filteredClusters.map((cluster) => (
+                {filteredCategories.map((item) => (
                   <tr
-                    key={cluster.id}
+                    key={item.id}
                     className="hover:bg-surface-container/60 transition-colors group border-b border-outline-variant/10 last:border-0"
                   >
                     <td className="py-3.5 px-space-md">
                       <div className="flex flex-col">
                         <Link
-                          href="/problems"
+                          href="/conversations"
                           className="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors"
                         >
-                          {cluster.title}
+                          {item.title}
                         </Link>
                         <span
-                          className={`inline-block mt-1 font-mono-metric text-[11px] px-2 py-0.5 rounded w-max ${cluster.tagClass}`}
+                          className={`inline-block mt-1 font-mono-metric text-[11px] px-2 py-0.5 rounded w-max ${item.tagClass}`}
                         >
-                          {cluster.tag}
+                          {item.tag}
                         </span>
                       </div>
                     </td>
                     <td className="py-3.5 px-space-md font-mono-metric text-on-surface">
                       <div className="flex flex-col">
                         <span className="font-semibold text-on-surface">
-                          {cluster.frequency}
+                          {item.frequency}
                         </span>
                         <span className="text-on-surface-variant text-[11px]">
-                          {cluster.share}
+                          {item.share}
                         </span>
                       </div>
                     </td>
                     <td className="py-3.5 px-space-md">
                       <div
                         className={`flex items-center gap-1.5 font-label-md text-label-md ${
-                          cluster.isCritical ? "text-secondary" : "text-on-surface-variant"
+                          item.isCritical ? "text-secondary" : "text-on-surface-variant"
                         }`}
                       >
                         <span
                           className={`material-symbols-outlined text-[16px] ${
-                            cluster.isCritical ? "text-secondary" : "text-secondary"
+                            item.isCritical ? "text-secondary" : "text-secondary"
                           }`}
                         >
-                          {cluster.growthIcon}
+                          {item.growthIcon}
                         </span>
                         <span className="font-mono-metric font-semibold">
-                          {cluster.growth}
+                          {item.growth}
                         </span>
                       </div>
                     </td>
                     <td className="py-3.5 px-space-md">
                       <span
-                        className={`px-2 py-1 rounded font-mono-metric font-semibold text-[12px] ${cluster.severityClass}`}
+                        className={`px-2 py-1 rounded font-mono-metric font-semibold text-[12px] ${item.severityClass}`}
                       >
-                        {cluster.severity}
+                        {item.severity}
                       </span>
                     </td>
                     <td className="py-3.5 px-space-md">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        {cluster.citations.map((c) => (
+                        {item.citations.map((c) => (
                           <button
                             key={c.id}
                             className="font-mono-metric text-[11px] px-2 py-0.5 rounded bg-surface-container-high text-primary hover:bg-primary hover:text-on-primary transition-colors cursor-pointer"
@@ -1052,158 +1052,7 @@ export default function OverviewPage() {
         </div>
       </section>
 
-      {/* 5. Emerging Problems Alert Feed */}
-      <section className="flex flex-col gap-space-md p-space-xl rounded-xl bg-surface-container-low shadow-sm">
-        <div className="flex items-center justify-between flex-wrap gap-space-sm pb-space-xs">
-          <div className="flex items-center gap-space-sm">
-            <span className="material-symbols-outlined text-[24px] text-tertiary-container">
-              local_fire_department
-            </span>
-            <div className="flex flex-col">
-              <h3 className="font-headline-md text-headline-md text-on-surface">
-                Emerging Velocity Alerts (Growth &gt; 25%)
-              </h3>
-              <span className="font-body-sm text-body-sm text-on-surface-variant">
-                Detected anomalous complaint acceleration in the last 7-14 telemetry days.
-              </span>
-            </div>
-          </div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-container/15 text-tertiary font-label-md text-label-md">
-            <span className="h-2 w-2 rounded-full bg-tertiary-container animate-ping"></span>
-            2 High-Velocity Clusters
-          </span>
-        </div>
 
-        {/* Alert Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-          {/* Alert Card 1 */}
-          <div className="p-space-lg rounded-xl bg-surface-container flex flex-col justify-between gap-space-md hover:bg-surface-container-high transition-colors shadow-sm">
-            <div className="flex flex-col gap-space-xs">
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary font-label-sm text-label-sm font-semibold">
-                  <span className="material-symbols-outlined text-[14px]">trending_up</span>
-                  Velocity +44%
-                </span>
-                <span className="px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">
-                  Impact: 0.84 (High)
-                </span>
-              </div>
-              <h4 className="font-headline-sm text-headline-sm text-on-surface mt-1">
-                Cross-Device Deduplication Failure After OS Cloud Sync
-              </h4>
-              <span className="font-body-sm text-body-sm text-on-surface-variant">
-                Detected in Reddit &amp; Play Store • +44% surge in 7 days • Under Investigation
-              </span>
-              {/* User Quote snippet */}
-              <div className="p-space-md rounded-lg bg-surface-container-lowest/80 mt-space-xs">
-                <p className="font-body-sm text-body-sm text-on-surface italic">
-                  “I have 4 copies of every vacation photo because iCloud and Google Photos fight over
-                  who is primary, and searching ‘beach’ shows duplicate walls.”
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center justify-between pt-space-xs">
-              <div className="flex items-center gap-1">
-                <button
-                  className="font-mono-metric text-[11px] px-1.5 py-0.5 rounded bg-surface-container-highest text-primary hover:bg-primary hover:text-on-primary transition-all cursor-pointer"
-                  onClick={() =>
-                    handleCitationClick(
-                      "E-412",
-                      "Duplicate flood on Pixel 8 after enabling background sync with iOS devices."
-                    )
-                  }
-                  type="button"
-                >
-                  [E-412]
-                </button>
-                <button
-                  className="font-mono-metric text-[11px] px-1.5 py-0.5 rounded bg-surface-container-highest text-primary hover:bg-primary hover:text-on-primary transition-all cursor-pointer"
-                  onClick={() =>
-                    handleCitationClick(
-                      "E-418",
-                      "Searching beach showed 8 copies of every single picture."
-                    )
-                  }
-                  type="button"
-                >
-                  [E-418]
-                </button>
-              </div>
-              <Link
-                href="/conversations?query=duplicate"
-                className="flex items-center gap-1 px-space-md py-1.5 rounded-lg bg-surface-container-highest text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-label-md transition-colors"
-              >
-                <span>Inspect 114 Clustered Logs</span>
-                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-              </Link>
-            </div>
-          </div>
-
-          {/* Alert Card 2 */}
-          <div className="p-space-lg rounded-xl bg-surface-container flex flex-col justify-between gap-space-md hover:bg-surface-container-high transition-colors shadow-sm">
-            <div className="flex flex-col gap-space-xs">
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-label-sm text-label-sm font-semibold">
-                  <span className="material-symbols-outlined text-[14px]">trending_up</span>
-                  Velocity +31%
-                </span>
-                <span className="px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">
-                  Impact: 0.76 (Moderate)
-                </span>
-              </div>
-              <h4 className="font-headline-sm text-headline-sm text-on-surface mt-1">
-                Pet Recognition Degradation Across Multi-Pet Households
-              </h4>
-              <span className="font-body-sm text-body-sm text-on-surface-variant">
-                Detected in App Store Reviews • +31% surge in 14 days • Prompt Regression Test
-                Queued
-              </span>
-              {/* User Quote snippet */}
-              <div className="p-space-md rounded-lg bg-surface-container-lowest/80 mt-space-xs">
-                <p className="font-body-sm text-body-sm text-on-surface italic">
-                  “It keeps tagging my black cat as my black labrador. I tried typing ‘dog with red
-                  collar’ and it gave me pictures of shoes.”
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center justify-between pt-space-xs">
-              <div className="flex items-center gap-1">
-                <button
-                  className="font-mono-metric text-[11px] px-1.5 py-0.5 rounded bg-surface-container-highest text-primary hover:bg-primary hover:text-on-primary transition-all cursor-pointer"
-                  onClick={() =>
-                    handleCitationClick(
-                      "E-520",
-                      "Cat / Dog confusion in low light night mode shots."
-                    )
-                  }
-                  type="button"
-                >
-                  [E-520]
-                </button>
-                <button
-                  className="font-mono-metric text-[11px] px-1.5 py-0.5 rounded bg-surface-container-highest text-primary hover:bg-primary hover:text-on-primary transition-all cursor-pointer"
-                  onClick={() =>
-                    handleCitationClick(
-                      "E-544",
-                      "Red collar query yielded zero canine hits, classified as apparel accessory."
-                    )
-                  }
-                  type="button"
-                >
-                  [E-544]
-                </button>
-              </div>
-              <Link
-                href="/conversations?query=pet"
-                className="flex items-center gap-1 px-space-md py-1.5 rounded-lg bg-surface-container-highest text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-label-md transition-colors"
-              >
-                <span>Inspect 88 Clustered Logs</span>
-                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* 6. Interactive Evidence Drawer Trigger */}
       <div className="flex items-center justify-between p-space-md rounded-xl bg-surface-container-low shadow-md">
