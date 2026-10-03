@@ -27,13 +27,10 @@ export function Header({ onOpenBriefModal }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-30 h-16 w-full bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 px-margin-desktop flex items-center justify-between">
-      {/* Left Title / Context Badge (Search Bar Removed per user request) */}
+      {/* Left Title / Context Badge */}
       <div className="flex items-center gap-space-sm">
         <span className="font-label-sm uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-md border border-primary/20">
           Executive Research Platform
-        </span>
-        <span className="text-on-surface-variant text-body-sm hidden md:inline">
-          • Retrieval Gap &amp; Intent Synthesis Engine
         </span>
       </div>
 

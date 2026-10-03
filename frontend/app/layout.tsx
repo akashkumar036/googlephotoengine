@@ -4,8 +4,8 @@ import { AuthProvider } from "@/components/AuthProvider";
 import { AppShell } from "@/components/AppShell";
 
 export const metadata: Metadata = {
-  title: "Photo Discovery v2.4 Enterprise AI | Retrieval Gap Analysis",
-  description: "Real-time telemetry and thematic clustering from 2,050 ingested photo search complaints.",
+  title: "Photo Discovery Engine | Executive Research Platform",
+  description: "Real-time telemetry and episodic recall analysis from 2,050 ingested photo search complaints.",
 };
 
 export default function RootLayout({

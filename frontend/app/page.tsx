@@ -210,7 +210,7 @@ export default function OverviewPage() {
             </span>
           </div>
           <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">
-            Retrieval Gap Analysis &amp; Signal Synthesis
+            Photo Discovery Engine
           </h1>
           <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
             Real-time telemetry and thematic clustering from{" "}
