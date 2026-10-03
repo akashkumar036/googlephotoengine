@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 class PipelineRunRequest(BaseModel):
-    source: str = Field(..., description="Connector source name: demo, reddit, google_play, app_store")
+    source: str = Field(..., description="Connector source name: demo, reddit, google_play, app_store, youtube")
     query: Optional[str] = Field("", description="Search term or filter query")
     since: Optional[datetime] = Field(None, description="ISO timestamp cutoff for fetching records")
     limit: int = Field(500, ge=1, le=5000, description="Max records to process")

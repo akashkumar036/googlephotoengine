@@ -136,3 +136,39 @@ async def test_trigger_ingest_unknown_source(client, researcher_headers):
         headers=researcher_headers,
     )
     assert resp.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_youtube_and_reddit_ingestion_end_to_end(test_db_session, client, researcher_headers):
+    """Verify youtube and reddit connectors run through ingest pipeline and API."""
+    engine = test_db_session.bind
+    from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+    factory = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+
+    # 1. Test YouTube ingestion pipeline
+    yt_res = await run_ingest_pipeline(source="youtube", limit=5, session_factory=factory)
+    assert yt_res["stored"] >= 2
+    assert yt_res["errors"] == 0
+
+    # 2. Test Reddit (Apify) ingestion pipeline
+    reddit_res = await run_ingest_pipeline(source="reddit", limit=5, session_factory=factory)
+    assert reddit_res["stored"] >= 2
+    assert reddit_res["errors"] == 0
+
+    # 3. Test API trigger for YouTube and Reddit
+    yt_api_resp = await client.post(
+        "/ingest",
+        json={"source": "youtube", "limit": 10},
+        headers=researcher_headers,
+    )
+    assert yt_api_resp.status_code == 200
+    assert "job_id" in yt_api_resp.json()
+
+    reddit_api_resp = await client.post(
+        "/ingest",
+        json={"source": "reddit", "limit": 10},
+        headers=researcher_headers,
+    )
+    assert reddit_api_resp.status_code == 200
+    assert "job_id" in reddit_api_resp.json()
+

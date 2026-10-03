@@ -8,6 +8,7 @@ from app.connectors.mock import MockConnector
 from app.connectors.google_play import GooglePlayConnector
 from app.connectors.reddit import RedditConnector
 from app.connectors.app_store import AppStoreConnector
+from app.connectors.youtube import YouTubeConnector
 from app.connectors.registry import CONNECTOR_REGISTRY, SOURCE_METADATA
 
 
@@ -130,13 +131,16 @@ def test_connector_registry_contains_expected():
     assert "reddit" in CONNECTOR_REGISTRY
     assert "google_play" in CONNECTOR_REGISTRY
     assert "app_store" in CONNECTOR_REGISTRY
+    assert "youtube" in CONNECTOR_REGISTRY
 
     assert CONNECTOR_REGISTRY["demo"] is MockConnector
     assert CONNECTOR_REGISTRY["reddit"] is RedditConnector
     assert CONNECTOR_REGISTRY["google_play"] is GooglePlayConnector
     assert CONNECTOR_REGISTRY["app_store"] is AppStoreConnector
+    assert CONNECTOR_REGISTRY["youtube"] is YouTubeConnector
 
     assert "google_community" in SOURCE_METADATA
+    assert "youtube" in SOURCE_METADATA
 
 
 def test_google_play_connector_normalization():
@@ -183,3 +187,99 @@ def test_app_store_connector_normalization():
     assert rec.text == "Looking for vacation photos and got zero matches."
     assert rec.engagement["rating"] == 1
     assert rec.is_demo is False
+
+
+def test_reddit_apify_connector_normalization():
+    """Verify RedditConnector normalizes Apify Reddit Scraper dataset items."""
+    connector = RedditConnector()
+    raw = {
+        "id": "reddit_post_xyz",
+        "title": "Face recognition lost my daughter tag",
+        "body": "After the recent update, Google Photos untagged hundreds of photos of my kid.",
+        "author": "family_photographer",
+        "subreddit": "googlephotos",
+        "url": "https://reddit.com/r/googlephotos/comments/xyz",
+        "createdAt": "2026-09-01T12:00:00Z",
+        "upVotes": 45,
+        "numberOfComments": 19,
+        "dataType": "post",
+    }
+    rec = connector.normalize(raw)
+    assert rec.source_name == "reddit"
+    assert rec.external_id == "reddit_post_xyz"
+    assert rec.title == "Face recognition lost my daughter tag"
+    assert "untagged hundreds" in rec.text
+    assert rec.author_hash == hashlib.sha256("family_photographer".encode()).hexdigest()
+    assert rec.engagement["upvotes"] == 45
+    assert rec.engagement["comments"] == 19
+    assert rec.metadata["subreddit"] == "googlephotos"
+    assert rec.metadata["scraped_via"] == "apify"
+    assert rec.is_demo is False
+
+
+def test_reddit_apify_connector_run_fallback():
+    """Verify RedditConnector fallback provides realistic Reddit dataset without APIFY token."""
+    connector = RedditConnector(api_token="")
+    records = connector.run(query="dog", limit=3)
+    assert len(records) >= 1
+    for r in records:
+        assert r.source_name == "reddit"
+        assert r.external_id.startswith("reddit_")
+        assert r.author_hash is not None
+
+
+def test_youtube_connector_normalization():
+    """Verify YouTubeConnector normalizes raw YouTube video and comment items."""
+    connector = YouTubeConnector()
+    raw_video = {
+        "id": "vid_abc123",
+        "video_id": "abc123",
+        "type": "video",
+        "title": "Google Photos Search Not Working - Complete Fix Guide",
+        "text": "Are you unable to find your old photos on Google Photos? Here is what to do.",
+        "channel_title": "TechHelper",
+        "published_at": "2026-07-15T10:00:00Z",
+        "url": "https://www.youtube.com/watch?v=abc123",
+        "like_count": 550,
+        "comment_count": 82,
+        "view_count": 12500,
+    }
+    rec_vid = connector.normalize(raw_video)
+    assert rec_vid.source_name == "youtube"
+    assert rec_vid.external_id == "youtube_vid_abc123"
+    assert rec_vid.title == "Google Photos Search Not Working - Complete Fix Guide"
+    assert rec_vid.engagement["likes"] == 550
+    assert rec_vid.engagement["views"] == 12500
+    assert rec_vid.metadata["type"] == "video"
+    assert rec_vid.metadata["video_id"] == "abc123"
+
+    raw_comment = {
+        "id": "com_comment999",
+        "video_id": "abc123",
+        "type": "comment",
+        "title": "Comment on: Google Photos Search Not Working",
+        "text": "I tried all these steps and it still cannot find any photos from 2022!",
+        "author": "FrustratedUser_42",
+        "channel_title": "TechHelper",
+        "published_at": "2026-07-18T14:30:00Z",
+        "like_count": 18,
+    }
+    rec_com = connector.normalize(raw_comment)
+    assert rec_com.source_name == "youtube"
+    assert rec_com.external_id == "youtube_com_comment999"
+    assert rec_com.author_hash == hashlib.sha256("FrustratedUser_42".encode()).hexdigest()
+    assert rec_com.engagement["likes"] == 18
+    assert rec_com.metadata["type"] == "comment"
+
+
+def test_youtube_connector_run_fallback():
+    """Verify YouTubeConnector fallback provides realistic YouTube feedback without API key."""
+    connector = YouTubeConnector(api_key="")
+    records = connector.run(query="Google", limit=5)
+    assert len(records) >= 2
+    for r in records:
+        assert r.source_name == "youtube"
+        assert r.external_id.startswith("youtube_")
+        assert r.author_hash is not None
+        assert r.url and "youtube.com" in r.url
+

@@ -56,7 +56,14 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
     google_api_key: str = ""
 
-    # ── Reddit connector ─────────────────────────────────────────
+    # ── Apify connector (Reddit scraping) ────────────────────────
+    apify_api_token: str = ""
+    apify_reddit_actor: str = "trudax/reddit-scraper"
+
+    # ── YouTube Data API v3 connector ────────────────────────────
+    youtube_api_key: str = ""
+
+    # ── Legacy Reddit direct API (deprecated, Apify preferred) ───
     reddit_client_id: str = ""
     reddit_client_secret: str = ""
     reddit_user_agent: str = "PhotoDiscoveryEngine/1.0"
