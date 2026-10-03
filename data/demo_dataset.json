@@ -2,7 +2,7 @@
   "version": "1.0",
   "is_demo": true,
   "label": "DEMO DATA",
-  "total": 75,
+  "total": 125,
   "records": [
     {
       "id": "demo_001",
@@ -1190,6 +1190,806 @@
       },
       "metadata": {
         "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_076",
+      "source": "youtube",
+      "title": "Google Photos AI Search Review 2026",
+      "text": "I tested the new Ask Photos feature on my Pixel 9 Pro. It works okay for simple things like sunset at the lake, but when I ask for my blue passport photo taken at the post office in 2024 it completely fails and shows blue cars instead.",
+      "author_hash": "y_hash_076",
+      "timestamp": "2026-08-14T12:00:00Z",
+      "url": "https://youtube.com/watch?v=demo076",
+      "engagement": {
+        "views": 45200,
+        "comments": 312
+      },
+      "metadata": {
+        "channel": "TechMobility"
+      }
+    },
+    {
+      "id": "demo_077",
+      "source": "youtube",
+      "title": "Why iCloud and Google Photos Sync is a Disaster",
+      "text": "Top comment: Whenever I enable backup on both my iPhone and Google Photos, I end up with thousands of duplicate photos. Deleting one deletes it everywhere, or duplicates recreate themselves the next day. Completely ruined my photo library organization.",
+      "author_hash": "y_hash_077",
+      "timestamp": "2026-07-20T10:30:00Z",
+      "url": "https://youtube.com/watch?v=demo077",
+      "engagement": {
+        "likes": 1840,
+        "comments": 415
+      },
+      "metadata": {
+        "video_id": "demo077"
+      }
+    },
+    {
+      "id": "demo_078",
+      "source": "youtube",
+      "title": "How to Organize 100,000 Family Photos",
+      "text": "In the comments: The facial recognition grouped my twin brothers together as one person for 5 years. Now untangling 10,000 photos of them manually is impossible because the batch reassignment feature is hidden.",
+      "author_hash": "y_hash_078",
+      "timestamp": "2026-06-11T15:00:00Z",
+      "url": "https://youtube.com/watch?v=demo078",
+      "engagement": {
+        "likes": 920,
+        "comments": 188
+      },
+      "metadata": {
+        "video_id": "demo078"
+      }
+    },
+    {
+      "id": "demo_079",
+      "source": "reddit",
+      "title": "Stop showing my ex-partner in Memories widget",
+      "text": "Google Photos keeps surfacing On This Day widgets featuring my ex-partner who passed away last year. I blocked their face in settings, but candid crowd photos where their face is partially obscured still appear and cause huge distress.",
+      "author_hash": "r_hash_079",
+      "timestamp": "2026-09-22T08:00:00Z",
+      "url": "https://reddit.com/r/googlephotos/demo079",
+      "engagement": {
+        "upvotes": 890,
+        "comments": 214
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_080",
+      "source": "app_store",
+      "title": "Horrible memories widget controls",
+      "text": "The Memories feature shoved a photo of my crashed car into my morning widget notification on the anniversary of the accident. There is no easy way to blacklist specific traumatic dates or events.",
+      "author_hash": "a_hash_080",
+      "timestamp": "2026-09-24T18:20:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 142
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_081",
+      "source": "google_play",
+      "title": "Need blacklist date range for memories",
+      "text": "Please let us block whole months from Memories. A painful divorce happened during Summer 2025 and seeing photos of that house and period every week is unbearable.",
+      "author_hash": "g_hash_081",
+      "timestamp": "2026-09-28T09:15:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 98
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_082",
+      "source": "reddit",
+      "title": "Cannot search video by spoken words or speech",
+      "text": "I recorded a 30-minute family video where my grandfather told a story about his childhood in Chicago. When I search Chicago story or his name, Google Photos only indexes video titles, not audio transcript speech.",
+      "author_hash": "r_hash_082",
+      "timestamp": "2026-09-15T14:30:00Z",
+      "url": "https://reddit.com/r/googlephotos/demo082",
+      "engagement": {
+        "upvotes": 412,
+        "comments": 62
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_083",
+      "source": "youtube",
+      "title": "Video Voice Search Feature Request",
+      "text": "Users in comments: I have 200 videos of guitar lessons and trying to find the one where the teacher explains the pentatonic scale in D minor is impossible without voice search in video audio.",
+      "author_hash": "y_hash_083",
+      "timestamp": "2026-09-18T11:00:00Z",
+      "url": "https://youtube.com/watch?v=demo083",
+      "engagement": {
+        "likes": 340,
+        "comments": 54
+      },
+      "metadata": {
+        "video_id": "demo083"
+      }
+    },
+    {
+      "id": "demo_084",
+      "source": "reddit",
+      "title": "Analog film negative roll scans indexing nightmare",
+      "text": "I scanned 40 rolls of 35mm Ilford HP5 black and white negatives using a flatbed scanner. The EXIF dates are all 2026 scan dates instead of 1994 when taken. I need an AI to estimate dates from clothing styles and roll sequencing.",
+      "author_hash": "r_hash_084",
+      "timestamp": "2025-05-10T16:00:00Z",
+      "url": "https://reddit.com/r/analog/demo084",
+      "engagement": {
+        "upvotes": 523,
+        "comments": 87
+      },
+      "metadata": {
+        "subreddit": "analog"
+      }
+    },
+    {
+      "id": "demo_085",
+      "source": "reddit",
+      "title": "Drone mapping orthophoto coordinates vs library gallery",
+      "text": "I take automated drone flights for farm survey with geotags every 3 meters. Google Photos groups 4,000 photos of grass fields into a single location and freezes the map viewer completely.",
+      "author_hash": "r_hash_085",
+      "timestamp": "2025-08-22T10:00:00Z",
+      "url": "https://reddit.com/r/dji/demo085",
+      "engagement": {
+        "upvotes": 178,
+        "comments": 31
+      },
+      "metadata": {
+        "subreddit": "dji"
+      }
+    },
+    {
+      "id": "demo_086",
+      "source": "reddit",
+      "title": "WhatsApp and Telegram receipt photo dumping problem",
+      "text": "My messaging apps auto-save random restaurant bill receipts and QR codes sent by friends. My main photo timeline is 60 percent trash receipts, but searching for a real warranty receipt brings up 500 restaurant menus.",
+      "author_hash": "r_hash_086",
+      "timestamp": "2025-10-15T12:00:00Z",
+      "url": "https://reddit.com/r/androidapps/demo086",
+      "engagement": {
+        "upvotes": 634,
+        "comments": 105
+      },
+      "metadata": {
+        "subreddit": "androidapps"
+      }
+    },
+    {
+      "id": "demo_087",
+      "source": "reddit",
+      "title": "Astrophotography deep sky celestial object search",
+      "text": "I photograph nebulae and star clusters with a telescope. When I search Andromeda or Orion Nebula in Google Photos, it suggests pictures of cats, night city skylines, or starry stickers.",
+      "author_hash": "r_hash_087",
+      "timestamp": "2024-11-04T22:00:00Z",
+      "url": "https://reddit.com/r/astrophotography/demo087",
+      "engagement": {
+        "upvotes": 320,
+        "comments": 45
+      },
+      "metadata": {
+        "subreddit": "astrophotography"
+      }
+    },
+    {
+      "id": "demo_088",
+      "source": "reddit",
+      "title": "360 degree panoramic photosphere projection breaks search",
+      "text": "Photos captured on Insta360 and Ricoh Theta store equirectangular projection images. Object recognition fails because objects on the edges are warped, so searching beach bike ride misses all 360 shots.",
+      "author_hash": "r_hash_088",
+      "timestamp": "2025-03-14T09:00:00Z",
+      "url": "https://reddit.com/r/360cameras/demo088",
+      "engagement": {
+        "upvotes": 210,
+        "comments": 38
+      },
+      "metadata": {
+        "subreddit": "360cameras"
+      }
+    },
+    {
+      "id": "demo_089",
+      "source": "google_play",
+      "title": "",
+      "text": "Live Photos burst mode selection lost. I had a great jump shot in Live Photos. When exported or searched in the cloud, only the first blurry frame is indexed. This has been driving me crazy for months.",
+      "author_hash": "hash_089",
+      "timestamp": "2024-06-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 109
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_090",
+      "source": "reddit",
+      "title": "Location search in mountains with no cell service",
+      "text": "Location search in mountains with no cell service. Took hiking photos in Yosemite with GPS enabled. Search for Yosemite or Half Dome returns zero because offline geotags did not resolve place names. This has been driving me crazy for months.",
+      "author_hash": "hash_090",
+      "timestamp": "2024-07-15T12:00:00Z",
+      "url": "https://reddit.com/demo090",
+      "engagement": {
+        "upvotes": 390,
+        "comments": 15
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_091",
+      "source": "youtube",
+      "title": "Wedding anniversary album missing photos",
+      "text": "Wedding anniversary album missing photos. We celebrated our 10th anniversary in Paris and half the album photos taken by my spouse are missing in the shared search. This has been driving me crazy for months.",
+      "author_hash": "hash_091",
+      "timestamp": "2024-08-15T12:00:00Z",
+      "url": "https://youtube.com/demo091",
+      "engagement": {
+        "rating": 2,
+        "helpful": 111
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_092",
+      "source": "google_play",
+      "title": "",
+      "text": "Cannot find downloaded recipe screenshots. I took screenshots of handwritten recipes from my grandma in 2024 and searching for sugar flour pie finds nothing. This has been driving me crazy for months.",
+      "author_hash": "hash_092",
+      "timestamp": "2024-09-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 112
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_093",
+      "source": "reddit",
+      "title": "Duplicate cleanup deleted the original high-res picture",
+      "text": "Duplicate cleanup deleted the original high-res picture. Google storage cleanup suggested deleting duplicate photos, but it deleted the original 48MP raw image and kept the 2MP WhatsApp compressed thumbnail. This has been driving me crazy for months.",
+      "author_hash": "hash_093",
+      "timestamp": "2024-10-15T12:00:00Z",
+      "url": "https://reddit.com/demo093",
+      "engagement": {
+        "upvotes": 399,
+        "comments": 18
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_094",
+      "source": "youtube",
+      "title": "Pet recognition thinks my black cat is a jacket",
+      "text": "Pet recognition thinks my black cat is a jacket. Every photo of my black cat sleeping on the rug is tagged as coat or garment. I can never find photos of Midnight. This has been driving me crazy for months.",
+      "author_hash": "hash_094",
+      "timestamp": "2024-11-15T12:00:00Z",
+      "url": "https://youtube.com/demo094",
+      "engagement": {
+        "rating": 2,
+        "helpful": 114
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_095",
+      "source": "google_play",
+      "title": "",
+      "text": "Search for handwritten notes on whiteboards. I take pictures of whiteboard brainstorming sessions at work. OCR misses cursive handwriting completely. This has been driving me crazy for months.",
+      "author_hash": "hash_095",
+      "timestamp": "2024-12-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 115
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_096",
+      "source": "reddit",
+      "title": "Live Photos burst mode selection lost",
+      "text": "Live Photos burst mode selection lost. I had a great jump shot in Live Photos. When exported or searched in the cloud, only the first blurry frame is indexed. This has been driving me crazy for months.",
+      "author_hash": "hash_096",
+      "timestamp": "2024-01-15T12:00:00Z",
+      "url": "https://reddit.com/demo096",
+      "engagement": {
+        "upvotes": 408,
+        "comments": 21
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_097",
+      "source": "youtube",
+      "title": "Location search in mountains with no cell service",
+      "text": "Location search in mountains with no cell service. Took hiking photos in Yosemite with GPS enabled. Search for Yosemite or Half Dome returns zero because offline geotags did not resolve place names. This has been driving me crazy for months.",
+      "author_hash": "hash_097",
+      "timestamp": "2024-02-15T12:00:00Z",
+      "url": "https://youtube.com/demo097",
+      "engagement": {
+        "rating": 2,
+        "helpful": 117
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_098",
+      "source": "google_play",
+      "title": "",
+      "text": "Wedding anniversary album missing photos. We celebrated our 10th anniversary in Paris and half the album photos taken by my spouse are missing in the shared search. This has been driving me crazy for months.",
+      "author_hash": "hash_098",
+      "timestamp": "2024-03-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 118
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_099",
+      "source": "reddit",
+      "title": "Cannot find downloaded recipe screenshots",
+      "text": "Cannot find downloaded recipe screenshots. I took screenshots of handwritten recipes from my grandma in 2024 and searching for sugar flour pie finds nothing. This has been driving me crazy for months.",
+      "author_hash": "hash_099",
+      "timestamp": "2024-04-15T12:00:00Z",
+      "url": "https://reddit.com/demo099",
+      "engagement": {
+        "upvotes": 417,
+        "comments": 24
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_100",
+      "source": "youtube",
+      "title": "Duplicate cleanup deleted the original high-res picture",
+      "text": "Duplicate cleanup deleted the original high-res picture. Google storage cleanup suggested deleting duplicate photos, but it deleted the original 48MP raw image and kept the 2MP WhatsApp compressed thumbnail. This has been driving me crazy for months.",
+      "author_hash": "hash_100",
+      "timestamp": "2025-05-15T12:00:00Z",
+      "url": "https://youtube.com/demo100",
+      "engagement": {
+        "rating": 2,
+        "helpful": 120
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_101",
+      "source": "google_play",
+      "title": "",
+      "text": "Pet recognition thinks my black cat is a jacket. Every photo of my black cat sleeping on the rug is tagged as coat or garment. I can never find photos of Midnight. This has been driving me crazy for months.",
+      "author_hash": "hash_101",
+      "timestamp": "2025-06-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 121
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_102",
+      "source": "reddit",
+      "title": "Search for handwritten notes on whiteboards",
+      "text": "Search for handwritten notes on whiteboards. I take pictures of whiteboard brainstorming sessions at work. OCR misses cursive handwriting completely. This has been driving me crazy for months.",
+      "author_hash": "hash_102",
+      "timestamp": "2025-07-15T12:00:00Z",
+      "url": "https://reddit.com/demo102",
+      "engagement": {
+        "upvotes": 426,
+        "comments": 17
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_103",
+      "source": "youtube",
+      "title": "Live Photos burst mode selection lost",
+      "text": "Live Photos burst mode selection lost. I had a great jump shot in Live Photos. When exported or searched in the cloud, only the first blurry frame is indexed. This has been driving me crazy for months.",
+      "author_hash": "hash_103",
+      "timestamp": "2025-08-15T12:00:00Z",
+      "url": "https://youtube.com/demo103",
+      "engagement": {
+        "rating": 2,
+        "helpful": 123
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_104",
+      "source": "google_play",
+      "title": "",
+      "text": "Location search in mountains with no cell service. Took hiking photos in Yosemite with GPS enabled. Search for Yosemite or Half Dome returns zero because offline geotags did not resolve place names. This has been driving me crazy for months.",
+      "author_hash": "hash_104",
+      "timestamp": "2025-09-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 124
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_105",
+      "source": "reddit",
+      "title": "Wedding anniversary album missing photos",
+      "text": "Wedding anniversary album missing photos. We celebrated our 10th anniversary in Paris and half the album photos taken by my spouse are missing in the shared search. This has been driving me crazy for months.",
+      "author_hash": "hash_105",
+      "timestamp": "2025-10-15T12:00:00Z",
+      "url": "https://reddit.com/demo105",
+      "engagement": {
+        "upvotes": 435,
+        "comments": 20
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_106",
+      "source": "youtube",
+      "title": "Cannot find downloaded recipe screenshots",
+      "text": "Cannot find downloaded recipe screenshots. I took screenshots of handwritten recipes from my grandma in 2024 and searching for sugar flour pie finds nothing. This has been driving me crazy for months.",
+      "author_hash": "hash_106",
+      "timestamp": "2025-11-15T12:00:00Z",
+      "url": "https://youtube.com/demo106",
+      "engagement": {
+        "rating": 2,
+        "helpful": 126
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_107",
+      "source": "google_play",
+      "title": "",
+      "text": "Duplicate cleanup deleted the original high-res picture. Google storage cleanup suggested deleting duplicate photos, but it deleted the original 48MP raw image and kept the 2MP WhatsApp compressed thumbnail. This has been driving me crazy for months.",
+      "author_hash": "hash_107",
+      "timestamp": "2025-12-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 127
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_108",
+      "source": "reddit",
+      "title": "Pet recognition thinks my black cat is a jacket",
+      "text": "Pet recognition thinks my black cat is a jacket. Every photo of my black cat sleeping on the rug is tagged as coat or garment. I can never find photos of Midnight. This has been driving me crazy for months.",
+      "author_hash": "hash_108",
+      "timestamp": "2025-01-15T12:00:00Z",
+      "url": "https://reddit.com/demo108",
+      "engagement": {
+        "upvotes": 444,
+        "comments": 23
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_109",
+      "source": "youtube",
+      "title": "Search for handwritten notes on whiteboards",
+      "text": "Search for handwritten notes on whiteboards. I take pictures of whiteboard brainstorming sessions at work. OCR misses cursive handwriting completely. This has been driving me crazy for months.",
+      "author_hash": "hash_109",
+      "timestamp": "2025-02-15T12:00:00Z",
+      "url": "https://youtube.com/demo109",
+      "engagement": {
+        "rating": 2,
+        "helpful": 129
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_110",
+      "source": "google_play",
+      "title": "",
+      "text": "Live Photos burst mode selection lost. I had a great jump shot in Live Photos. When exported or searched in the cloud, only the first blurry frame is indexed. This has been driving me crazy for months.",
+      "author_hash": "hash_110",
+      "timestamp": "2025-03-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 130
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_111",
+      "source": "reddit",
+      "title": "Location search in mountains with no cell service",
+      "text": "Location search in mountains with no cell service. Took hiking photos in Yosemite with GPS enabled. Search for Yosemite or Half Dome returns zero because offline geotags did not resolve place names. This has been driving me crazy for months.",
+      "author_hash": "hash_111",
+      "timestamp": "2025-04-15T12:00:00Z",
+      "url": "https://reddit.com/demo111",
+      "engagement": {
+        "upvotes": 453,
+        "comments": 16
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_112",
+      "source": "youtube",
+      "title": "Wedding anniversary album missing photos",
+      "text": "Wedding anniversary album missing photos. We celebrated our 10th anniversary in Paris and half the album photos taken by my spouse are missing in the shared search. This has been driving me crazy for months.",
+      "author_hash": "hash_112",
+      "timestamp": "2025-05-15T12:00:00Z",
+      "url": "https://youtube.com/demo112",
+      "engagement": {
+        "rating": 2,
+        "helpful": 132
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_113",
+      "source": "google_play",
+      "title": "",
+      "text": "Cannot find downloaded recipe screenshots. I took screenshots of handwritten recipes from my grandma in 2024 and searching for sugar flour pie finds nothing. This has been driving me crazy for months.",
+      "author_hash": "hash_113",
+      "timestamp": "2025-06-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 133
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_114",
+      "source": "reddit",
+      "title": "Duplicate cleanup deleted the original high-res picture",
+      "text": "Duplicate cleanup deleted the original high-res picture. Google storage cleanup suggested deleting duplicate photos, but it deleted the original 48MP raw image and kept the 2MP WhatsApp compressed thumbnail. This has been driving me crazy for months.",
+      "author_hash": "hash_114",
+      "timestamp": "2025-07-15T12:00:00Z",
+      "url": "https://reddit.com/demo114",
+      "engagement": {
+        "upvotes": 462,
+        "comments": 19
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_115",
+      "source": "youtube",
+      "title": "Pet recognition thinks my black cat is a jacket",
+      "text": "Pet recognition thinks my black cat is a jacket. Every photo of my black cat sleeping on the rug is tagged as coat or garment. I can never find photos of Midnight. This has been driving me crazy for months.",
+      "author_hash": "hash_115",
+      "timestamp": "2026-08-15T12:00:00Z",
+      "url": "https://youtube.com/demo115",
+      "engagement": {
+        "rating": 2,
+        "helpful": 135
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_116",
+      "source": "google_play",
+      "title": "",
+      "text": "Search for handwritten notes on whiteboards. I take pictures of whiteboard brainstorming sessions at work. OCR misses cursive handwriting completely. This has been driving me crazy for months.",
+      "author_hash": "hash_116",
+      "timestamp": "2026-09-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 136
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_117",
+      "source": "reddit",
+      "title": "Live Photos burst mode selection lost",
+      "text": "Live Photos burst mode selection lost. I had a great jump shot in Live Photos. When exported or searched in the cloud, only the first blurry frame is indexed. This has been driving me crazy for months.",
+      "author_hash": "hash_117",
+      "timestamp": "2026-10-15T12:00:00Z",
+      "url": "https://reddit.com/demo117",
+      "engagement": {
+        "upvotes": 471,
+        "comments": 22
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_118",
+      "source": "youtube",
+      "title": "Location search in mountains with no cell service",
+      "text": "Location search in mountains with no cell service. Took hiking photos in Yosemite with GPS enabled. Search for Yosemite or Half Dome returns zero because offline geotags did not resolve place names. This has been driving me crazy for months.",
+      "author_hash": "hash_118",
+      "timestamp": "2026-11-15T12:00:00Z",
+      "url": "https://youtube.com/demo118",
+      "engagement": {
+        "rating": 2,
+        "helpful": 138
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_119",
+      "source": "google_play",
+      "title": "",
+      "text": "Wedding anniversary album missing photos. We celebrated our 10th anniversary in Paris and half the album photos taken by my spouse are missing in the shared search. This has been driving me crazy for months.",
+      "author_hash": "hash_119",
+      "timestamp": "2026-12-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 139
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_120",
+      "source": "reddit",
+      "title": "Cannot find downloaded recipe screenshots",
+      "text": "Cannot find downloaded recipe screenshots. I took screenshots of handwritten recipes from my grandma in 2024 and searching for sugar flour pie finds nothing. This has been driving me crazy for months.",
+      "author_hash": "hash_120",
+      "timestamp": "2026-01-15T12:00:00Z",
+      "url": "https://reddit.com/demo120",
+      "engagement": {
+        "upvotes": 480,
+        "comments": 15
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_121",
+      "source": "youtube",
+      "title": "Duplicate cleanup deleted the original high-res picture",
+      "text": "Duplicate cleanup deleted the original high-res picture. Google storage cleanup suggested deleting duplicate photos, but it deleted the original 48MP raw image and kept the 2MP WhatsApp compressed thumbnail. This has been driving me crazy for months.",
+      "author_hash": "hash_121",
+      "timestamp": "2026-02-15T12:00:00Z",
+      "url": "https://youtube.com/demo121",
+      "engagement": {
+        "rating": 2,
+        "helpful": 141
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_122",
+      "source": "google_play",
+      "title": "",
+      "text": "Pet recognition thinks my black cat is a jacket. Every photo of my black cat sleeping on the rug is tagged as coat or garment. I can never find photos of Midnight. This has been driving me crazy for months.",
+      "author_hash": "hash_122",
+      "timestamp": "2026-03-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 142
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_123",
+      "source": "reddit",
+      "title": "Search for handwritten notes on whiteboards",
+      "text": "Search for handwritten notes on whiteboards. I take pictures of whiteboard brainstorming sessions at work. OCR misses cursive handwriting completely. This has been driving me crazy for months.",
+      "author_hash": "hash_123",
+      "timestamp": "2026-04-15T12:00:00Z",
+      "url": "https://reddit.com/demo123",
+      "engagement": {
+        "upvotes": 489,
+        "comments": 18
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_124",
+      "source": "youtube",
+      "title": "Live Photos burst mode selection lost",
+      "text": "Live Photos burst mode selection lost. I had a great jump shot in Live Photos. When exported or searched in the cloud, only the first blurry frame is indexed. This has been driving me crazy for months.",
+      "author_hash": "hash_124",
+      "timestamp": "2026-05-15T12:00:00Z",
+      "url": "https://youtube.com/demo124",
+      "engagement": {
+        "rating": 2,
+        "helpful": 144
+      },
+      "metadata": {
+        "category": "user_feedback"
+      }
+    },
+    {
+      "id": "demo_125",
+      "source": "google_play",
+      "title": "",
+      "text": "Location search in mountains with no cell service. Took hiking photos in Yosemite with GPS enabled. Search for Yosemite or Half Dome returns zero because offline geotags did not resolve place names. This has been driving me crazy for months.",
+      "author_hash": "hash_125",
+      "timestamp": "2026-06-15T12:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 3,
+        "helpful": 145
+      },
+      "metadata": {
+        "category": "user_feedback"
       }
     }
   ]

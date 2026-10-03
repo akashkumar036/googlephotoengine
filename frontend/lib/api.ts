@@ -203,4 +203,24 @@ export const ApiService = {
     const res = await api.get("/jobs", { params: { limit } });
     return res.data;
   },
+
+  // Evaluation & Feedback Learning Loop
+  getEvaluationResults: async () => {
+    const res = await api.get("/evaluation/results");
+    return res.data;
+  },
+  getBenchmarks: async () => {
+    const res = await api.get("/evaluation/benchmarks");
+    return res.data;
+  },
+  getFeedbackLoopInsights: async () => {
+    const res = await api.get("/evaluation/feedback-loop");
+    return res.data;
+  },
+
+  // Admin & Observability
+  getAdminMetrics: async () => {
+    const res = await api.get("/admin/metrics");
+    return res.data;
+  },
 };

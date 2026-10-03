@@ -28,6 +28,8 @@ from app.api.routes import (
     pipeline,
     taxonomy,
     stats,
+    evaluation,
+    admin,
 )
 from app.db.seed import seed_admin_user, seed_sources, seed_prompts
 
@@ -127,3 +129,5 @@ app.include_router(reports.router, prefix="/reports", tags=["Reports"])
 app.include_router(pipeline.router, prefix="/pipeline", tags=["Pipeline"])
 app.include_router(taxonomy.router, prefix="/taxonomy", tags=["Taxonomy"])
 app.include_router(stats.router, prefix="/stats", tags=["Stats"])
+app.include_router(evaluation.router, prefix="/evaluation", tags=["Evaluation"])
+app.include_router(admin.router, prefix="/admin", tags=["Admin"])

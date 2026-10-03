@@ -348,6 +348,55 @@ export default function OverviewPage() {
         </div>
       </div>
 
+      {/* Section 6.6: Evidence Limitations & Methodology Notice */}
+      <Card className="border-amber-500/20 bg-gradient-to-br from-slate-900/90 via-amber-950/10 to-slate-900/90 p-6 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-500/10 pb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-slate-100">
+                Research Methodology & Evidence Limitations
+              </h2>
+              <p className="text-xs text-slate-400">
+                Key sampling caveats, platform biases, and probabilistic AI inference considerations
+              </p>
+            </div>
+          </div>
+          <Badge variant="amber" size="sm">Methodological Notice</Badge>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs text-slate-300">
+          <div className="space-y-1.5 p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80">
+            <div className="font-semibold text-amber-300 flex items-center gap-1.5">
+              <span>Non-Statistical Representativeness</span>
+            </div>
+            <p className="text-slate-400 leading-relaxed">
+              This repository captures qualitative friction and unprompted user expressions across public community channels. It represents authentic user needs but is <strong>not a statistically representative population census</strong> or market share survey.
+            </p>
+          </div>
+
+          <div className="space-y-1.5 p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80">
+            <div className="font-semibold text-amber-300 flex items-center gap-1.5">
+              <span>Platform Sampling Biases</span>
+            </div>
+            <p className="text-slate-400 leading-relaxed">
+              <strong>Reddit</strong> skews toward power users, edge-case camera gear, and complex metadata issues. <strong>App Store & Google Play</strong> reviews skew toward acute dissatisfaction, update breakages, and app crashes. <strong>YouTube</strong> reflects feature discovery and tutorial gaps.
+            </p>
+          </div>
+
+          <div className="space-y-1.5 p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80">
+            <div className="font-semibold text-amber-300 flex items-center gap-1.5">
+              <span>Probabilistic Classifications & Dedup</span>
+            </div>
+            <p className="text-slate-400 leading-relaxed">
+              Memory dimensions, intent categories, and failure modes are generated via <strong>probabilistic LLM extraction</strong>. Counts reflect unique, deduplicated problem occurrences rather than inflated raw thread engagement.
+            </p>
+          </div>
+        </div>
+      </Card>
+
       {/* Brief Modal */}
       <ResearchBriefModal
         isOpen={isBriefModalOpen}

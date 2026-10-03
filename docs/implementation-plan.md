@@ -909,8 +909,8 @@ Conversation:
 ### 6.1 Seed Dataset Finalization
 
 **Tasks:**
-- [ ] Expand demo dataset to 100–200 conversations
-- [ ] Ensure coverage:
+- [x] Expand demo dataset to 100–200 conversations
+- [x] Ensure coverage:
   - ≥ 5 taxonomy categories represented
   - ≥ 3 sources represented
   - 2-year date spread
@@ -918,9 +918,9 @@ Conversation:
   - At least 3 distinct clusters
   - At least 1 cross-platform problem (≥ 3 sources)
   - At least 5 "unknown unknowns" outlier conversations
-- [ ] All demo records have `"is_demo": true` and UI shows **DEMO DATA** badge
-- [ ] Create DB seeding script: `python -m app.db.seed`
-- [ ] Full pipeline runs on seed data in < 5 minutes
+- [x] All demo records have `"is_demo": true` and UI shows **DEMO DATA** badge
+- [x] Create DB seeding script: `python -m app.db.seed`
+- [x] Full pipeline runs on seed data in < 5 minutes
 
 **Acceptance:** Fresh `docker compose up` + `python -m app.db.seed` + pipeline run → all dashboard pages show meaningful data.
 
@@ -929,16 +929,16 @@ Conversation:
 ### 6.2 Evaluation Framework
 
 **Tasks:**
-- [ ] Manually label 30 conversations as a benchmark dataset:
+- [x] Manually label 30 conversations as a benchmark dataset:
   - Ground truth: `is_relevant`, `primary_intent`, `failure_modes`
-- [ ] Store in `evaluation_benchmarks` table
-- [ ] Create `app/evaluation/metrics.py`:
+- [x] Store in `evaluation_benchmarks` table
+- [x] Create `app/evaluation/metrics.py`:
   - Relevance accuracy (precision / recall / F1)
   - Intent accuracy (% correct)
   - Failure-mode accuracy (% correct)
   - Hallucination rate (manual review metric)
-- [ ] Create `GET /evaluation/results` endpoint (admin only)
-- [ ] Build `/evaluation` page in frontend:
+- [x] Create `GET /evaluation/results` endpoint (admin only)
+- [x] Build `/evaluation` page in frontend:
   - Model performance table
   - Per-metric scores
   - Prompt version comparison
@@ -950,12 +950,12 @@ Conversation:
 ### 6.3 Feedback Learning Loop
 
 **Tasks:**
-- [ ] Create `app/pipeline/feedback.py`
-- [ ] When human corrections accumulate (≥ 50 corrections):
+- [x] Create `app/pipeline/feedback.py`
+- [x] When human corrections accumulate (≥ 50 corrections):
   - Export correction data as evaluation examples
   - Automatically test against benchmark: does new prompt perform better?
-- [ ] Store all corrections in `human_reviews` table with before/after values
-- [ ] Surface correction patterns: "Intent `find_screenshot` is frequently miscategorized as `find_photo`" → suggest prompt update
+- [x] Store all corrections in `human_reviews` table with before/after values
+- [x] Surface correction patterns: "Intent `find_screenshot` is frequently miscategorized as `find_photo`" → suggest prompt update
 
 **Acceptance:** 10+ human review corrections are stored; correction patterns are summarized in the evaluation page.
 
@@ -966,22 +966,23 @@ Conversation:
 **Tasks:**
 
 **Backend unit tests:**
-- [ ] `test_connectors.py` — each connector normalizes records correctly
-- [ ] `test_cleaning.py` — PII detected, duplicates flagged, spam removed
-- [ ] `test_analysis.py` — AI analysis pipeline produces valid JSON (mock LLM responses)
-- [ ] `test_clustering.py` — clustering assigns clusters and labels correctly
-- [ ] `test_problem_discovery.py` — problems synthesized with correct scores
-- [ ] `test_deduplication.py` — exact and near-dedup prevents re-ingestion
+- [x] `test_connectors.py` — each connector normalizes records correctly
+- [x] `test_cleaning.py` — PII detected, duplicates flagged, spam removed
+- [x] `test_analysis.py` — AI analysis pipeline produces valid JSON (mock LLM responses)
+- [x] `test_clustering.py` — clustering assigns clusters and labels correctly
+- [x] `test_problem_discovery.py` — problems synthesized with correct scores
+- [x] `test_deduplication.py` — exact and near-dedup prevents re-ingestion
 
 **Backend integration tests:**
-- [ ] `test_api.py` — all endpoints return correct status codes and schema
-- [ ] `test_pipeline.py` — end-to-end pipeline from ingest to problem discovery (mock connectors + mock LLM)
-- [ ] `test_auth.py` — auth, RBAC, and token expiry work correctly
+- [x] `test_api.py` — all endpoints return correct status codes and schema
+- [x] `test_pipeline.py` — end-to-end pipeline from ingest to problem discovery (mock connectors + mock LLM)
+- [x] `test_auth.py` — auth, RBAC, and token expiry work correctly
+- [x] `test_phase6.py` — evaluation metrics, benchmarks, feedback loop, admin metrics, and RBAC
 
 **Frontend tests:**
-- [ ] `test_overview.spec.ts` — Overview page renders KPIs
-- [ ] `test_problem_detail.spec.ts` — Problem detail tabs render correctly
-- [ ] `test_research_assistant.spec.ts` — Research query returns evidence cards
+- [x] `test_overview.spec.ts` — Overview page renders KPIs
+- [x] `test_problem_detail.spec.ts` — Problem detail tabs render correctly
+- [x] `test_research_assistant.spec.ts` — Research query returns evidence cards
 
 **Acceptance:** `pytest` and `npm test` both pass with ≥ 80% critical path coverage.
 
@@ -990,15 +991,15 @@ Conversation:
 ### 6.5 Observability Finalization
 
 **Tasks:**
-- [ ] Verify all services emit structured JSON logs
-- [ ] Create `GET /admin/metrics` endpoint returning:
+- [x] Verify all services emit structured JSON logs
+- [x] Create `GET /admin/metrics` endpoint returning:
   - Records ingested (total + per source)
   - AI processing throughput
   - Estimated LLM token cost
   - Average analysis latency
   - Error rates
-- [ ] Add `/admin/metrics` page to frontend (admin role only)
-- [ ] Ensure every Celery job stores progress, error details, and duration in `jobs` table
+- [x] Add `/admin/metrics` page to frontend (admin role only)
+- [x] Ensure every Celery job stores progress, error details, and duration in `jobs` table
 
 **Acceptance:** Admin can view system health from within the application.
 
@@ -1007,12 +1008,12 @@ Conversation:
 ### 6.6 Evidence Limitations Section
 
 **Tasks:**
-- [ ] Add **Evidence Limitations** panel to the Overview page:
+- [x] Add **Evidence Limitations** panel to the Overview page:
   - Note that dataset is not statistically representative
   - Show source distribution with caveats
   - Distinguish raw volume vs. unique conversation count
   - Source bias notice (e.g., "App Store reviews skew toward negative experiences")
-- [ ] Add AI confidence indicators throughout — remind users that AI classifications are probabilistic
+- [x] Add AI confidence indicators throughout — remind users that AI classifications are probabilistic
 
 **Acceptance:** Evidence Limitations section is visible on Overview; confidence indicators appear on all AI-generated content.
 
@@ -1021,7 +1022,7 @@ Conversation:
 ### 6.7 Documentation
 
 **Tasks:**
-- [ ] `README.md` with:
+- [x] `README.md` with:
   - Project overview + architecture summary
   - Prerequisites (Docker, Node.js, Python, API keys)
   - Quick start: `docker compose up && python -m app.db.seed`
@@ -1029,9 +1030,9 @@ Conversation:
   - Running tests
   - Adding a new connector (guide)
   - Adding a new prompt version (guide)
-- [ ] Inline API documentation (FastAPI auto-generates OpenAPI / Swagger at `/docs`)
-- [ ] Code comments on all public interfaces
-- [ ] Update `docs/architecture.md` with any changes made during build
+- [x] Inline API documentation (FastAPI auto-generates OpenAPI / Swagger at `/docs`)
+- [x] Code comments on all public interfaces
+- [x] Update `docs/architecture.md` with any changes made during build
 
 **Acceptance:** A developer following only `README.md` can run the app locally within 15 minutes.
 
@@ -1043,20 +1044,20 @@ Conversation:
 
 | # | Checkpoint | Status |
 |---|---|---|
-| 1 | Load/import conversation data | ☐ |
-| 2 | Process the data with AI | ☐ |
-| 3 | Search the dataset semantically | ☐ |
-| 4 | See identified user intents | ☐ |
-| 5 | See memory dimensions | ☐ |
-| 6 | See retrieval failure modes | ☐ |
-| 7 | See automatically generated problem clusters | ☐ |
-| 8 | Open a problem | ☐ |
-| 9 | Trace the problem back to evidence | ☐ |
-| 10 | Explore trends | ☐ |
-| 11 | Discover emerging problem areas | ☐ |
-| 12 | Ask the AI research assistant questions | ☐ |
-| 13 | Review/correct AI classifications | ☐ |
-| 14 | Generate a research brief | ☐ |
+| 1 | Load/import conversation data | [x] |
+| 2 | Process the data with AI | [x] |
+| 3 | Search the dataset semantically | [x] |
+| 4 | See identified user intents | [x] |
+| 5 | See memory dimensions | [x] |
+| 6 | See retrieval failure modes | [x] |
+| 7 | See automatically generated problem clusters | [x] |
+| 8 | Open a problem | [x] |
+| 9 | Trace the problem back to evidence | [x] |
+| 10 | Explore trends | [x] |
+| 11 | Discover emerging problem areas | [x] |
+| 12 | Ask the AI research assistant questions | [x] |
+| 13 | Review/correct AI classifications | [x] |
+| 14 | Generate a research brief | [x] |
 
 **Acceptance:** All 14 checkboxes verified by a researcher doing a live walkthrough.
 
@@ -1064,13 +1065,13 @@ Conversation:
 
 ### Phase 6 Exit Criteria
 
-- [ ] Seed dataset produces meaningful insights out-of-the-box
-- [ ] All 14 Definition of Done items verified
-- [ ] `pytest` passes with ≥ 80% coverage on critical paths
-- [ ] README enables local setup within 15 minutes
-- [ ] Evidence Limitations section present in dashboard
-- [ ] Evaluation page shows model performance metrics
-- [ ] No hardcoded secrets or PII in codebase
+- [x] Seed dataset produces meaningful insights out-of-the-box
+- [x] All 14 Definition of Done items verified
+- [x] `pytest` passes with ≥ 80% coverage on critical paths
+- [x] README enables local setup within 15 minutes
+- [x] Evidence Limitations section present in dashboard
+- [x] Evaluation page shows model performance metrics
+- [x] No hardcoded secrets or PII in codebase
 
 ---
 
@@ -1119,44 +1120,44 @@ These apply throughout **all phases**:
 ## Appendix — Quick-Reference Checklist
 
 ### Phase 1
-- [ ] Monorepo scaffold committed
-- [ ] Docker Compose starts all 5 services
-- [ ] DB schema fully migrated
-- [ ] Auth + RBAC working
-- [ ] All 6 frontend pages render
-- [ ] Celery processes a test task
+- [x] Monorepo scaffold committed
+- [x] Docker Compose starts all 5 services
+- [x] DB schema fully migrated
+- [x] Auth + RBAC working
+- [x] All 6 frontend pages render
+- [x] Celery processes a test task
 
 ### Phase 2
-- [ ] Base connector interface + mock connector working
-- [ ] Reddit + Play Store connectors fetch real data
-- [ ] Cleaning pipeline: dedup, PII, normalization
-- [ ] Ingestion job API working
+- [x] Base connector interface + mock connector working
+- [x] Reddit + Play Store connectors fetch real data
+- [x] Cleaning pipeline: dedup, PII, normalization
+- [x] Ingestion job API working
 
 ### Phase 3
-- [ ] Model abstraction layer (3+ providers)
-- [ ] Stage 1 relevance filter job
-- [ ] Stage 2 deep analysis job
-- [ ] Embeddings stored in pgvector
-- [ ] Full pipeline chainable from API
+- [x] Model abstraction layer (3+ providers)
+- [x] Stage 1 relevance filter job
+- [x] Stage 2 deep analysis job
+- [x] Embeddings stored in pgvector
+- [x] Full pipeline chainable from API
 
 ### Phase 4
-- [ ] Semantic clustering (≥ 5 labeled clusters)
-- [ ] Problem discovery (≥ 5 problems with evidence)
-- [ ] Taxonomy assignment
-- [ ] Trend detection (time-series in DB)
-- [ ] Emerging problem detection
-- [ ] Unknown unknowns surfaced
+- [x] Semantic clustering (≥ 5 labeled clusters)
+- [x] Problem discovery (≥ 5 problems with evidence)
+- [x] Taxonomy assignment
+- [x] Trend detection (time-series in DB)
+- [x] Emerging problem detection
+- [x] Unknown unknowns surfaced
 
 ### Phase 5
-- [ ] All 6 dashboard pages with real data
-- [ ] AI research assistant (RAG)
-- [ ] Human review workflow
-- [ ] Research brief generation + export
-- [ ] NL dataset search
+- [x] All 6 dashboard pages with real data
+- [x] AI research assistant (RAG)
+- [x] Human review workflow
+- [x] Research brief generation + export
+- [x] NL dataset search
 
 ### Phase 6
-- [ ] 100–200 record seed dataset
-- [ ] Evaluation framework + page
-- [ ] Automated tests passing
-- [ ] README enables 15-minute setup
-- [ ] All 14 Definition of Done items checked
+- [x] 100–200 record seed dataset
+- [x] Evaluation framework + page
+- [x] Automated tests passing
+- [x] README enables 15-minute setup
+- [x] All 14 Definition of Done items checked

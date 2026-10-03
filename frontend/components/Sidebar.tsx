@@ -9,6 +9,7 @@ import {
   TrendingUp,
   Compass,
   CheckSquare,
+  BarChart3,
   Cpu,
   Database,
   Radio,
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   { href: "/trends", label: "Emerging Trends", icon: TrendingUp, badge: "Velocity" },
   { href: "/explore", label: "AI Assistant", icon: Compass, badge: "RAG" },
   { href: "/review", label: "Human Review", icon: CheckSquare, badge: "HITL" },
+  { href: "/evaluation", label: "Evaluation", icon: BarChart3, badge: "Metrics" },
 ];
 
 export function Sidebar() {

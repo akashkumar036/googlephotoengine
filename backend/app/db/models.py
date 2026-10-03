@@ -286,6 +286,8 @@ class EvaluationBenchmark(Base):
     labeled_by = Column(String(36), ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+    conversation = relationship("Conversation")
+
 
 # ─── taxonomy_proposals ──────────────────────────────────────────────────
 class TaxonomyProposal(Base):
