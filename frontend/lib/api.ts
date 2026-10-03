@@ -2,10 +2,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { getSession } from "next-auth/react";
 
 const getBaseUrl = () => {
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
-  }
-  // In Next.js, our serverless route handlers are always at /api
+  // In Next.js, our serverless route handlers are always hosted at /api
   return "/api";
 };
 
