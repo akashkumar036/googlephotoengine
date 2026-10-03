@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     admin_password: str
 
     # ── AI / LLM — Groq (primary) ────────────────────────────────
-    ai_provider: Literal["groq", "openai", "anthropic", "google", "local"] = "groq"
+    ai_provider: Literal["groq", "openai", "anthropic", "google", "local", "mock"] = "groq"
     groq_api_key: str = ""
     ai_model_stage1: str = "llama-3.1-8b-instant"
     ai_model_stage2: str = "llama-3.3-70b-versatile"

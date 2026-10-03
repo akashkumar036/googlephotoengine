@@ -10,6 +10,10 @@ _backend_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _backend_root not in sys.path:
     sys.path.insert(0, _backend_root)
 
+# Hermetic test environment defaults
+os.environ["AI_PROVIDER"] = "mock"
+os.environ["EMBEDDING_PROVIDER"] = "mock"
+
 from app.main import app
 from app.db.models import Base, User, _uuid
 from app.db.session import get_db

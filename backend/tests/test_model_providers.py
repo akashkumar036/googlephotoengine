@@ -102,8 +102,8 @@ def test_model_router_selection(monkeypatch):
     assert groq_prov.provider_name == "groq"
 
     # Stage 1 and Stage 2 models
-    assert router.get_stage1_model("groq") == "llama-3.1-8b-instant"
-    assert router.get_stage2_model("groq") == "llama-3.3-70b-versatile"
+    assert router.get_stage1_model("groq") == settings.ai_model_stage1
+    assert router.get_stage2_model("groq") == settings.ai_model_stage2
     assert router.get_stage1_model("openai") == "gpt-4o-mini"
     assert router.get_stage2_model("openai") == "gpt-4o"
     assert router.get_stage1_model("anthropic") == "claude-3-haiku-20240307"
