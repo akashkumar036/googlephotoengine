@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     # ── Application ──────────────────────────────────────────────
     app_env: Literal["development", "staging", "production"] = "development"
     app_secret_key: str = "change-me"
+    cors_origins: str = "http://localhost:3000,http://localhost:3001"
 
     # ── Database ─────────────────────────────────────────────────
     database_url: str
