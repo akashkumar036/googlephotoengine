@@ -131,7 +131,6 @@ const RETRIEVAL_GAP_CATEGORIES = [
 export default function OverviewPage() {
   const [activeCitation, setActiveCitation] = useState<Citation | null>(null);
   const [tableFilter, setTableFilter] = useState<string>("All");
-  const [timeFilter, setTimeFilter] = useState<string>("Last 30 Days");
   const [isExporting, setIsExporting] = useState<boolean>(false);
 
   const handleCitationClick = (id: string, quote: string) => {
@@ -195,79 +194,8 @@ export default function OverviewPage() {
   });
 
   return (
-    <div className="flex flex-col w-full gap-space-xl pb-12">
-      {/* 1. Top Context Banner / Page Header */}
-      <section className="flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg bg-surface-container-low/90 backdrop-blur-xl p-space-xl rounded-xl shadow-md relative overflow-hidden">
-        <div className="absolute -right-20 -top-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="flex flex-col gap-space-xs max-w-3xl">
-          <div className="flex items-center gap-space-xs">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-secondary animate-pulse"></span>
-              Ingestion Cycle Active
-            </span>
-            <span className="font-mono-metric text-mono-metric text-on-surface-variant">
-              Llama 3.3 Node #4
-            </span>
-          </div>
-          <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">
-            Photo Discovery Engine
-          </h1>
-          <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-            Real-time telemetry and thematic clustering from{" "}
-            <span className="text-primary font-medium">2,050 ingested complaints</span> across Google Play,
-            Reddit, App Store, and YouTube.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-space-sm self-start lg:self-center">
-          {/* Time Range Select */}
-          <div className="relative">
-            <button
-              className="flex items-center gap-2 px-space-md py-2 bg-surface-container rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
-              id="timeFilterBtn"
-              type="button"
-              onClick={() => {
-                const options = ["Last 7 Days", "Last 30 Days", "Last 90 Days", "All Time"];
-                const nextIdx = (options.indexOf(timeFilter) + 1) % options.length;
-                setTimeFilter(options[nextIdx]);
-              }}
-            >
-              <span className="material-symbols-outlined text-[18px] text-on-surface-variant">
-                calendar_today
-              </span>
-              <span>{timeFilter}</span>
-              <span className="material-symbols-outlined text-[16px] text-on-surface-variant">
-                expand_more
-              </span>
-            </button>
-          </div>
-
-          {/* Confidence Pill */}
-          <button
-            className="flex items-center gap-1.5 px-space-md py-2 bg-surface-container rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-high transition-colors"
-            type="button"
-          >
-            <span className="material-symbols-outlined text-[18px] text-secondary">
-              verified
-            </span>
-            <span>Confidence &gt; 85%</span>
-          </button>
-
-          {/* Export Action */}
-          <button
-            className="flex items-center gap-space-xs px-space-md py-2 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md hover:bg-primary hover:text-on-primary shadow-sm transition-all cursor-pointer"
-            onClick={handleExport}
-            type="button"
-          >
-            <span className="material-symbols-outlined text-[18px]">
-              {isExporting ? "hourglass_empty" : "download"}
-            </span>
-            <span>Export Findings (JSON/CSV)</span>
-          </button>
-        </div>
-      </section>
-
-      {/* 2. 5 KPI Metric Cards Row */}
+    <div className="flex flex-col w-full gap-space-xl pb-12 pt-2">
+      {/* 1. 5 KPI Metric Cards Row */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-gutter">
         {/* Card 1 */}
         <div className="flex flex-col justify-between p-space-lg rounded-xl bg-surface-container-low shadow-sm relative overflow-hidden group hover:bg-surface-container transition-all">
@@ -1068,19 +996,31 @@ export default function OverviewPage() {
             • 2,050 quotes indexed with semantic vector similarity
           </span>
         </div>
-        <button
-          className="flex items-center gap-1 px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary font-label-md text-label-md transition-colors shadow-sm cursor-pointer"
-          onClick={() =>
-            handleCitationClick(
-              "LIVE-SAMPLE",
-              "Telemetry sample: 2,050 ingested raw quotes synchronized across 4 platform adapters. Filtering enabled for Groq 3.3 pipeline."
-            )
-          }
-          type="button"
-        >
-          <span className="material-symbols-outlined text-[18px]">quick_reference_all</span>
-          <span>Browse Evidence Repository</span>
-        </button>
+        <div className="flex items-center gap-space-xs flex-wrap">
+          <button
+            className="flex items-center gap-space-xs px-space-md py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors cursor-pointer border border-outline-variant/30"
+            onClick={handleExport}
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[18px]">
+              {isExporting ? "hourglass_empty" : "download"}
+            </span>
+            <span>Export Findings (JSON)</span>
+          </button>
+          <button
+            className="flex items-center gap-1 px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary font-label-md text-label-md transition-colors shadow-sm cursor-pointer"
+            onClick={() =>
+              handleCitationClick(
+                "LIVE-SAMPLE",
+                "Telemetry sample: 2,050 ingested raw quotes synchronized across 4 platform adapters. Filtering enabled for Groq 3.3 pipeline."
+              )
+            }
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[18px]">quick_reference_all</span>
+            <span>Browse Evidence Repository</span>
+          </button>
+        </div>
       </div>
 
       {/* Interactive Citation Slide-out Modal / Drawer */}
