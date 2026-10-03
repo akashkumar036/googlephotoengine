@@ -38,13 +38,6 @@ const NAV_ITEMS = [
     icon: "trending_up",
     badge: null,
   },
-  {
-    href: "/review",
-    label: "Curator Review",
-    icon: "check_circle",
-    badge: "12 pending",
-    badgeClass: "bg-tertiary-container/30 text-tertiary",
-  },
 ];
 
 export function Sidebar() {

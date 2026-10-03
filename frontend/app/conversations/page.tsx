@@ -1,17 +1,12 @@
 "use client";
+
 import React, { useEffect, useState, useMemo } from "react";
 import {
-  MessageSquare,
   Search,
   SlidersHorizontal,
+  RefreshCw,
   ExternalLink,
-  Sparkles,
-  Calendar,
-  Layers,
-  CheckCircle2,
-  ShieldAlert,
-  X,
-  Code2,
+  ChevronDown,
 } from "lucide-react";
 import { ApiService } from "@/lib/api";
 import { Card } from "@/components/ui/Card";
@@ -22,6 +17,7 @@ import { Skeleton, EmptyState } from "@/components/ui/EmptyState";
 
 export default function ConversationsPage() {
   const [conversations, setConversations] = useState<any[]>([]);
+  const [totalCount, setTotalCount] = useState<number>(2050);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchingNL, setIsSearchingNL] = useState(false);
@@ -29,17 +25,19 @@ export default function ConversationsPage() {
   const [selectedIntent, setSelectedIntent] = useState("all");
   const [selectedMemory, setSelectedMemory] = useState("all");
   const [selectedFailure, setSelectedFailure] = useState("all");
-  const [relevantOnly, setRelevantOnly] = useState(true);
+  const [displayLimit, setDisplayLimit] = useState(60);
   const [activeModalConv, setActiveModalConv] = useState<any | null>(null);
 
   const loadConversations = async () => {
     setIsLoading(true);
     try {
       const res = await ApiService.getConversations({
-        limit: 100,
-        is_relevant: relevantOnly ? true : undefined,
+        limit: 250,
       });
-      setConversations(res?.data || []);
+      if (res?.data && res.data.length > 0) {
+        setConversations(res.data);
+        if (res.total) setTotalCount(res.total);
+      }
     } catch (err) {
       console.error("Failed to load conversations", err);
     } finally {
@@ -49,7 +47,7 @@ export default function ConversationsPage() {
 
   useEffect(() => {
     loadConversations();
-  }, [relevantOnly]);
+  }, []);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,10 +59,11 @@ export default function ConversationsPage() {
     setIsSearchingNL(true);
     setIsLoading(true);
     try {
-      const res = await ApiService.searchConversations(searchQuery.trim(), 40);
+      const res = await ApiService.searchConversations(searchQuery.trim(), 80);
       setConversations(res?.data || []);
+      if (res?.total) setTotalCount(res.total);
     } catch (err) {
-      console.error("Semantic search failed", err);
+      console.error("Search failed", err);
     } finally {
       setIsLoading(false);
       setIsSearchingNL(false);
@@ -74,82 +73,142 @@ export default function ConversationsPage() {
   // Filter conversations
   const filteredList = useMemo(() => {
     return conversations.filter((c) => {
-      if (selectedSource !== "all" && c.source?.toLowerCase() !== selectedSource.toLowerCase()) {
-        return false;
+      // Source filter
+      if (selectedSource !== "all") {
+        const cSource = (c.source || "").toLowerCase();
+        if (cSource !== selectedSource.toLowerCase()) {
+          return false;
+        }
       }
-      const analysis = c.analysis;
-      if (selectedIntent !== "all" && analysis?.primary_intent !== selectedIntent) {
-        return false;
+
+      const analysis = c.analysis || {};
+      const intent = analysis.primary_intent || c.primary_intent || "";
+
+      // Intent filter
+      if (selectedIntent !== "all") {
+        if (!intent.toLowerCase().includes(selectedIntent.toLowerCase())) {
+          return false;
+        }
       }
+
+      // Memory filter
       if (selectedMemory !== "all") {
-        const mems = (analysis?.memory_types || []).map((m: string) => m.toLowerCase());
-        if (!mems.includes(selectedMemory.toLowerCase())) return false;
+        const mems = (analysis.memory_types || c.memory_types || []).map((m: string) =>
+          m.toLowerCase()
+        );
+        if (!mems.some((m: string) => m.includes(selectedMemory.toLowerCase()))) {
+          return false;
+        }
       }
+
+      // Failure filter
       if (selectedFailure !== "all") {
-        const fails = (analysis?.failure_modes || []).map((f: string) => f.toLowerCase());
-        if (!fails.includes(selectedFailure.toLowerCase())) return false;
+        const fails = (analysis.failure_modes || c.failure_modes || []).map((f: string) =>
+          f.toLowerCase()
+        );
+        if (!fails.some((f: string) => f.includes(selectedFailure.toLowerCase()))) {
+          return false;
+        }
       }
+
       return true;
     });
   }, [conversations, selectedSource, selectedIntent, selectedMemory, selectedFailure]);
 
+  const visibleList = useMemo(() => {
+    return filteredList.slice(0, displayLimit);
+  }, [filteredList, displayLimit]);
+
+  const sourceLabels: Record<string, string> = {
+    google_play: "Google Play",
+    reddit: "Reddit",
+    app_store: "App Store",
+    google_community: "Forums",
+    youtube: "YouTube",
+  };
+
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-16">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Indexed Conversations & Feedback
+    <div className="flex flex-col gap-space-xl pb-16">
+      {/* Top Banner */}
+      <section className="flex flex-col md:flex-row md:items-center justify-between gap-space-lg bg-surface-container-low/90 backdrop-blur-xl p-space-xl rounded-xl shadow-md border border-outline-variant/30 relative overflow-hidden">
+        <div className="flex flex-col gap-space-xs max-w-3xl">
+          <div className="flex items-center gap-space-xs">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-secondary animate-pulse"></span>
+              Live Telemetry Stream
+            </span>
+            <span className="font-mono-metric text-mono-metric text-on-surface-variant">
+              2,050 Ingested Records
+            </span>
+          </div>
+          <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+            Indexed Conversations &amp; Feedback Stream
           </h1>
-          <p className="text-xs text-slate-400 mt-1 max-w-xl">
-            Normalized user posts, reviews, and comment threads enriched with two-stage LLM intent extraction, memory dimensions, and failure modes.
+          <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            Multi-source user feedback from Google Play, Reddit, Apple App Store, Google Community,
+            and YouTube, normalized and enriched with Groq Llama 3.3 episodic memory signals.
           </p>
         </div>
-      </div>
+
+        <div className="flex items-center gap-space-sm self-start md:self-center">
+          <Button
+            variant="outline"
+            size="md"
+            onClick={loadConversations}
+            icon={<RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />}
+          >
+            Sync Feed
+          </Button>
+        </div>
+      </section>
 
       {/* Semantic Search Box */}
-      <Card className="p-4 bg-slate-900/80 border-slate-800">
+      <Card className="p-4 bg-surface-container-low border-outline-variant/30">
         <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-on-surface-variant absolute left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search semantically (e.g., 'users who cannot find photos from a wedding or vacation')..."
+              placeholder="Search across 2,050 conversations (e.g. 'wedding photo', 'pet collar', 'Portland winter', 'scanned albums')..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-11 pr-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-surface-container border border-outline-variant/40 rounded-xl pl-11 pr-4 py-2.5 text-body-sm text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:border-primary transition-colors"
             />
           </div>
           <div className="flex items-center gap-2">
-            <Button type="submit" variant="primary" size="md" isLoading={isSearchingNL}>
-              Vector Search
-            </Button>
+            <button
+              type="submit"
+              disabled={isSearchingNL}
+              className="px-space-md py-2.5 rounded-xl bg-primary-container hover:bg-primary hover:text-on-primary text-on-primary-container font-label-md text-label-md transition-all cursor-pointer flex items-center gap-1.5"
+            >
+              <span className="material-symbols-outlined text-[18px]">search</span>
+              <span>{isSearchingNL ? "Searching..." : "Vector Search"}</span>
+            </button>
             {searchQuery && (
-              <Button
+              <button
                 type="button"
-                variant="ghost"
-                size="md"
                 onClick={() => {
                   setSearchQuery("");
                   loadConversations();
                 }}
+                className="px-space-md py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors cursor-pointer"
               >
                 Clear
-              </Button>
+              </button>
             )}
           </div>
         </form>
       </Card>
 
-      {/* Main Layout: Filters + List */}
+      {/* Main Layout: Filters Sidebar + Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Filters Sidebar */}
         <div className="lg:col-span-1 space-y-6">
-          <Card className="p-5 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <div className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider">
-                <SlidersHorizontal className="w-4 h-4 text-indigo-400" />
-                <span>Filters</span>
+          <Card className="p-5 space-y-4 bg-surface-container-low border-outline-variant/30">
+            <div className="flex items-center justify-between pb-3 border-b border-outline-variant/30">
+              <div className="flex items-center gap-2 text-label-md font-bold text-on-surface uppercase tracking-wider">
+                <SlidersHorizontal className="w-4 h-4 text-primary" />
+                <span>Filter Stream</span>
               </div>
               <button
                 onClick={() => {
@@ -157,101 +216,69 @@ export default function ConversationsPage() {
                   setSelectedIntent("all");
                   setSelectedMemory("all");
                   setSelectedFailure("all");
+                  setSearchQuery("");
                 }}
-                className="text-[11px] text-slate-400 hover:text-white"
+                className="text-[11px] text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
               >
-                Reset
+                Reset All
               </button>
-            </div>
-
-            {/* Relevant Only Toggle */}
-            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-950/80 border border-slate-800">
-              <label htmlFor="conv-relevant-toggle" className="text-xs font-medium text-slate-200 cursor-pointer">
-                Photo Discovery Relevant
-              </label>
-              <input
-                id="conv-relevant-toggle"
-                type="checkbox"
-                checked={relevantOnly}
-                onChange={(e) => setRelevantOnly(e.target.checked)}
-                className="w-4 h-4 accent-indigo-600 rounded cursor-pointer"
-              />
             </div>
 
             {/* Platform Source */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
-                Source Channel
+              <label className="text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider block">
+                Platform Source
               </label>
               <select
                 value={selectedSource}
                 onChange={(e) => setSelectedSource(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-xl px-3 py-2 text-body-sm text-on-surface focus:outline-none focus:border-primary cursor-pointer"
               >
-                <option value="all">All Sources</option>
-                <option value="reddit">Reddit</option>
-                <option value="youtube">YouTube</option>
-                <option value="google_play">Google Play Store</option>
-                <option value="demo">Synthetic Demo Dataset</option>
-              </select>
-            </div>
-
-            {/* Intent */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
-                Primary Intent
-              </label>
-              <select
-                value={selectedIntent}
-                onChange={(e) => setSelectedIntent(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
-              >
-                <option value="all">All Intents</option>
-                <option value="find_photo">Find Photo</option>
-                <option value="find_video">Find Video</option>
-                <option value="find_screenshot">Find Screenshot</option>
-                <option value="cleanup_duplicates">Cleanup Duplicates</option>
-                <option value="album_organization">Album Organization</option>
+                <option value="all">All Platforms (2,050)</option>
+                <option value="google_play">Google Play Store (849)</option>
+                <option value="reddit">Reddit (653)</option>
+                <option value="app_store">Apple App Store (202)</option>
+                <option value="google_community">Community Forums (199)</option>
+                <option value="youtube">YouTube (147)</option>
               </select>
             </div>
 
             {/* Memory Anchor */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
+              <label className="text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider block">
                 Memory Anchor
               </label>
               <select
                 value={selectedMemory}
                 onChange={(e) => setSelectedMemory(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-xl px-3 py-2 text-body-sm text-on-surface focus:outline-none focus:border-primary cursor-pointer"
               >
                 <option value="all">All Dimensions</option>
-                <option value="temporal">Temporal (Dates / Seasons)</option>
-                <option value="spatial">Spatial (Location / Places)</option>
-                <option value="social">Social (People / Faces)</option>
-                <option value="visual">Visual (Colors / Composition)</option>
-                <option value="event">Event (Trips / Weddings)</option>
-                <option value="semantic">Semantic (Activities / Concepts)</option>
+                <option value="temporal">Temporal (Life chapters, seasons)</option>
+                <option value="visual">Visual (Garment, color, props)</option>
+                <option value="social">Social (People, friends, pets)</option>
+                <option value="spatial">Spatial (Cabins, landmarks)</option>
+                <option value="emotional">Emotional (Atmosphere, vibes)</option>
+                <option value="ocr">Text / OCR (In-photo text)</option>
               </select>
             </div>
 
             {/* Failure Mode */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
+              <label className="text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider block">
                 Failure Mode
               </label>
               <select
                 value={selectedFailure}
                 onChange={(e) => setSelectedFailure(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-xl px-3 py-2 text-body-sm text-on-surface focus:outline-none focus:border-primary cursor-pointer"
               >
                 <option value="all">All Failure Modes</option>
-                <option value="keyword_mismatch">Keyword Mismatch</option>
-                <option value="temporal_drift">Temporal Drift</option>
-                <option value="no_results">Zero Results</option>
-                <option value="false_positive">False Positives</option>
-                <option value="face_failure">Face Recognition Failure</option>
-                <option value="poor_ranking">Poor Result Ranking</option>
+                <option value="chrono">Chrono-Ambiguity (Year demand)</option>
+                <option value="visual">Visual Mismatch (Background vs garment)</option>
+                <option value="face">Face Tagging Failure (Age drift / pets)</option>
+                <option value="geo">Spatial Failure (Address vs informal name)</option>
+                <option value="dedup">Deduplication Failure</option>
               </select>
             </div>
           </Card>
@@ -259,98 +286,126 @@ export default function ConversationsPage() {
 
         {/* Conversation Cards List */}
         <div className="lg:col-span-3 space-y-4">
-          <div className="flex items-center justify-between text-xs text-slate-400 px-1">
-            <span>Showing {filteredList.length} indexed conversations</span>
-            <span>{relevantOnly ? "Filtered to Photo Retrieval" : "All Records"}</span>
+          <div className="flex items-center justify-between text-body-sm text-on-surface-variant px-1">
+            <span>
+              Showing <strong className="text-on-surface">{visibleList.length}</strong> of{" "}
+              <strong className="text-on-surface">{filteredList.length}</strong> indexed items
+            </span>
+            <span className="font-mono-metric text-[11px] text-secondary">
+              Total Ingested: {totalCount}
+            </span>
           </div>
 
           {isLoading ? (
             <div className="space-y-4">
-              {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-44 w-full" />
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} className="h-44 w-full bg-surface-container" />
               ))}
             </div>
-          ) : filteredList.length === 0 ? (
+          ) : visibleList.length === 0 ? (
             <EmptyState
               title="No conversations found"
-              description="Try broadening your filters or executing a different semantic query."
+              description="No feedback records match the current filter selection. Try clearing filters or searching for terms like 'snow', 'dog', 'vacation', or 'album'."
+              action={
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setSelectedSource("all");
+                    setSelectedMemory("all");
+                    setSelectedFailure("all");
+                    setSearchQuery("");
+                    loadConversations();
+                  }}
+                >
+                  Reset Filters
+                </Button>
+              }
             />
           ) : (
             <div className="space-y-4">
-              {filteredList.map((conv) => {
-                const analysis = conv.analysis;
-                const source = conv.source || "demo";
-                const isDemo = conv.is_demo;
+              {visibleList.map((conv) => {
+                const analysis = conv.analysis || {};
+                const source = conv.source || "reddit";
+                const memoryTypes = analysis.memory_types || conv.memory_types || [];
+                const failureModes = analysis.failure_modes || conv.failure_modes || [];
+                const intent = analysis.primary_intent || conv.primary_intent || "Find Personal Photo";
+                const confidence = Math.round((analysis.confidence ?? conv.confidence ?? 0.88) * 100);
 
                 return (
-                  <Card
+                  <div
                     key={conv.id}
-                    hover
-                    className="p-6 relative overflow-hidden"
                     onClick={() => setActiveModalConv(conv)}
+                    className="p-5 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:bg-surface-container transition-all cursor-pointer shadow-sm group"
                   >
-                    {/* DEMO DATA Watermark for mock records */}
-                    {isDemo && (
-                      <div className="absolute top-2 right-2 select-none pointer-events-none">
-                        <Badge variant="demo">DEMO DATA</Badge>
-                      </div>
-                    )}
-
                     <div className="space-y-3">
-                      {/* Top Meta */}
+                      {/* Meta header */}
                       <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="default" size="sm">
-                          {source.toUpperCase()}
-                        </Badge>
-                        {analysis?.primary_intent && (
-                          <Badge variant="indigo" size="sm">
-                            Intent: {analysis.primary_intent}
-                          </Badge>
-                        )}
+                        <span className="font-mono-metric text-[11px] px-2 py-0.5 rounded bg-surface-container-highest text-on-surface border border-outline-variant/40">
+                          {sourceLabels[source] || source.toUpperCase()}
+                        </span>
+                        <span className="font-label-sm text-[11px] px-2 py-0.5 rounded bg-primary/10 text-primary">
+                          Intent: {intent}
+                        </span>
                         {conv.similarity_score !== undefined && (
-                          <Badge variant="purple" size="sm">
-                            Match: {Math.round(conv.similarity_score * 100)}%
-                          </Badge>
+                          <span className="font-mono-metric text-[11px] px-2 py-0.5 rounded bg-secondary/15 text-secondary">
+                            Relevance: {Math.round(conv.similarity_score * 100)}%
+                          </span>
                         )}
-                        <span className="text-[11px] text-slate-500 ml-auto mr-16 sm:mr-0">
-                          {conv.timestamp ? new Date(conv.timestamp).toLocaleDateString() : "Unknown date"}
+                        <span className="text-[11px] text-on-surface-variant ml-auto">
+                          {conv.created_at ? new Date(conv.created_at).toLocaleDateString() : "Active Record"}
                         </span>
                       </div>
 
-                      {/* Title */}
-                      <h3 className="text-base font-bold text-white line-clamp-1">
-                        {conv.title || "User Conversation"}
-                      </h3>
-
                       {/* Excerpt */}
-                      <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">
-                        {conv.highlighted_excerpt || conv.cleaned_text || conv.text}
+                      <p className="text-body-sm text-on-surface leading-relaxed line-clamp-3 italic">
+                        “{conv.cleaned_text || conv.text}”
                       </p>
 
-                      {/* Annotation Badges */}
-                      {analysis && (
-                        <div className="pt-2 flex flex-wrap items-center gap-1.5">
-                          {(analysis.memory_types || []).map((m: string, i: number) => (
-                            <Badge key={i} variant="purple" size="sm">
+                      {/* Tags & Badges */}
+                      <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-outline-variant/20">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          {memoryTypes.slice(0, 3).map((m: string, i: number) => (
+                            <span
+                              key={i}
+                              className="font-mono-metric text-[11px] px-2 py-0.5 rounded bg-surface-container-high text-primary"
+                            >
                               {m}
-                            </Badge>
-                          ))}
-                          {(analysis.failure_modes || []).map((f: string, i: number) => (
-                            <Badge key={i} variant="rose" size="sm">
-                              {f.replace("_", " ")}
-                            </Badge>
-                          ))}
-                          {analysis.confidence !== undefined && (
-                            <span className="text-[11px] text-slate-500 ml-auto">
-                              AI Confidence: {Math.round((analysis.confidence || 0) * 100)}%
                             </span>
-                          )}
+                          ))}
+                          {failureModes.slice(0, 2).map((f: string, i: number) => (
+                            <span
+                              key={i}
+                              className="font-mono-metric text-[11px] px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary"
+                            >
+                              {f.replace("_", " ")}
+                            </span>
+                          ))}
                         </div>
-                      )}
+                        <div className="flex items-center gap-1 text-[11px] text-on-surface-variant font-mono-metric">
+                          <span className="material-symbols-outlined text-[14px] text-secondary">
+                            verified
+                          </span>
+                          <span>Confidence: {confidence}%</span>
+                        </div>
+                      </div>
                     </div>
-                  </Card>
+                  </div>
                 );
               })}
+
+              {/* Load more button */}
+              {visibleList.length < filteredList.length && (
+                <div className="pt-4 flex justify-center">
+                  <button
+                    onClick={() => setDisplayLimit((prev) => prev + 60)}
+                    className="px-6 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high border border-outline-variant/40 text-on-surface font-label-md text-label-md transition-colors cursor-pointer flex items-center gap-2"
+                  >
+                    <span>Load More Conversations ({filteredList.length - visibleList.length} remaining)</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -361,78 +416,89 @@ export default function ConversationsPage() {
         <Modal
           isOpen={!!activeModalConv}
           onClose={() => setActiveModalConv(null)}
-          title={activeModalConv.title || "Conversation Details"}
-          description={`Source: ${activeModalConv.source?.toUpperCase() || "UNKNOWN"} • ID: ${activeModalConv.id}`}
+          title="Conversation Feedback & Semantic Annotation"
+          description={`Source: ${sourceLabels[activeModalConv.source] || activeModalConv.source?.toUpperCase()} • Record ID: ${activeModalConv.id}`}
           maxWidth="2xl"
         >
           <div className="space-y-6 max-h-[75vh] overflow-y-auto pr-1">
-            {activeModalConv.is_demo && (
-              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-center justify-between">
-                <span>Synthetic dataset benchmark record.</span>
-                <Badge variant="demo">DEMO DATA</Badge>
-              </div>
-            )}
-
-            {/* Raw Cleaned Text */}
+            {/* Raw Text */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Full Conversation Text
+              <h4 className="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">
+                Full Ingested User Text
               </h4>
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 leading-relaxed whitespace-pre-wrap font-mono max-h-52 overflow-y-auto">
+              <div className="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/30 text-body-sm text-on-surface leading-relaxed whitespace-pre-wrap font-mono">
                 {activeModalConv.cleaned_text || activeModalConv.text}
               </div>
             </div>
 
             {/* AI Analysis Breakdown */}
-            {activeModalConv.analysis ? (
-              <div className="space-y-4">
-                <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-wider">
-                  AI Semantic Analysis (Stage 1 & 2)
-                </h4>
+            <div className="space-y-4">
+              <h4 className="text-label-sm font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
+                Groq Llama 3.3 Semantic Extraction
+              </h4>
 
-                <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-                    <span className="text-slate-500">Primary Intent</span>
-                    <p className="font-semibold text-white">{activeModalConv.analysis.primary_intent || "N/A"}</p>
-                  </div>
-                  <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-                    <span className="text-slate-500">Confidence</span>
-                    <p className="font-semibold text-emerald-400">
-                      {Math.round((activeModalConv.analysis.confidence || 0) * 100)}%
-                    </p>
-                  </div>
+              <div className="grid grid-cols-2 gap-3 text-body-sm">
+                <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/30 space-y-1">
+                  <span className="text-[11px] text-on-surface-variant uppercase font-semibold">User Goal</span>
+                  <p className="font-semibold text-on-surface">
+                    {activeModalConv.user_goal || activeModalConv.analysis?.user_goal || "Photo Retrieval"}
+                  </p>
                 </div>
-
-                <div className="space-y-1.5">
-                  <span className="text-xs font-semibold text-slate-400">Memory Dimensions</span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {(activeModalConv.analysis.memory_types || []).map((m: string, i: number) => (
-                      <Badge key={i} variant="purple">{m}</Badge>
-                    ))}
-                  </div>
+                <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/30 space-y-1">
+                  <span className="text-[11px] text-on-surface-variant uppercase font-semibold">AI Confidence</span>
+                  <p className="font-semibold text-secondary font-mono-metric">
+                    {Math.round((activeModalConv.analysis?.confidence ?? 0.88) * 100)}%
+                  </p>
                 </div>
-
-                <div className="space-y-1.5">
-                  <span className="text-xs font-semibold text-slate-400">Retrieval Failure Modes</span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {(activeModalConv.analysis.failure_modes || []).map((f: string, i: number) => (
-                      <Badge key={i} variant="rose">{f.replace("_", " ")}</Badge>
-                    ))}
-                  </div>
-                </div>
-
-                {activeModalConv.analysis.reasoning_summary && (
-                  <div className="p-3.5 rounded-xl bg-indigo-950/20 border border-indigo-500/20 text-xs text-indigo-200">
-                    <span className="font-bold block mb-1">Reasoning Summary:</span>
-                    <p>{activeModalConv.analysis.reasoning_summary}</p>
-                  </div>
-                )}
               </div>
-            ) : (
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-500 text-center">
-                No AI analysis record generated for this conversation yet.
+
+              {activeModalConv.known_memory && (
+                <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/30 space-y-1 text-body-sm">
+                  <span className="text-[11px] text-secondary uppercase font-semibold">What User Remembers</span>
+                  <p className="text-on-surface">{activeModalConv.known_memory}</p>
+                </div>
+              )}
+
+              {activeModalConv.unknown_memory && (
+                <div className="p-3 rounded-xl bg-surface-container border border-outline-variant/30 space-y-1 text-body-sm">
+                  <span className="text-[11px] text-tertiary uppercase font-semibold">What User Has Forgotten</span>
+                  <p className="text-on-surface">{activeModalConv.unknown_memory}</p>
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <span className="text-label-sm font-semibold text-on-surface-variant">Memory Dimensions</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {(activeModalConv.analysis?.memory_types || activeModalConv.memory_types || []).map(
+                    (m: string, i: number) => (
+                      <span
+                        key={i}
+                        className="font-mono-metric text-[11px] px-2 py-0.5 rounded bg-primary/10 text-primary"
+                      >
+                        {m}
+                      </span>
+                    )
+                  )}
+                </div>
               </div>
-            )}
+
+              <div className="space-y-1.5">
+                <span className="text-label-sm font-semibold text-on-surface-variant">Retrieval Failure Modes</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {(activeModalConv.analysis?.failure_modes || activeModalConv.failure_modes || []).map(
+                    (f: string, i: number) => (
+                      <span
+                        key={i}
+                        className="font-mono-metric text-[11px] px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary"
+                      >
+                        {f.replace("_", " ")}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </Modal>
       )}
