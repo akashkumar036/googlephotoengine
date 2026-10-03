@@ -5,13 +5,8 @@ const getBaseUrl = () => {
   if (process.env.NEXT_PUBLIC_API_URL) {
     return process.env.NEXT_PUBLIC_API_URL;
   }
-  if (typeof window !== "undefined") {
-    // If running in production (e.g. on Vercel), use native /api serverless endpoints
-    if (!window.location.hostname.includes("localhost") && !window.location.hostname.includes("127.0.0.1")) {
-      return "/api";
-    }
-  }
-  return "http://localhost:8000";
+  // In Next.js, our serverless route handlers are always at /api
+  return "/api";
 };
 
 const API_BASE_URL = getBaseUrl();

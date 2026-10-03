@@ -10,7 +10,6 @@ interface HeaderProps {
 export function Header({ onOpenBriefModal }: HeaderProps) {
   const [healthStatus, setHealthStatus] = useState<string>("FastAPI 200 OK • 18ms");
   const [isPinging, setIsPinging] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const handlePing = async () => {
     setIsPinging(true);
@@ -26,32 +25,16 @@ export function Header({ onOpenBriefModal }: HeaderProps) {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && searchQuery.trim()) {
-      window.location.href = `/explore?q=${encodeURIComponent(searchQuery)}`;
-    }
-  };
-
   return (
     <header className="sticky top-0 z-30 h-16 w-full bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 px-margin-desktop flex items-center justify-between">
-      {/* Search Omnibar */}
-      <div className="flex items-center gap-space-md w-[480px] bg-surface-container-low/80 border border-outline-variant/40 rounded-lg px-space-md py-2 focus-within:border-primary transition-all">
-        <span className="material-symbols-outlined text-on-surface-variant text-[20px]">
-          search
+      {/* Left Title / Context Badge (Search Bar Removed per user request) */}
+      <div className="flex items-center gap-space-sm">
+        <span className="font-label-sm uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-md border border-primary/20">
+          Executive Research Platform
         </span>
-        <input
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="bg-transparent w-full text-on-surface placeholder:text-on-surface-variant/60 font-body-sm text-body-sm focus:outline-none"
-          placeholder="Search 2,050+ retrieval problems, memory anchors, user quotes..."
-          type="text"
-        />
-        <div className="flex items-center px-1.5 py-0.5 rounded bg-surface-container-highest border border-outline-variant/40">
-          <span className="font-mono-metric text-[10px] text-on-surface-variant">
-            Ctrl K
-          </span>
-        </div>
+        <span className="text-on-surface-variant text-body-sm hidden md:inline">
+          • Retrieval Gap &amp; Intent Synthesis Engine
+        </span>
       </div>
 
       {/* Right controls */}
@@ -60,10 +43,14 @@ export function Header({ onOpenBriefModal }: HeaderProps) {
         <button
           onClick={handlePing}
           title="Click to ping backend latency"
-          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/10 border border-secondary/30 hover:bg-secondary/20 transition-colors"
+          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/10 border border-secondary/30 hover:bg-secondary/20 transition-colors cursor-pointer"
         >
           <span className="relative flex h-2 w-2">
-            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75 ${isPinging ? "duration-300" : ""}`}></span>
+            <span
+              className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75 ${
+                isPinging ? "duration-300" : ""
+              }`}
+            ></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
           </span>
           <span className="font-mono-metric text-mono-metric text-secondary">
@@ -79,9 +66,11 @@ export function Header({ onOpenBriefModal }: HeaderProps) {
 
         {/* Notifications Button */}
         <button
-          className="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"
+          className="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all cursor-pointer"
           type="button"
-          onClick={() => alert("All 2,050 feedback records processed with zero pipeline errors.")}
+          onClick={() =>
+            alert("All 2,050 feedback records processed with zero pipeline errors.")
+          }
           title="Notifications"
         >
           <span className="material-symbols-outlined text-[22px]">notifications</span>
