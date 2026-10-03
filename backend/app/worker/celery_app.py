@@ -24,4 +24,7 @@ celery_app.conf.update(
     worker_prefetch_multiplier=1,     # one task at a time per worker slot
     task_track_started=True,
     result_expires=86400,             # keep results for 24h
+    broker_connection_retry_on_startup=False,
+    broker_connection_max_retries=1,
+    broker_connection_timeout=2,
 )

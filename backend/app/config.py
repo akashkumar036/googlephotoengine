@@ -1,10 +1,13 @@
-from __future__ import annotations
-
+import os
 from functools import lru_cache
 from typing import Literal
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_root_env = os.path.join(_repo_root, ".env")
+_backend_env = os.path.join(_repo_root, "backend", ".env")
 
 
 class Settings(BaseSettings):
@@ -13,7 +16,11 @@ class Settings(BaseSettings):
     Validated at startup — invalid values cause an immediate, descriptive failure.
     """
 
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=False, extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=(".env", _root_env, _backend_env),
+        case_sensitive=False,
+        extra="ignore",
+    )
 
     # ── Application ──────────────────────────────────────────────
     app_env: Literal["development", "staging", "production"] = "development"

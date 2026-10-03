@@ -1,0 +1,1196 @@
+{
+  "version": "1.0",
+  "is_demo": true,
+  "label": "DEMO DATA",
+  "total": 75,
+  "records": [
+    {
+      "id": "demo_001",
+      "source": "reddit",
+      "title": "Cannot find photos from Christmas 2022",
+      "text": "I took photos at Christmas dinner 2022 with my Pixel 6. I searched Christmas and December 2022 in Google Photos but nothing useful comes up. The photos are definitely there. Why is date-based retrieval so bad?",
+      "author_hash": "bb82030dbc2bcaba32a90bf2e207a84a856fc5f033b77c480836ab6f77f40f19",
+      "timestamp": "2024-12-16T00:00:00Z",
+      "url": "https://reddit.com/demo001",
+      "engagement": {
+        "upvotes": 145,
+        "comments": 34
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_002",
+      "source": "google_play",
+      "title": "",
+      "text": "Search by date completely broken. I took vacation photos in Bali August 2023 and when I type August 2023 Bali nothing comes up. I have to manually scroll through thousands of photos.",
+      "author_hash": "6ca202c88e549dff68c09bfafbfc60b2fac074debc1e6777e9ba4b6c703ed114",
+      "timestamp": "2026-08-05T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 87
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_003",
+      "source": "app_store",
+      "title": "",
+      "text": "Looking for photos from my sons first birthday party March 2021 and the app showed me totally unrelated stuff. I had to scroll for 20 minutes. Apple Photos at least remembers when things happened.",
+      "author_hash": "011e39efe22590f4a339ad19cd180f4d855e32feba602d1ec8e154780838c99c",
+      "timestamp": "2026-09-19T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 56
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_004",
+      "source": "reddit",
+      "title": "How do I find photos from a specific week?",
+      "text": "I need photos from my college graduation week May 12-18 2023. The date filter in Google Photos only goes to month level not week. I have 500 photos from that month alone.",
+      "author_hash": "e9c981a479986215bab0bf6c32efefa14852534b138c3509d8369edd510363da",
+      "timestamp": "2026-05-14T00:00:00Z",
+      "url": "https://reddit.com/demo004",
+      "engagement": {
+        "upvotes": 89,
+        "comments": 21
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_005",
+      "source": "google_community",
+      "title": "Year search returns wrong results",
+      "text": "When I search for 2020 photos it shows me 2018 and 2021 mixed in. The AI seems confused about when photos were taken. I have EXIF dates correct but the search still gets it wrong.",
+      "author_hash": "5850a03e801ffb108da1160e3373979443004b9e670addf33000dca9045fa413",
+      "timestamp": "2026-01-24T00:00:00Z",
+      "url": "https://support.google.com/photos/demo005",
+      "engagement": {
+        "replies": 12,
+        "helpful_votes": 45
+      },
+      "metadata": {}
+    },
+    {
+      "id": "demo_006",
+      "source": "reddit",
+      "title": "Location search is terrible - Paris trip photos missing",
+      "text": "I went to Paris June 2024 and took 300 photos. I search Paris France Eiffel Tower and get 0 relevant results. I have location data turned on. Random photos from a parking lot show up instead.",
+      "author_hash": "71ea5f5b962198c5d0532765e7e92cdd0519456bb3d735297e535dcab17bf84d",
+      "timestamp": "2026-08-05T00:00:00Z",
+      "url": "https://reddit.com/demo006",
+      "engagement": {
+        "upvotes": 234,
+        "comments": 67
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_007",
+      "source": "google_play",
+      "title": "",
+      "text": "Location tagging used to work now it doesnt. Searched for photos at grandmas house and got nothing. Searched the street name nothing. Searched the city name got random stuff.",
+      "author_hash": "e8180000fa67e824043aa522c6743de57dbc5de1d39d5483acb618b699a9dd00",
+      "timestamp": "2026-08-27T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 34
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_008",
+      "source": "reddit",
+      "title": "How to find photos taken at a specific restaurant?",
+      "text": "We went to a restaurant called The Blue Door for my anniversary dinner last year. When I search Blue Door in Google Photos nothing comes up. Is there any way to search by custom location names?",
+      "author_hash": "c89951a24c6ca28c13fd1cfdc646b2b656d69e61a92b91023be7eb58eb914b6b",
+      "timestamp": "2026-08-10T00:00:00Z",
+      "url": "https://reddit.com/demo008",
+      "engagement": {
+        "upvotes": 67,
+        "comments": 18
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_009",
+      "source": "reddit",
+      "title": "Face search found wrong person - privacy risk",
+      "text": "I searched for my sister in Google Photos and it showed me photos of a random woman I barely know. The face grouping algorithm is very confused. This seems like a privacy issue.",
+      "author_hash": "553f26abeeebe4be18603f3c15bbf6cd3106002e869ce9275054868fb0d610af",
+      "timestamp": "2026-04-11T00:00:00Z",
+      "url": "https://reddit.com/demo009",
+      "engagement": {
+        "upvotes": 456,
+        "comments": 89
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_010",
+      "source": "app_store",
+      "title": "",
+      "text": "Face recognition keeps splitting my husband into two different people. When I search for him only half the photos show up. I have to manually go through both groups. Why cant it figure out its the same person after 5 years of photos?",
+      "author_hash": "105a9cef3903c748eb63d42ec006c9b46cdab99141b0cd80176026b76cbb69fd",
+      "timestamp": "2026-03-26T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 78
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_011",
+      "source": "reddit",
+      "title": "Cannot search for photos of specific person",
+      "text": "My dad passed away last year. I want to find all photos where he appears. I can see Google Photos has face detection but I dont see a way to search by face for someone who is not in my contacts. I just want all memories with my dad.",
+      "author_hash": "92ec86fa88925dabc1026bfc9335f5f6848886c98586c005f4a0c02716e3bbab",
+      "timestamp": "2025-12-26T00:00:00Z",
+      "url": "https://reddit.com/demo011",
+      "engagement": {
+        "upvotes": 892,
+        "comments": 145
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_012",
+      "source": "google_play",
+      "title": "",
+      "text": "The people album feature doesnt include photos from my cameras RAW files. I take all photos in RAW format and only the JPG previews get recognized for faces. So all my best quality photos are missing from the people albums.",
+      "author_hash": "a50656c6edf2f06af2c6c847d13118e34d60fd98ff1925b5b456cde6067425ff",
+      "timestamp": "2026-08-18T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 41
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_013",
+      "source": "reddit",
+      "title": "Why cant Google Photos find my screenshot of a recipe?",
+      "text": "I saved a screenshot of a pasta recipe from Instagram 6 months ago. When I search pasta or recipe or screenshot nothing comes up. I thought Google Photos could read text in photos. Why doesnt it work for screenshots?",
+      "author_hash": "9607720f9f1c07dfc26581cdaa37a002cbdd5587a69090b66f82c649ce7a40c4",
+      "timestamp": "2026-05-03T00:00:00Z",
+      "url": "https://reddit.com/demo013",
+      "engagement": {
+        "upvotes": 178,
+        "comments": 43
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_014",
+      "source": "google_play",
+      "title": "",
+      "text": "Text search in photos is a joke. I have screenshots of receipts notes articles. Cannot find ANY of them by searching the text in them. My phone gallery app does better text search than Google Photos.",
+      "author_hash": "b8c9573532d1cdd04675d02a826940c3bb553ae30ca9997a814cb64c9aa95894",
+      "timestamp": "2026-06-15T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 134
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_015",
+      "source": "reddit",
+      "title": "Searching for photos by color or aesthetic - is this possible?",
+      "text": "I take abstract and artistic photos. I want to find all photos with a certain blue aesthetic for an Instagram grid project. Is there any way to search Google Photos by dominant color or visual style?",
+      "author_hash": "6fd1b3e081a50a236af0114c66f7affa7cf4cd0c627cc71203151d25a0c4d980",
+      "timestamp": "2026-09-15T00:00:00Z",
+      "url": "https://reddit.com/demo015",
+      "engagement": {
+        "upvotes": 123,
+        "comments": 29
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_016",
+      "source": "app_store",
+      "title": "",
+      "text": "Im a photographer with 50k photos. The visual search is terrible for professional work. I cant find specific compositions or lighting conditions. I cant search by aperture or shutter speed.",
+      "author_hash": "29881aad8730c5ab11d275376323d8e4ff4179aae8ccb6c13fe4902137e162ef",
+      "timestamp": "2026-09-16T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 56
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_017",
+      "source": "reddit",
+      "title": "Google Photos incorrectly labeled my hiking photos as beach photos",
+      "text": "I went on a mountain hike last summer and took 200 photos. When I search hiking or mountain nothing comes up. When I search beach several of my hiking photos appear. The AI clearly confused the trail with a beach.",
+      "author_hash": "4ef7d80d0efac32f30f950a6af21fb65345ad8de0c683548cf00e7a64f2b3820",
+      "timestamp": "2026-08-15T00:00:00Z",
+      "url": "https://reddit.com/demo017",
+      "engagement": {
+        "upvotes": 234,
+        "comments": 56
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_018",
+      "source": "google_play",
+      "title": "",
+      "text": "My wedding photos are scattered everywhere in search results. I search wedding and get some but clearly 30% are missing. I took over 500 photos at my wedding. The search only shows maybe 150.",
+      "author_hash": "d238f8b22b170a316512d14cbfbce16123895d3ada7a6c0f77dd3928472229fe",
+      "timestamp": "2026-08-07T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 203
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_019",
+      "source": "reddit",
+      "title": "How to find all photos from a sports event?",
+      "text": "I photographed my daughters soccer tournament last month. About 400 action shots. When I search soccer or sports or tournament I only get 50 results. Why does the search miss 87% of the photos?",
+      "author_hash": "ee1303ac368992ef442a2e8705a0225fd4a1afc18c14e650daaaa6d872a146d1",
+      "timestamp": "2026-09-17T00:00:00Z",
+      "url": "https://reddit.com/demo019",
+      "engagement": {
+        "upvotes": 167,
+        "comments": 38
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_020",
+      "source": "reddit",
+      "title": "OCR search broken after update",
+      "text": "About 2 months ago I updated Google Photos and now OCR search is completely broken. Before the update I could search for any text in a screenshot and find it instantly. Now searching for any text returns nothing.",
+      "author_hash": "cc2aa1d637a2ac89c00a5307661e7ff4f3bac699db375a703bfdcf38201d06dd",
+      "timestamp": "2026-08-30T00:00:00Z",
+      "url": "https://reddit.com/demo020",
+      "engagement": {
+        "upvotes": 567,
+        "comments": 134
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_021",
+      "source": "google_play",
+      "title": "",
+      "text": "Text recognition stopped working completely. I have 2000 screenshots of important documents notes and articles. NONE of them are searchable by their text content anymore. This was the main reason I used Google Photos.",
+      "author_hash": "edf596cc32996af36b5e78fbcc6e60946841e8d6704f494b83a7e9606475a68d",
+      "timestamp": "2026-08-24T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 312
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_022",
+      "source": "app_store",
+      "title": "",
+      "text": "OCR search completely broken since iOS 17 update. Now typing any text that appears in a screenshot returns zero results. I have 500 screenshots of recipes workout plans and study notes that are now unsearchable.",
+      "author_hash": "8a66366737b3140d307236b8fce3f0297a3c093b60529e0d3d15a50e13382004",
+      "timestamp": "2026-09-30T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 189
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_023",
+      "source": "reddit",
+      "title": "Trying to find happy memories from a dark period",
+      "text": "I went through a rough period in 2020-2021 and I know I took some happy photos during that time. But when I search for happy memories from 2020 nothing specific shows up. Is there any semantic or mood search feature?",
+      "author_hash": "b6c81578dfbab675d02554e5a5524da25174e636344cfed90131367b0d5e193b",
+      "timestamp": "2025-03-06T00:00:00Z",
+      "url": "https://reddit.com/demo023",
+      "engagement": {
+        "upvotes": 445,
+        "comments": 78
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_024",
+      "source": "reddit",
+      "title": "The Memories feature shows me painful photos I asked it to hide",
+      "text": "My mom passed away and I used the feature to hide her from memories. But Google Photos keeps showing me memories that include her. This is heartbreaking. The hide feature doesnt work properly.",
+      "author_hash": "752364b7b25e4de0bee322582d7a205ecab5476ba1f62290b842486883fcbf53",
+      "timestamp": "2026-09-06T00:00:00Z",
+      "url": "https://reddit.com/demo024",
+      "engagement": {
+        "upvotes": 2341,
+        "comments": 356
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_025",
+      "source": "reddit",
+      "title": "Photos being saved with wrong dates - showing 1970",
+      "text": "Half of my photos from my old Android phone are showing up as taken in January 1970 due to a clock reset issue. So my photos from 2019 show up in 1970 in the timeline. Date search is now useless for all those photos.",
+      "author_hash": "fa96ed5ded14063346879e23109aa7200e87ce7ecd0631643ef6512a024f0ea2",
+      "timestamp": "2025-09-30T00:00:00Z",
+      "url": "https://reddit.com/demo025",
+      "engagement": {
+        "upvotes": 345,
+        "comments": 89
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_026",
+      "source": "google_play",
+      "title": "",
+      "text": "Dates all wrong after restoring from backup. 2000 photos now show wrong dates. The timeline is completely scrambled. Search by date doesnt work for any of these photos.",
+      "author_hash": "c890124d6e3357b415f1e7a51235ce76657b4519e6013d440855d12a4e9ff6aa",
+      "timestamp": "2026-04-18T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 67
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_027",
+      "source": "reddit",
+      "title": "EXIF date vs upload date confusion - photos in wrong place on timeline",
+      "text": "I scanned old physical photos and uploaded them. The scan date is used instead of the actual photo date so all my 1990s family photos appear at the top of my timeline. I cant find them when looking for old memories.",
+      "author_hash": "2ca8f43235a32539d4f65cacd6d3de6d5f28c618a2ffde74fa2eae0f110d6d5e",
+      "timestamp": "2025-10-07T00:00:00Z",
+      "url": "https://reddit.com/demo027",
+      "engagement": {
+        "upvotes": 234,
+        "comments": 45
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_028",
+      "source": "reddit",
+      "title": "Search returns random blurry photos instead of my best ones",
+      "text": "When I search for dog I get 500 results. Many are blurry or bad shots. Why doesnt Google Photos rank the better quality photos first? Even just sorting by sharpness would help.",
+      "author_hash": "bf09144566e4263917ea89ae2d52f5e23ebab1889c516088c3cd5d0eb4e194bd",
+      "timestamp": "2026-05-15T00:00:00Z",
+      "url": "https://reddit.com/demo028",
+      "engagement": {
+        "upvotes": 678,
+        "comments": 123
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_029",
+      "source": "app_store",
+      "title": "",
+      "text": "Search results are not ranked by quality or relevance. I search for beach and get 200 photos. The first results are terrible snapshots from parking lots near the beach. My actual beach photos are buried at the bottom.",
+      "author_hash": "4ecf3bf8b99e3770a4fbe68dacae228d8b4a71e87e5659a3da2c0bc6c24b9212",
+      "timestamp": "2026-08-09T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 89
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_030",
+      "source": "google_play",
+      "title": "",
+      "text": "The search algorithm prioritizes recent photos over relevant ones. I searched for birthday party and got my kids most recent boring party photos. The amazing photos from her 5th birthday with the pony are buried.",
+      "author_hash": "a5c007cfee1b26ede1cb1361d33e007c49f563dc2c8d584660a316ee66089d75",
+      "timestamp": "2026-08-06T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 56
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_031",
+      "source": "reddit",
+      "title": "Search returns nothing for very specific queries",
+      "text": "I searched for many specific things and got zero results even though I know the photos exist. Purple flowers, my car, rain, morning light - all return nothing. The object recognition works for common things but fails for anything specific.",
+      "author_hash": "f5619f980c194fbe53fc1beedc18bbd8448e3352b19440a4a435000527d85ad3",
+      "timestamp": "2026-02-14T00:00:00Z",
+      "url": "https://reddit.com/demo031",
+      "engagement": {
+        "upvotes": 234,
+        "comments": 67
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_032",
+      "source": "google_community",
+      "title": "Search shows 0 results for photos that clearly exist",
+      "text": "My wife has 10000 photos. She tried to search for photos of our cat. Search returns 0 results. The cat appears in hundreds of photos. We tried cat kitten pet animal - zero results. Something broke in a recent update.",
+      "author_hash": "d7649d428b9ff33d188ecbf38a7e4d8fd167fa01b2e10fe9a8f9308e52f1d7cc",
+      "timestamp": "2026-07-18T00:00:00Z",
+      "url": "https://support.google.com/photos/demo032",
+      "engagement": {
+        "replies": 34,
+        "helpful_votes": 123
+      },
+      "metadata": {}
+    },
+    {
+      "id": "demo_033",
+      "source": "reddit",
+      "title": "Google Photos search is getting worse not better over time",
+      "text": "I have been using Google Photos since 2016. The search quality has definitely degraded. 3 years ago I could find anything. Now searches for simple things fail. I have 80000 photos and the search has become unreliable.",
+      "author_hash": "cf922f545f429cdaf799324f17f71abcfe4e3bdaa5d1f0fbae1efea29bf55949",
+      "timestamp": "2026-08-27T00:00:00Z",
+      "url": "https://reddit.com/demo033",
+      "engagement": {
+        "upvotes": 1234,
+        "comments": 234
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_034",
+      "source": "google_play",
+      "title": "",
+      "text": "Used to be the best photo app now I cant find anything. Search is broken. Face recognition is broken. The Memories are wrong. Going back to Apple Photos at least that works.",
+      "author_hash": "423875d7b304b1f763ae29efc23a5a86c854f305a162579ce7a2e373045dee1c",
+      "timestamp": "2026-10-01T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 456
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_035",
+      "source": "app_store",
+      "title": "",
+      "text": "Search has gotten progressively worse since 2023. Simple queries that used to work instantly now return nothing or wrong results. I have reported this through feedback multiple times but nothing changes.",
+      "author_hash": "5f823573b108cc44a081f087c3ed70e231579cb50a834f97df92a8ad467f0ec9",
+      "timestamp": "2026-09-11T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 234
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_036",
+      "source": "reddit",
+      "title": "Cannot find specific screenshot - OCR search not working",
+      "text": "I took a screenshot of an important text message from my landlord about lease renewal terms. I have searched for lease landlord renewal apartment and nothing comes up. I need this screenshot urgently for a legal dispute.",
+      "author_hash": "aef7b17c41b30acbed8a97d73a428e372664eb613812f6f019b870b7263731d7",
+      "timestamp": "2026-06-15T00:00:00Z",
+      "url": "https://reddit.com/demo036",
+      "engagement": {
+        "upvotes": 345,
+        "comments": 78
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_037",
+      "source": "google_play",
+      "title": "",
+      "text": "I take screenshots constantly to remember things. App is supposed to make them searchable by content but it does not work. I screenshot bank statements restaurant menus funny memes work documents. None of these are searchable by content.",
+      "author_hash": "45ba4cd1796e7ab6621a72a41a6861246efe590e6d83c871716c19e95c0b4d07",
+      "timestamp": "2026-07-06T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 89
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_038",
+      "source": "reddit",
+      "title": "Cannot find specific video - search ignores videos",
+      "text": "I recorded a video of my babys first steps. I searched first steps walking baby and nothing comes up. Only photos appear in search results. Does Google Photos not search inside video content?",
+      "author_hash": "7fe8740beb3c332b8c7af217adb00a09fad7f769c1a5e4df9a4d5323b8bcefde",
+      "timestamp": "2026-05-12T00:00:00Z",
+      "url": "https://reddit.com/demo038",
+      "engagement": {
+        "upvotes": 567,
+        "comments": 123
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_039",
+      "source": "app_store",
+      "title": "",
+      "text": "Video search is nonexistent. I have hundreds of family videos spanning 10 years. They are completely unsearchable. Photos are somewhat searchable but videos might as well not exist as far as the search function is concerned.",
+      "author_hash": "9cb33f84a2b9a0c774dd96423653f93e277560935ebfde82f44d4064b26b66cd",
+      "timestamp": "2026-07-14T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 134
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_040",
+      "source": "reddit",
+      "title": "URGENT OCR completely broken after v6.19 update megathread",
+      "text": "Creating this megathread because there are dozens of posts about OCR being broken after the v6.19 update released 3 weeks ago. Before the update text search worked. Now 0 results for any text in screenshots. Confirmed on Pixel 6 7 8 Samsung S23 S24.",
+      "author_hash": "9749660c702cf41fda02e86e60a6960f1720065193a5f26099de89e82d27da16",
+      "timestamp": "2026-09-25T00:00:00Z",
+      "url": "https://reddit.com/demo040",
+      "engagement": {
+        "upvotes": 4521,
+        "comments": 892
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_041",
+      "source": "reddit",
+      "title": "OCR text search broken since update - joining megathread",
+      "text": "Confirming OCR is broken on my Pixel 8 Pro after the latest update. I have thousands of screenshots of recipes and the search wont find any text anymore. This is a critical regression.",
+      "author_hash": "bc486eda114034a4eac40da691896f85cbfe032346e2ea7f5852bf21f1dfb744",
+      "timestamp": "2026-09-21T00:00:00Z",
+      "url": "https://reddit.com/demo041",
+      "engagement": {
+        "upvotes": 234,
+        "comments": 45
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_042",
+      "source": "google_play",
+      "title": "",
+      "text": "OCR broken after update. Cannot find screenshots by text content. Galaxy S24. Had this feature working perfectly for 2 years now nothing. Please fix immediately.",
+      "author_hash": "d472ef773520c93109073e75932a1edd85bdb9c1b501b911cfefca90808dfd85",
+      "timestamp": "2026-09-28T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 567
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_043",
+      "source": "google_play",
+      "title": "",
+      "text": "Update from 3 weeks ago completely broke text search in screenshots. All my important document screenshots are now unfindable. Critical bug needs immediate fix.",
+      "author_hash": "f35e80c0a7b47a52127bfcae5f06bbe468d1f32f17e450662be51ad0b0200874",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 234
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_044",
+      "source": "app_store",
+      "title": "",
+      "text": "iOS version also affected by OCR regression. Text search in photos stopped working about 3 weeks ago. Never had this issue before. Please restore text search functionality.",
+      "author_hash": "5e263339d0156722f8cb2cec68f6c25a6d1281440794de3f97b88706e892c0ba",
+      "timestamp": "2026-09-19T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 189
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_045",
+      "source": "google_community",
+      "title": "Text search in photos completely broken",
+      "text": "Since the update 3 weeks ago I cannot search for text in screenshots or photos. This was my primary use case. I have medical documents receipts and work notes saved as screenshots. All unsearchable.",
+      "author_hash": "6139336743582fba20e5148b5c650128925f90fc16736b7542cd4a570da181e2",
+      "timestamp": "2026-09-28T00:00:00Z",
+      "url": "https://support.google.com/photos/demo045",
+      "engagement": {
+        "replies": 78,
+        "helpful_votes": 345
+      },
+      "metadata": {}
+    },
+    {
+      "id": "demo_046",
+      "source": "reddit",
+      "title": "Shared album photos dont show in my search results",
+      "text": "My wife and I share a Google Photos album. Photos that she added to the shared album do NOT appear in my search results even though I can see them in the album. I searched for birthday cake and only found my own photos.",
+      "author_hash": "8177152ee2ceb543c789aac4edc916e729f1120e0528651e90656cecdf185503",
+      "timestamp": "2026-07-02T00:00:00Z",
+      "url": "https://reddit.com/demo046",
+      "engagement": {
+        "upvotes": 345,
+        "comments": 67
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_047",
+      "source": "reddit",
+      "title": "Google Photos search ignores archived photos",
+      "text": "I archive photos to reduce clutter but still want to search them. When I search archived photos dont appear in results. Archiving should be a display preference not affect discoverability.",
+      "author_hash": "d89bed94b4738f21770114bd6d4b5d2bdd151121d7b30d5697b400c8442f795a",
+      "timestamp": "2026-04-08T00:00:00Z",
+      "url": "https://reddit.com/demo047",
+      "engagement": {
+        "upvotes": 456,
+        "comments": 89
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_048",
+      "source": "google_play",
+      "title": "",
+      "text": "After migrating from iPhone to Android all my old Apple Photos are in Google Photos but the face recognition doesnt recognize anyone. All my people albums from iPhone are now empty.",
+      "author_hash": "5aac638777d3abbfe4f010ca4e5569b2a451f6166e5f98c3f19abba785c08b44",
+      "timestamp": "2025-11-26T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 123
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_049",
+      "source": "reddit",
+      "title": "The On This Day feature shows wrong photos",
+      "text": "The On This Day notification showed me photos it claimed were from exactly one year ago. But I checked the dates and they were from a completely different month. The memory feature is causing me to relive wrong memories.",
+      "author_hash": "b8be8dcc0a0ee590ffd5c1d6891b194cd5c74f0f9af2e84764f331ae2d75bb2d",
+      "timestamp": "2026-07-26T00:00:00Z",
+      "url": "https://reddit.com/demo049",
+      "engagement": {
+        "upvotes": 234,
+        "comments": 45
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_050",
+      "source": "google_play",
+      "title": "",
+      "text": "Cannot find photos from my trip to Japan. Searched Japan Tokyo Kyoto sushi temple - nothing comes up. I know I have 800 photos from this trip. The location data shows correctly in the photo details but the search ignores it.",
+      "author_hash": "e3fb4544f5b318b7eef4f036b60cb136cb8f34bbbae4ffc26e1865a5c1811a28",
+      "timestamp": "2026-03-09T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 178
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_051",
+      "source": "reddit",
+      "title": "Why does searching sunset miss 90% of my sunset photos?",
+      "text": "I have a photography hobby and sunsets are my favorite subject. I have probably 300 sunset photos over 3 years. When I search sunset in Google Photos I get maybe 30 results. The other 270 are just as much sunsets but the AI doesnt tag them.",
+      "author_hash": "cb729be2c8b2a74d7ee1eb782c416c37761342e2f99c5f72ef8c1e984ca9b2bc",
+      "timestamp": "2026-09-09T00:00:00Z",
+      "url": "https://reddit.com/demo051",
+      "engagement": {
+        "upvotes": 567,
+        "comments": 112
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_052",
+      "source": "app_store",
+      "title": "",
+      "text": "Terrible. I was trying to find photos to put in a legal document proving I was at a location at a specific time. Photos have GPS metadata and timestamp. But Google Photos search by location and date gives wrong results.",
+      "author_hash": "031ed17be1103aeac6c1a15934bdd4fc9453a8b00a6976580e602dd41e7b94c3",
+      "timestamp": "2026-06-30T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 234
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_053",
+      "source": "google_community",
+      "title": "Cannot find photos of my dog who passed away",
+      "text": "My dog Max passed away 6 months ago. I am trying to collect all photos of him for a memorial. Max was a golden retriever. When I search Max or golden retriever I get some results but clearly not all photos where he appears.",
+      "author_hash": "847d1c0ec5493161f43038a77d51c741c081d12c19370bdcfe1217773eac0316",
+      "timestamp": "2026-06-06T00:00:00Z",
+      "url": "https://support.google.com/photos/demo053",
+      "engagement": {
+        "replies": 45,
+        "helpful_votes": 234
+      },
+      "metadata": {}
+    },
+    {
+      "id": "demo_054",
+      "source": "reddit",
+      "title": "Search language support terrible for non-English queries",
+      "text": "I search in my native language Hindi and Google Photos returns nothing. When I translate my search to English it works but I have to think in two languages just to search my own photos.",
+      "author_hash": "65ff72614114c2aca16d45572f8e1ce832dcd2c6475589372d2e601965b940c1",
+      "timestamp": "2025-12-31T00:00:00Z",
+      "url": "https://reddit.com/demo054",
+      "engagement": {
+        "upvotes": 345,
+        "comments": 67
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_055",
+      "source": "google_play",
+      "title": "",
+      "text": "Search only works in English. I speak Portuguese and when I search in Portuguese I get zero results. My whole family speaks Portuguese and we cannot use search effectively.",
+      "author_hash": "3523eb31b0c4f0ded83aad8ae781a2ee83bb6210018273baa8ff2d0df8e6b18d",
+      "timestamp": "2026-07-30T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 89
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_056",
+      "source": "reddit",
+      "title": "Complex queries completely unsupported - only simple keywords work",
+      "text": "I want to search for photos where I am with my friend at a restaurant. Google Photos cannot handle compound queries at all. It can only do single-concept searches. This makes it useless for finding specific memories.",
+      "author_hash": "8922560f7d41be19b9a7986e877666d2c4a28a51a9a568955083382b19499ca6",
+      "timestamp": "2026-03-22T00:00:00Z",
+      "url": "https://reddit.com/demo056",
+      "engagement": {
+        "upvotes": 678,
+        "comments": 134
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_057",
+      "source": "app_store",
+      "title": "",
+      "text": "Natural language search doesnt work at all. I tried searching photos from my anniversary dinner with my wife and got completely random results. The search is keyword matching not understanding.",
+      "author_hash": "1a919fecabc5780453ddc3511c003e0783c9d4172eb4492e0f6c43e0c56b2e03",
+      "timestamp": "2026-09-11T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 145
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_058",
+      "source": "reddit",
+      "title": "Duplicate photos cluttering search results",
+      "text": "When I search sunset I get the same photo appearing 3-5 times in results. The search doesnt collapse duplicates. It makes results very noisy and hard to use.",
+      "author_hash": "2a05be6776280d4f3018582ea05b2e06363e898b634366abe5a822d7779c4be3",
+      "timestamp": "2026-05-04T00:00:00Z",
+      "url": "https://reddit.com/demo058",
+      "engagement": {
+        "upvotes": 234,
+        "comments": 56
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_059",
+      "source": "google_play",
+      "title": "",
+      "text": "Search performance has dramatically slowed down over the past year. Simple searches that used to return instantly now take 5-10 seconds. I have 30000 photos. Is there a storage limit that causes search to slow down?",
+      "author_hash": "5ed1b07b44ae7ec2acca26ae3777465bf67b5b93de0914946f7e30a096cc1169",
+      "timestamp": "2026-07-01T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 167
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_060",
+      "source": "reddit",
+      "title": "Old photos from before Google Photos era completely unsearchable",
+      "text": "I imported all my photos from a Windows folder including photos from 2005-2015 before smartphone era. Google Photos cannot search ANY of these old photos. The AI cannot identify faces or objects in low resolution old photos.",
+      "author_hash": "f3cd60bbf9e70102f63042858c9fe2880b5999156fe63b5a03df3b09098d8963",
+      "timestamp": "2025-12-10T00:00:00Z",
+      "url": "https://reddit.com/demo060",
+      "engagement": {
+        "upvotes": 456,
+        "comments": 89
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_061",
+      "source": "google_community",
+      "title": "Face recognition accuracy terrible after wearing glasses or mask",
+      "text": "I wear glasses sometimes but not always. Google Photos created separate face groups for me with and without glasses treating me as two different people. During COVID when we all wore masks it got even worse.",
+      "author_hash": "85be0f4909d588185e58978ab81e9f91bf88f581b0da10bb2e0bd9737ab69fe3",
+      "timestamp": "2026-06-25T00:00:00Z",
+      "url": "https://support.google.com/photos/demo061",
+      "engagement": {
+        "replies": 23,
+        "helpful_votes": 145
+      },
+      "metadata": {}
+    },
+    {
+      "id": "demo_062",
+      "source": "reddit",
+      "title": "Cannot search across family members shared library",
+      "text": "My family has a shared library setup. When I search in MY Google Photos account I can only search MY photos not the shared photos. We want one unified search across our entire family photo collection.",
+      "author_hash": "f26629b784f7fb8af680487cd8d2cf4859568c829d5b623623b4315e1da61867",
+      "timestamp": "2026-08-27T00:00:00Z",
+      "url": "https://reddit.com/demo062",
+      "engagement": {
+        "upvotes": 567,
+        "comments": 112
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_063",
+      "source": "google_play",
+      "title": "",
+      "text": "Searching for food photos is hopeless. I take photos of my meals for a health tracking app. When I search for specific foods like biryani or dosa or curry the AI doesnt recognize Indian food at all. Biased AI training data.",
+      "author_hash": "8a4354a22de66df8fab1afaece6416deb2295722dc7fac6f5a0436b9648699f0",
+      "timestamp": "2026-09-20T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 234
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_064",
+      "source": "reddit",
+      "title": "Night mode photos not found by search - AI cant handle dark photos",
+      "text": "I take a lot of astrophotography and night photos. These dark photos with stars and moon are completely invisible to search. Searching stars or astrophotography or night sky returns nothing.",
+      "author_hash": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
+      "timestamp": "2025-10-28T00:00:00Z",
+      "url": "https://reddit.com/demo064",
+      "engagement": {
+        "upvotes": 345,
+        "comments": 78
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_065",
+      "source": "app_store",
+      "title": "",
+      "text": "Search results are different on iPhone vs iPad. Same search query on same Google account returns different number of results on my iPhone versus iPad. The search index is not shared properly across devices.",
+      "author_hash": "021c68f14592f7a71f31bdcc30b7eb980ac53bdbab2ae8a614c52de64c6889d3",
+      "timestamp": "2026-08-04T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 89
+      },
+      "metadata": {
+        "app_id": "962194608"
+      }
+    },
+    {
+      "id": "demo_066",
+      "source": "reddit",
+      "title": "Batch selection for search results is missing",
+      "text": "When I do a search and get results I want to select all relevant photos and share them in one batch. But there is no select all option for search results. This makes batch operations from search completely painful.",
+      "author_hash": "e2cf2ef538599fa46d3c03fdaf3c81cf13805c26f62cad158d27925ecbdb41dc",
+      "timestamp": "2026-05-06T00:00:00Z",
+      "url": "https://reddit.com/demo066",
+      "engagement": {
+        "upvotes": 456,
+        "comments": 90
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_067",
+      "source": "google_play",
+      "title": "",
+      "text": "I am a real estate agent and take hundreds of property photos weekly. I need to quickly find all photos from a specific property address. There is no way to tag photos with custom metadata like property address.",
+      "author_hash": "fdd25d819b1b465895121a88050a8badfccaad053737d4ff6a592b5cfcf4a80a",
+      "timestamp": "2026-09-11T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 67
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_068",
+      "source": "reddit",
+      "title": "Google Photos returned someone elses photo in my search - privacy bug",
+      "text": "Something very concerning happened. I searched for a specific type of photo and one of the results was NOT my photo. It was a photo of strangers that somehow appeared in my search results. This is a serious privacy breach.",
+      "author_hash": "7a3c14cc2dae7e2217ad38cf6f9058c5709a3c644aed2a755421cfc9effb2d58",
+      "timestamp": "2026-06-14T00:00:00Z",
+      "url": "https://reddit.com/demo068",
+      "engagement": {
+        "upvotes": 8934,
+        "comments": 1234
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_069",
+      "source": "google_community",
+      "title": "Cannot find photos after switching Google accounts",
+      "text": "I had two Google accounts with photos. I merged everything to one account and now half the photos are missing from search. They are visible in the timeline but search cannot find them.",
+      "author_hash": "1f6ca2305ff27aaf1bd3731e78b76557632b85195e5c0e40591aa62154e6a1d4",
+      "timestamp": "2026-06-04T00:00:00Z",
+      "url": "https://support.google.com/photos/demo069",
+      "engagement": {
+        "replies": 34,
+        "helpful_votes": 189
+      },
+      "metadata": {}
+    },
+    {
+      "id": "demo_070",
+      "source": "reddit",
+      "title": "Search totally useless on slow internet connection",
+      "text": "I live in a rural area with slow internet. Google Photos search requires a fast connection because it all happens server-side. When my connection is slow search either fails or takes forever. Need offline search capability.",
+      "author_hash": "8c695f66e4afdb654fa8abafcc65425010ae5d5fa83c9e2bb1423080df6b37a4",
+      "timestamp": "2026-08-11T00:00:00Z",
+      "url": "https://reddit.com/demo070",
+      "engagement": {
+        "upvotes": 567,
+        "comments": 134
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_071",
+      "source": "reddit",
+      "title": "Text search in photos broken for 3 weeks no response from Google",
+      "text": "Adding to the growing list of reports about OCR text search being completely broken. It has been 3 weeks since the update. Google has not acknowledged this. I use text search constantly for receipts and work screenshots.",
+      "author_hash": "7ca2f9da0925a79a88e613167ede78cb1669dd280203fda595e86ad49bc1f786",
+      "timestamp": "2026-09-19T00:00:00Z",
+      "url": "https://reddit.com/demo071",
+      "engagement": {
+        "upvotes": 1234,
+        "comments": 234
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_072",
+      "source": "google_play",
+      "title": "",
+      "text": "OCR broken. Was working. Now not working. Update 3 weeks ago. Fix please. Cannot find my screenshot notes anymore. 1 star until fixed.",
+      "author_hash": "acd685ac635997fc5de1c1cd31979c7af08eaf008117f331d761b01825ba1453",
+      "timestamp": "2026-09-23T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 1,
+        "helpful": 456
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    },
+    {
+      "id": "demo_073",
+      "source": "reddit",
+      "title": "Cant find screenshot with phone number I saved",
+      "text": "I screenshot a phone number I needed to call. Now I cant find it. Searching the number returns nothing. OCR used to find text in screenshots but seems broken now for about 3 weeks.",
+      "author_hash": "60c75848e0e5e315fc593dbde352815599fece61e1f60b696a8b64d4e4265cd8",
+      "timestamp": "2026-09-17T00:00:00Z",
+      "url": "https://reddit.com/demo073",
+      "engagement": {
+        "upvotes": 345,
+        "comments": 67
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_074",
+      "source": "reddit",
+      "title": "Photo editing history not searchable",
+      "text": "I edited a photo heavily in Google Photos changed brightness cropped added filter. Now I cant find the edited or original version. The edit history feature makes photos harder to find.",
+      "author_hash": "8ebc2a754ac08de8dafc6fa50b28483f79ba7685245d3ab3a9fc9e94fba88366",
+      "timestamp": "2025-11-10T00:00:00Z",
+      "url": "https://reddit.com/demo074",
+      "engagement": {
+        "upvotes": 178,
+        "comments": 34
+      },
+      "metadata": {
+        "subreddit": "googlephotos"
+      }
+    },
+    {
+      "id": "demo_075",
+      "source": "google_play",
+      "title": "",
+      "text": "Cannot find photos that were shared with me versus photos I own. When someone shares a photo with me all shared and owned photos are mixed together and I cannot filter by who owns the photo.",
+      "author_hash": "e7034052a1a8e7673f22eec1566f80a1eb2349f324f9ebbc774c0f1cc5342e28",
+      "timestamp": "2026-03-29T00:00:00Z",
+      "url": null,
+      "engagement": {
+        "rating": 2,
+        "helpful": 67
+      },
+      "metadata": {
+        "app_id": "com.google.android.apps.photos"
+      }
+    }
+  ]
+}

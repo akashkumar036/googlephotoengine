@@ -167,14 +167,10 @@ This plan breaks the build into **6 sequential phases**, each delivering a testa
 
 ## Phase 2 — Data Ingestion & Normalization
 
-**Goal:** Build the connector layer, normalization pipeline, deduplication, and the ingestion job system. Data must flow from at least 2 real sources (or mock) into PostgreSQL in the normalized schema.
-
----
-
-### 2.1 Base Connector Interface
+**Goal:** Build the connector layer, normalization pipeline, deduplication, and the ingestion job system. Data must flow from at lea### 2.1 Base Connector Interface
 
 **Tasks:**
-- [ ] Create `app/connectors/base.py`:
+- [x] Create `app/connectors/base.py`:
   ```python
   class BaseConnector(ABC):
       source_name: str
@@ -190,8 +186,8 @@ This plan breaks the build into **6 sequential phases**, each delivering a testa
           raw = self.fetch(query, since, limit)
           return [self.normalize(r) for r in raw]
   ```
-- [ ] Define `NormalizedRecord` Pydantic model matching the schema from `architecture.md §3.4`
-- [ ] Define `RawRecord` base type
+- [x] Define `NormalizedRecord` Pydantic model matching the schema from `architecture.md §3.4`
+- [x] Define `RawRecord` base type
 
 **Acceptance:** `BaseConnector` raises `NotImplementedError` on unimplemented methods.
 
@@ -202,16 +198,16 @@ This plan breaks the build into **6 sequential phases**, each delivering a testa
 Build this **first** so all downstream pipeline work can be tested without real API access.
 
 **Tasks:**
-- [ ] Create `app/connectors/mock.py` — `MockConnector(BaseConnector)`
-- [ ] Create `data/demo_dataset.json` with 50–100 realistic conversations covering:
+- [x] Create `app/connectors/mock.py` — `MockConnector(BaseConnector)`
+- [x] Create `data/demo_dataset.json` with 50–100 realistic conversations covering:
   - All intent types (find photo, find screenshot, find video, etc.)
   - All memory dimensions (temporal, spatial, social, visual, event, text, emotional)
   - All failure modes (unknown date, OCR failure, poor ranking, etc.)
   - Multiple sources (reddit, google_play, app_store, google_community)
   - A 2-year date range (for trend detection)
   - Emerging problems (spike in last 30 days)
-- [ ] Tag all records with `"is_demo": true` and display label `"DEMO DATA"`
-- [ ] Connector loads and normalizes demo dataset
+- [x] Tag all records with `"is_demo": true` and display label `"DEMO DATA"`
+- [x] Connector loads and normalizes demo dataset
 
 **Acceptance:** `MockConnector().run(...)` returns 50+ valid `NormalizedRecord` objects.
 
@@ -220,16 +216,16 @@ Build this **first** so all downstream pipeline work can be tested without real 
 ### 2.3 Reddit Connector
 
 **Tasks:**
-- [ ] Install `praw` (Python Reddit API Wrapper)
-- [ ] Create `app/connectors/reddit.py` — `RedditConnector(BaseConnector)`
-- [ ] Authenticate via Reddit OAuth2 (client ID + secret from env)
-- [ ] Implement `fetch()`:
+- [x] Install `praw` (Python Reddit API Wrapper)
+- [x] Create `app/connectors/reddit.py` — `RedditConnector(BaseConnector)`
+- [x] Authenticate via Reddit OAuth2 (client ID + secret from env)
+- [x] Implement `fetch()`:
   - Search target subreddits: `googlephotos`, `iphone`, `androidquestions`, `techsupport`, `ApplePhotos`
   - Search terms: `"find photo"`, `"lost photo"`, `"can't find"`, `"photo retrieval"`, `"searching for memory"`
   - Fetch posts + top-level comments
-- [ ] Implement `normalize()` — map Reddit `Submission` + `Comment` fields to `NormalizedRecord`
-- [ ] Respect Reddit API rate limits (60 req/min max)
-- [ ] Hash `author` field before storage
+- [x] Implement `normalize()` — map Reddit `Submission` + `Comment` fields to `NormalizedRecord`
+- [x] Respect Reddit API rate limits (60 req/min max)
+- [x] Hash `author` field before storage
 
 **Acceptance:** `RedditConnector().run("find photo", ...)` returns normalized records; author is hashed.
 
@@ -238,12 +234,12 @@ Build this **first** so all downstream pipeline work can be tested without real 
 ### 2.4 Google Play Connector
 
 **Tasks:**
-- [ ] Install `google-play-scraper`
-- [ ] Create `app/connectors/google_play.py` — `GooglePlayConnector(BaseConnector)`
-- [ ] Target apps: `com.google.android.apps.photos`, and related photo apps
-- [ ] Implement `fetch()` — paginated review fetch with language/country params
-- [ ] Implement `normalize()` — map review fields to `NormalizedRecord`
-- [ ] Handle rate limiting gracefully (exponential backoff)
+- [x] Install `google-play-scraper`
+- [x] Create `app/connectors/google_play.py` — `GooglePlayConnector(BaseConnector)`
+- [x] Target apps: `com.google.android.apps.photos`, and related photo apps
+- [x] Implement `fetch()` — paginated review fetch with language/country params
+- [x] Implement `normalize()` — map review fields to `NormalizedRecord`
+- [x] Handle rate limiting gracefully (exponential backoff)
 
 **Acceptance:** `GooglePlayConnector().run(...)` returns normalized review records.
 
@@ -252,10 +248,10 @@ Build this **first** so all downstream pipeline work can be tested without real 
 ### 2.5 App Store Connector
 
 **Tasks:**
-- [ ] Install `app-store-scraper`
-- [ ] Create `app/connectors/app_store.py` — `AppStoreConnector(BaseConnector)`
-- [ ] Target apps: Google Photos iOS (`id=962194608`), Apple Photos, etc.
-- [ ] Implement `fetch()` and `normalize()`
+- [x] Install `app-store-scraper`
+- [x] Create `app/connectors/app_store.py` — `AppStoreConnector(BaseConnector)`
+- [x] Target apps: Google Photos iOS (`id=962194608`), Apple Photos, etc.
+- [x] Implement `fetch()` and `normalize()`
 
 **Acceptance:** `AppStoreConnector().run(...)` returns normalized review records.
 
@@ -264,7 +260,7 @@ Build this **first** so all downstream pipeline work can be tested without real 
 ### 2.6 Source Registry
 
 **Tasks:**
-- [ ] Create `app/connectors/registry.py`:
+- [x] Create `app/connectors/registry.py`:
   ```python
   CONNECTOR_REGISTRY = {
       "reddit": RedditConnector,
@@ -273,7 +269,7 @@ Build this **first** so all downstream pipeline work can be tested without real 
       "demo": MockConnector,
   }
   ```
-- [ ] Add `sources` table seed data for each registered source
+- [x] Add `sources` table seed data for each registered source
 
 **Acceptance:** New connector can be added to registry without touching other code.
 
@@ -282,8 +278,8 @@ Build this **first** so all downstream pipeline work can be tested without real 
 ### 2.7 Cleaning & Normalization Pipeline
 
 **Tasks:**
-- [ ] Create `app/pipeline/cleaning.py`
-- [ ] Implement the following steps in sequence:
+- [x] Create `app/pipeline/cleaning.py`
+- [x] Implement the following steps in sequence:
 
   | Step | Implementation |
   |---|---|
@@ -297,8 +293,8 @@ Build this **first** so all downstream pipeline work can be tested without real 
   | PII detection | `presidio-analyzer` or regex for emails, phone numbers |
   | Author anonymization | SHA-256 hash of author string |
 
-- [ ] Preserve original `text` field; write cleaned version to `cleaned_text`
-- [ ] Flag records: `is_cleaned=True`, `language`, `is_spam`, `pii_detected`
+- [x] Preserve original `text` field; write cleaned version to `cleaned_text`
+- [x] Flag records: `is_cleaned=True`, `language`, `is_spam`, `pii_detected`
 
 **Acceptance:** Cleaning pipeline processes a batch of 100 records without error; PII not stored raw.
 
@@ -307,14 +303,14 @@ Build this **first** so all downstream pipeline work can be tested without real 
 ### 2.8 Deduplication System
 
 **Tasks:**
-- [ ] Create `app/pipeline/deduplication.py`
-- [ ] **Exact dedup:** Compute `SHA-256(source + source_id)` — mark as `duplicate` if hash exists
-- [ ] **Content hash dedup:** Compute `SHA-256(normalized_text)` — mark as `duplicate` if text hash exists
-- [ ] **Semantic near-dedup** (post-embedding):
+- [x] Create `app/pipeline/deduplication.py`
+- [x] **Exact dedup:** Compute `SHA-256(source + source_id)` — mark as `duplicate` if hash exists
+- [x] **Content hash dedup:** Compute `SHA-256(normalized_text)` — mark as `duplicate` if text hash exists
+- [x] **Semantic near-dedup** (post-embedding):
   - After embeddings generated, run cosine similarity check
   - Records with similarity > `DEDUP_SIMILARITY_THRESHOLD` (default: 0.95) → `possible_duplicate`
-- [ ] Store dedup status: `original | duplicate | possible_duplicate | cross_post`
-- [ ] **Never** inflate problem frequency with duplicates — exclude non-originals from analysis counts
+- [x] Store dedup status: `original | duplicate | possible_duplicate | cross_post`
+- [x] **Never** inflate problem frequency with duplicates — exclude non-originals from analysis counts
 
 **Acceptance:** Re-running ingestion on the same source does not create new records for existing `source_id`s.
 
@@ -323,7 +319,7 @@ Build this **first** so all downstream pipeline work can be tested without real 
 ### 2.9 Ingestion Job & API
 
 **Tasks:**
-- [ ] Create Celery task `ingest_source`:
+- [x] Create Celery task `ingest_source`:
   ```python
   @celery.task(bind=True, max_retries=3)
   def ingest_source(self, source_name, query, since, limit):
@@ -333,12 +329,12 @@ Build this **first** so all downstream pipeline work can be tested without real 
           deduplicate_and_store(record)
       enqueue_cleaning_batch(record_ids)
   ```
-- [ ] Create `POST /ingest` API endpoint:
+- [x] Create `POST /ingest` API endpoint:
   - Required role: `researcher` or `admin`
   - Enqueues `ingest_source` task, returns `{ job_id }`
-- [ ] Create `GET /jobs/:id` endpoint — returns job status from DB
-- [ ] Create `GET /jobs` endpoint — list all jobs (paginated)
-- [ ] Persist job status updates (`queued → running → done | failed`) in `jobs` table
+- [x] Create `GET /jobs/:id` endpoint — returns job status from DB
+- [x] Create `GET /jobs` endpoint — list all jobs (paginated)
+- [x] Persist job status updates (`queued → running → done | failed`) in `jobs` table
 
 **Acceptance:** `POST /ingest { "source": "demo" }` returns a `job_id`; polling `GET /jobs/:id` shows progress; records appear in `conversations` table.
 
@@ -346,13 +342,13 @@ Build this **first** so all downstream pipeline work can be tested without real 
 
 ### Phase 2 Exit Criteria
 
-- [ ] Demo connector loads 50+ records into DB
-- [ ] At least 1 real connector (Reddit or Play Store) fetches live data
-- [ ] All records pass through cleaning pipeline
-- [ ] Deduplication prevents re-inserting existing records
-- [ ] Job status is trackable via API
-- [ ] `GET /conversations` returns paginated, filterable list
-- [ ] No PII stored in raw form
+- [x] Demo connector loads 50+ records into DB
+- [x] At least 1 real connector (Reddit or Play Store) fetches live data
+- [x] All records pass through cleaning pipeline
+- [x] Deduplication prevents re-inserting existing records
+- [x] Job status is trackable via API
+- [x] `GET /conversations` returns paginated, filterable list
+- [x] No PII stored in raw form
 
 ---
 

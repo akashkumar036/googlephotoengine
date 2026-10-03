@@ -12,8 +12,8 @@ from fastapi.responses import JSONResponse
 from app.config import get_settings
 from app.db.session import engine
 from app.db import models as db_models
-from app.api.routes import auth, health, jobs, conversations, problems, clusters, trends, evidence, reviews, research, reports
-from app.db.seed import seed_admin_user
+from app.api.routes import auth, health, jobs, conversations, problems, clusters, trends, evidence, reviews, research, reports, ingest
+from app.db.seed import seed_admin_user, seed_sources
 
 # ── Structured logger ──────────────────────────────────────────────────────
 structlog.configure(
@@ -36,6 +36,8 @@ async def lifespan(app: FastAPI):
         pass  # Tables managed via alembic; don't auto-create here
     # Seed admin user on every startup (idempotent)
     await seed_admin_user()
+    # Seed connector sources (idempotent)
+    await seed_sources()
     yield
     log.info("shutdown")
 
@@ -80,6 +82,10 @@ async def logging_middleware(request: Request, call_next):
 # ── Exception handler ─────────────────────────────────────────────────────
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    from fastapi import HTTPException
+    from starlette.exceptions import HTTPException as StarletteHTTPException
+    if isinstance(exc, (HTTPException, StarletteHTTPException)):
+        return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
     log.error("unhandled_exception", path=request.url.path, error=str(exc))
     return JSONResponse(
         status_code=500,
@@ -90,6 +96,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 # ── Routers ───────────────────────────────────────────────────────────────
 app.include_router(health.router, tags=["Health"])
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(ingest.router, prefix="/ingest", tags=["Ingest"])
 app.include_router(jobs.router, prefix="/jobs", tags=["Jobs"])
 app.include_router(conversations.router, prefix="/conversations", tags=["Conversations"])
 app.include_router(problems.router, prefix="/problems", tags=["Problems"])

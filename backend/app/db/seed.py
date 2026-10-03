@@ -1,6 +1,6 @@
 """
-Idempotent seed: creates the admin user from env vars on startup or CLI.
-Safe to run multiple times — skips if user already exists.
+Idempotent seed: creates the admin user and connector sources on startup or CLI.
+Safe to run multiple times — all operations are idempotent.
 """
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from sqlalchemy import select
 
 from app.config import get_settings
 from app.db.session import AsyncSessionLocal
-from app.db.models import User, _uuid
+from app.db.models import User, Source, _uuid
 from app.auth.security import hash_password
 
 log = structlog.get_logger()
@@ -49,7 +49,38 @@ async def seed_admin_user() -> None:
         log.warning("seed_admin_deferred", reason=str(exc))
 
 
+async def seed_sources() -> None:
+    """Create Source rows for each registered connector if they don't exist."""
+    try:
+        from app.connectors.registry import SOURCE_METADATA
+
+        async with AsyncSessionLocal() as session:
+            for source_name, meta in SOURCE_METADATA.items():
+                result = await session.execute(
+                    select(Source).where(Source.name == source_name)
+                )
+                existing = result.scalar_one_or_none()
+                if existing:
+                    continue
+                source = Source(
+                    id=_uuid(),
+                    name=source_name,
+                    connector_type=meta["connector_type"],
+                    is_active=meta.get("is_active", True),
+                    config={"display_name": meta.get("display_name", source_name)},
+                )
+                session.add(source)
+                log.info("seed_source_created", name=source_name)
+            await session.commit()
+    except Exception as exc:
+        log.warning("seed_sources_deferred", reason=str(exc))
+
+
 if __name__ == "__main__":
     import asyncio
 
-    asyncio.run(seed_admin_user())
+    async def _main():
+        await seed_admin_user()
+        await seed_sources()
+
+    asyncio.run(_main())
