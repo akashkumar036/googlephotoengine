@@ -76,11 +76,24 @@ async def seed_sources() -> None:
         log.warning("seed_sources_deferred", reason=str(exc))
 
 
+async def seed_prompts() -> None:
+    """Seed prompt versions into prompt_versions table."""
+    try:
+        from app.prompts.loader import seed_prompt_versions
+
+        async with AsyncSessionLocal() as session:
+            await seed_prompt_versions(session)
+            log.info("seed_prompts_completed")
+    except Exception as exc:
+        log.warning("seed_prompts_deferred", reason=str(exc))
+
+
 if __name__ == "__main__":
     import asyncio
 
     async def _main():
         await seed_admin_user()
         await seed_sources()
+        await seed_prompts()
 
     asyncio.run(_main())

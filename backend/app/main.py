@@ -12,8 +12,22 @@ from fastapi.responses import JSONResponse
 from app.config import get_settings
 from app.db.session import engine
 from app.db import models as db_models
-from app.api.routes import auth, health, jobs, conversations, problems, clusters, trends, evidence, reviews, research, reports, ingest
-from app.db.seed import seed_admin_user, seed_sources
+from app.api.routes import (
+    auth,
+    health,
+    jobs,
+    conversations,
+    problems,
+    clusters,
+    trends,
+    evidence,
+    reviews,
+    research,
+    reports,
+    ingest,
+    pipeline,
+)
+from app.db.seed import seed_admin_user, seed_sources, seed_prompts
 
 # ── Structured logger ──────────────────────────────────────────────────────
 structlog.configure(
@@ -38,6 +52,8 @@ async def lifespan(app: FastAPI):
     await seed_admin_user()
     # Seed connector sources (idempotent)
     await seed_sources()
+    # Seed prompt versions (idempotent)
+    await seed_prompts()
     yield
     log.info("shutdown")
 
@@ -106,3 +122,4 @@ app.include_router(evidence.router, prefix="/evidence", tags=["Evidence"])
 app.include_router(reviews.router, prefix="/reviews", tags=["Reviews"])
 app.include_router(research.router, prefix="/research", tags=["Research"])
 app.include_router(reports.router, prefix="/reports", tags=["Reports"])
+app.include_router(pipeline.router, prefix="/pipeline", tags=["Pipeline"])

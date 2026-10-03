@@ -68,11 +68,36 @@ async def test_db_session():
 
     app.dependency_overrides[get_db] = override_get_db
 
-    async with Session() as session:
-        yield session
+    import app.db.session as db_session_module
+    import app.pipeline.orchestrator as orch_module
+    import app.worker.tasks as task_module
+    import app.pipeline.ingestion as ing_module
 
-    app.dependency_overrides.pop(get_db, None)
-    await engine.dispose()
+    orig_db_asl = db_session_module.AsyncSessionLocal
+    orig_orch_asl = getattr(orch_module, "AsyncSessionLocal", None)
+    orig_task_asl = getattr(task_module, "AsyncSessionLocal", None)
+
+    db_session_module.AsyncSessionLocal = Session
+    orch_module.AsyncSessionLocal = Session
+    task_module.AsyncSessionLocal = Session
+
+    try:
+        async with Session() as session:
+            yield session
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+        db_session_module.AsyncSessionLocal = orig_db_asl
+        if orig_orch_asl:
+            orch_module.AsyncSessionLocal = orig_orch_asl
+        if orig_task_asl:
+            task_module.AsyncSessionLocal = orig_task_asl
+        await engine.dispose()
+
+
+@pytest_asyncio.fixture
+async def db_session(test_db_session):
+    """Alias fixture for test_db_session."""
+    return test_db_session
 
 
 @pytest_asyncio.fixture

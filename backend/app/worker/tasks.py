@@ -147,15 +147,82 @@ def ingest_source(self, source, query="", since=None, limit=500, job_id=None):
                 pass
         raise self.retry(exc=exc, countdown=60)
 
-@celery_app.task(name="worker.tasks.analyze_batch", bind=True)
-def analyze_batch(self, conversation_ids):
-    log.info("task_analyze_batch_stub", count=len(conversation_ids))
-    return {"status": "stub", "message": "Analysis implemented in Phase 3"}
+
+@celery_app.task(name="worker.tasks.analyze_relevance_batch", bind=True, max_retries=3)
+def analyze_relevance_batch(self, conversation_ids, job_id=None):
+    """Stage 1: Relevance classification task."""
+    from app.pipeline.analysis import analyze_relevance_stage
+
+    async def _run():
+        async with AsyncSessionLocal() as session:
+            return await analyze_relevance_stage(session, conversation_ids)
+
+    try:
+        return _run_async(_run())
+    except Exception as exc:
+        log.error("analyze_relevance_batch_error", error=str(exc))
+        raise self.retry(exc=exc, countdown=30)
+
+
+@celery_app.task(name="worker.tasks.analyze_deep_batch", bind=True, max_retries=3)
+def analyze_deep_batch(self, conversation_ids, job_id=None):
+    """Stage 2: Deep UX problem extraction task."""
+    from app.pipeline.analysis import analyze_deep_stage
+
+    async def _run():
+        async with AsyncSessionLocal() as session:
+            return await analyze_deep_stage(session, conversation_ids)
+
+    try:
+        return _run_async(_run())
+    except Exception as exc:
+        log.error("analyze_deep_batch_error", error=str(exc))
+        raise self.retry(exc=exc, countdown=30)
+
+
+@celery_app.task(name="worker.tasks.embed_batch", bind=True, max_retries=3)
+def embed_batch(self, conversation_ids, job_id=None):
+    """Stage 3: Vector embedding generation task."""
+    from app.pipeline.analysis import generate_embeddings_stage
+
+    async def _run():
+        async with AsyncSessionLocal() as session:
+            return await generate_embeddings_stage(session, conversation_ids)
+
+    try:
+        return _run_async(_run())
+    except Exception as exc:
+        log.error("embed_batch_error", error=str(exc))
+        raise self.retry(exc=exc, countdown=30)
+
+
+@celery_app.task(name="worker.tasks.run_pipeline_chain", bind=True, max_retries=3)
+def run_pipeline_chain(self, source, query="", since=None, limit=500, job_id=None):
+    """End-to-end pipeline chain task."""
+    from app.pipeline.orchestrator import run_full_pipeline
+
+    try:
+        return _run_async(run_full_pipeline(source, query=query, since=since, limit=limit, job_id=job_id))
+    except Exception as exc:
+        log.error("pipeline_chain_error", error=str(exc))
+        if job_id:
+            async def _fail():
+                from app.pipeline.ingestion import update_job_status
+                async with AsyncSessionLocal() as session:
+                    await update_job_status(session, job_id, "failed", error=str(exc))
+                    await session.commit()
+            try:
+                _run_async(_fail())
+            except Exception:
+                pass
+        raise self.retry(exc=exc, countdown=60)
+
 
 @celery_app.task(name="worker.tasks.cluster_conversations", bind=True)
 def cluster_conversations(self):
     log.info("task_cluster_stub")
     return {"status": "stub", "message": "Clustering implemented in Phase 4"}
+
 
 @celery_app.task(name="worker.tasks.detect_trends", bind=True)
 def detect_trends(self):

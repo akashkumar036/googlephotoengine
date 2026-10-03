@@ -224,3 +224,7 @@ def clean_batch(texts: List[str]) -> List[CleanResult]:
 def hash_author(author: str) -> str:
     """Compute SHA-256 hash of raw author identity to prevent storing PII."""
     return hashlib.sha256(author.encode()).hexdigest()
+
+
+# Alias for backward compatibility
+clean_conversation = clean_text

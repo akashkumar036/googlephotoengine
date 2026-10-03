@@ -361,7 +361,7 @@ Build this **first** so all downstream pipeline work can be tested without real 
 ### 3.1 Model Abstraction Layer
 
 **Tasks:**
-- [ ] Create `app/models/providers/base.py`:
+- [x] Create `app/models/providers/base.py`:
   ```python
   class BaseModelProvider(ABC):
       @abstractmethod
@@ -370,12 +370,12 @@ Build this **first** so all downstream pipeline work can be tested without real 
       @abstractmethod
       def embed(self, texts: List[str]) -> List[List[float]]: ...
   ```
-- [ ] Implement `app/models/providers/openai.py` — `OpenAIProvider`
+- [x] Implement `app/models/providers/openai.py` — `OpenAIProvider`
   - `classify()` → `openai.chat.completions.create()`
   - `embed()` → `openai.embeddings.create()`
-- [ ] Implement `app/models/providers/anthropic.py` — `AnthropicProvider`
-- [ ] Implement `app/models/providers/google.py` — `GoogleProvider`
-- [ ] Create `app/models/router.py`:
+- [x] Implement `app/models/providers/anthropic.py` — `AnthropicProvider`
+- [x] Implement `app/models/providers/google.py` — `GoogleProvider`
+- [x] Create `app/models/router.py`:
   - Reads `AI_PROVIDER` from config
   - Returns the correct provider instance
   - Applies Stage 1 vs Stage 2 model routing logic
@@ -387,12 +387,12 @@ Build this **first** so all downstream pipeline work can be tested without real 
 ### 3.2 Prompt Registry
 
 **Tasks:**
-- [ ] Create `app/prompts/` directory with versioned prompt files:
+- [x] Create `app/prompts/` directory with versioned prompt files:
   - `relevance-v1.0.txt` — Stage 1 relevance classification prompt
   - `analysis-v1.0.txt` — Stage 2 deep analysis prompt
-- [ ] Store prompt versions in `prompt_versions` table on startup
-- [ ] Create `app/prompts/loader.py` — load prompt by version string
-- [ ] Every AI call records the `prompt_version` used
+- [x] Store prompt versions in `prompt_versions` table on startup
+- [x] Create `app/prompts/loader.py` — load prompt by version string
+- [x] Every AI call records the `prompt_version` used
 
 **Stage 1 relevance prompt structure:**
 ```
@@ -431,14 +431,14 @@ Conversation:
 ### 3.3 Stage 1 — Relevance Filter Job
 
 **Tasks:**
-- [ ] Create Celery task `analyze_relevance_batch(conversation_ids: List[str])`
-- [ ] For each conversation:
+- [x] Create Celery task `analyze_relevance_batch(conversation_ids: List[str])`
+- [x] For each conversation:
   - Call Stage 1 model with relevance prompt
   - Store `relevance_score`, `is_relevant` in `ai_analyses` table
   - If `is_relevant = False`: mark conversation, skip Stage 2
-- [ ] Implement batching: group conversations into batches of `BATCH_SIZE` (default: 20)
-- [ ] Implement retry with exponential backoff on API errors
-- [ ] Log token usage per batch for cost tracking
+- [x] Implement batching: group conversations into batches of `BATCH_SIZE` (default: 20)
+- [x] Implement retry with exponential backoff on API errors
+- [x] Log token usage per batch for cost tracking
 
 **Acceptance:** Batch of 50 demo conversations produces `is_relevant` flags; irrelevant records are skipped correctly.
 
@@ -447,14 +447,14 @@ Conversation:
 ### 3.4 Stage 2 — Deep Analysis Job
 
 **Tasks:**
-- [ ] Create Celery task `analyze_deep_batch(conversation_ids: List[str])`
-- [ ] For each relevant conversation:
+- [x] Create Celery task `analyze_deep_batch(conversation_ids: List[str])`
+- [x] For each relevant conversation:
   - Call Stage 2 model with analysis prompt
   - Parse JSON response into `AIAnalysis` Pydantic model
   - Store full analysis in `ai_analyses` table
-- [ ] Handle JSON parsing errors gracefully (log + skip, don't crash batch)
-- [ ] Cache: skip re-analysis if `(conversation_id, prompt_version)` already exists in DB
-- [ ] Store `model_provider`, `model_name`, `prompt_version`, `processed_at`
+- [x] Handle JSON parsing errors gracefully (log + skip, don't crash batch)
+- [x] Cache: skip re-analysis if `(conversation_id, prompt_version)` already exists in DB
+- [x] Store `model_provider`, `model_name`, `prompt_version`, `processed_at`
 
 **Acceptance:** 50 relevant demo conversations have complete `ai_analyses` rows with all fields populated.
 
@@ -463,13 +463,13 @@ Conversation:
 ### 3.5 Embedding Generation Job
 
 **Tasks:**
-- [ ] Create Celery task `embed_batch(conversation_ids: List[str])`
-- [ ] For each analyzed conversation:
+- [x] Create Celery task `embed_batch(conversation_ids: List[str])`
+- [x] For each analyzed conversation:
   - Concatenate `title + " " + cleaned_text` as embedding input
   - Call embedding model API (batched — up to 100 texts per API call)
   - Store `VECTOR(1536)` in `conversations.embedding`
-- [ ] Skip if embedding already exists (reuse)
-- [ ] After bulk embedding complete, trigger HNSW index refresh
+- [x] Skip if embedding already exists (reuse)
+- [x] After bulk embedding complete, trigger HNSW index refresh
 
 **Acceptance:** `conversations.embedding` is non-null for all relevant records; `pgvector` cosine similarity query returns results.
 
@@ -478,10 +478,10 @@ Conversation:
 ### 3.6 Analysis Pipeline Orchestration
 
 **Tasks:**
-- [ ] Create master Celery chain: `ingest → clean → relevance → deep → embed`
-- [ ] Each stage automatically enqueues the next on completion
-- [ ] Job status updates propagate through each stage
-- [ ] Create `POST /pipeline/run` endpoint to trigger full pipeline on a source
+- [x] Create master Celery chain: `ingest → clean → relevance → deep → embed`
+- [x] Each stage automatically enqueues the next on completion
+- [x] Job status updates propagate through each stage
+- [x] Create `POST /pipeline/run` endpoint to trigger full pipeline on a source
 
 **Acceptance:** A single API call to `POST /pipeline/run { "source": "demo" }` runs the entire pipeline end-to-end.
 
@@ -490,10 +490,10 @@ Conversation:
 ### 3.7 Conversation API (with AI annotations)
 
 **Tasks:**
-- [ ] Update `GET /conversations` to join with `ai_analyses`:
+- [x] Update `GET /conversations` to join with `ai_analyses`:
   - Include: `primary_intent`, `memory_types`, `failure_modes`, `confidence`, `is_relevant`
-- [ ] Update `GET /conversations/:id` to return full `AIAnalysis` JSON
-- [ ] Add filter params: `intent`, `memory_type`, `failure_mode`, `confidence_min`, `is_relevant`
+- [x] Update `GET /conversations/:id` to return full `AIAnalysis` JSON
+- [x] Add filter params: `intent`, `memory_type`, `failure_mode`, `confidence_min`, `is_relevant`
 
 **Acceptance:** API returns conversations with full AI annotations; filters work correctly.
 
@@ -501,13 +501,13 @@ Conversation:
 
 ### Phase 3 Exit Criteria
 
-- [ ] All demo conversations have `is_relevant` flag set
-- [ ] All relevant conversations have complete `AIAnalysis` in DB
-- [ ] All relevant conversations have non-null `embedding` vector
-- [ ] Model provider is configurable via env var (no code change)
-- [ ] Prompt version is stored on every analysis record
-- [ ] Re-running analysis on same record reuses cached result
-- [ ] `GET /conversations/:id` returns full AI annotation
+- [x] All demo conversations have `is_relevant` flag set
+- [x] All relevant conversations have complete `AIAnalysis` in DB
+- [x] All relevant conversations have non-null `embedding` vector
+- [x] Model provider is configurable via env var (no code change)
+- [x] Prompt version is stored on every analysis record
+- [x] Re-running analysis on same record reuses cached result
+- [x] `GET /conversations/:id` returns full AI annotation
 
 ---
 
