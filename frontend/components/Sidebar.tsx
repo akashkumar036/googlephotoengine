@@ -2,30 +2,49 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  AlertCircle,
-  MessageSquare,
-  TrendingUp,
-  Compass,
-  CheckSquare,
-  BarChart3,
-  Cpu,
-  Database,
-  Radio,
-  LogOut,
-  UserCheck,
-} from "lucide-react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Overview", icon: LayoutDashboard, badge: "Live" },
-  { href: "/problems", label: "Problems & Needs", icon: AlertCircle, badge: "P0/P1" },
-  { href: "/conversations", label: "Conversations", icon: MessageSquare, badge: null },
-  { href: "/trends", label: "Emerging Trends", icon: TrendingUp, badge: "Velocity" },
-  { href: "/explore", label: "AI Assistant", icon: Compass, badge: "RAG" },
-  { href: "/review", label: "Human Review", icon: CheckSquare, badge: "HITL" },
-  { href: "/evaluation", label: "Evaluation", icon: BarChart3, badge: "Metrics" },
+  {
+    href: "/",
+    label: "Overview",
+    icon: "dashboard",
+    badge: null,
+  },
+  {
+    href: "/problems",
+    label: "Problems & Clusters",
+    icon: "layers",
+    badge: "4 active",
+    badgeClass: "bg-surface-container-highest text-on-surface-variant",
+  },
+  {
+    href: "/conversations",
+    label: "Live Feed",
+    icon: "rss_feed",
+    badge: "2,050",
+    badgeClass: "bg-surface-container-highest text-on-surface-variant",
+  },
+  {
+    href: "/explore",
+    label: "Research Assistant",
+    icon: "auto_awesome",
+    badge: "Groq 3.3",
+    badgeClass: "bg-primary/20 text-primary",
+  },
+  {
+    href: "/trends",
+    label: "Trends",
+    icon: "trending_up",
+    badge: null,
+  },
+  {
+    href: "/review",
+    label: "Curator Review",
+    icon: "check_circle",
+    badge: "12 pending",
+    badgeClass: "bg-tertiary-container/30 text-tertiary",
+  },
 ];
 
 export function Sidebar() {
@@ -33,118 +52,134 @@ export function Sidebar() {
   const { data: session } = useSession();
 
   return (
-    <aside className="w-72 bg-slate-950/80 backdrop-blur-xl border-r border-slate-800/80 flex flex-col h-screen sticky top-0 select-none z-30 transition-all duration-300">
-      {/* Brand Header */}
-      <div className="p-5 border-b border-slate-800/70">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-all duration-300">
-            <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
-              <span className="text-xl">📸</span>
-            </div>
+    <aside className="fixed left-0 top-0 h-screen w-[260px] bg-surface-container-low/90 backdrop-blur-xl border-r border-outline-variant/30 z-40 flex flex-col justify-between overflow-y-auto select-none">
+      <div className="p-space-lg flex flex-col gap-space-lg">
+        {/* Brand Header */}
+        <Link href="/" className="flex items-center gap-space-sm group">
+          <div className="h-10 w-10 rounded-lg bg-surface-container-highest border border-outline-variant/40 flex items-center justify-center text-primary shadow-sm group-hover:scale-105 transition-transform">
+            <span className="material-symbols-outlined text-[24px]">camera</span>
           </div>
-          <div>
-            <div className="font-bold text-slate-100 tracking-tight text-base flex items-center gap-1.5">
-              <span>PhotoDiscovery</span>
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                v0.1
+          <div className="flex flex-col">
+            <span className="font-headline-sm text-headline-sm text-on-surface leading-tight">
+              Photo Discovery
+            </span>
+            <div className="flex items-center gap-space-xs mt-0.5">
+              <span className="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-highest text-primary border border-outline-variant/40 uppercase tracking-wider">
+                v2.4 Enterprise AI
               </span>
             </div>
-            <p className="text-xs text-slate-400 font-medium">AI Retrieval Research</p>
           </div>
         </Link>
-      </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
-        <div className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-          Intelligence Platform
-        </div>
-        {NAV_ITEMS.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
-                isActive
-                  ? "bg-indigo-600/15 text-indigo-300 border border-indigo-500/30 shadow-sm shadow-indigo-950"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <Icon
-                  className={`w-4 h-4 transition-colors duration-200 ${
-                    isActive ? "text-indigo-400" : "text-slate-500 group-hover:text-slate-300"
-                  }`}
-                />
-                <span>{item.label}</span>
-              </div>
-              {item.badge && (
-                <span
-                  className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono transition-colors ${
-                    isActive
-                      ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
-                      : "bg-slate-900 text-slate-500 group-hover:text-slate-400 border border-slate-800"
-                  }`}
-                >
-                  {item.badge}
-                </span>
-              )}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Engine Status Card */}
-      <div className="p-3 mx-3 mb-3 rounded-xl bg-slate-900/70 border border-slate-800/80 text-xs space-y-2">
-        <div className="flex items-center justify-between text-slate-400">
-          <span className="flex items-center gap-1.5 font-medium text-[11px]">
-            <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-            Backend Pipeline
-          </span>
-          <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-800/40">
-            ONLINE
+        {/* Pipeline Status Widget */}
+        <div className="p-space-md rounded-xl bg-surface-container/60 backdrop-blur-md border border-outline-variant/30 flex flex-col gap-space-xs shadow-inner">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-space-xs">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+              </span>
+              <span className="font-label-md text-label-md text-secondary font-semibold">
+                Pipeline ONLINE
+              </span>
+            </div>
+            <span className="font-mono-metric text-mono-metric text-on-surface-variant">
+              94ms
+            </span>
+          </div>
+          <span className="font-body-sm text-body-sm text-on-surface-variant">
+            2,050 Ingested • Groq Llama 3.3
           </span>
         </div>
-        <div className="space-y-1 pt-1 text-[11px] text-slate-400">
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1.5">
-              <Cpu className="w-3 h-3 text-slate-500" /> Primary LLM
-            </span>
-            <span className="font-mono text-slate-300 text-[10px]">Groq (Llama 3.3)</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1.5">
-              <Database className="w-3 h-3 text-slate-500" /> Vector Store
-            </span>
-            <span className="font-mono text-slate-300 text-[10px]">pgvector HNSW</span>
-          </div>
-        </div>
+
+        {/* Navigation Items */}
+        <nav className="flex flex-col gap-space-xs">
+          {NAV_ITEMS.map((item) => {
+            const isActive =
+              item.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(item.href);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center justify-between px-space-md py-space-sm rounded-lg transition-all ${
+                  isActive
+                    ? "bg-primary-container text-on-primary-container font-semibold shadow-[0_0_16px_-2px_rgba(128,131,255,0.4)]"
+                    : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
+                }`}
+              >
+                <div className="flex items-center gap-space-md">
+                  <span className="material-symbols-outlined text-[20px]">
+                    {item.icon}
+                  </span>
+                  <span className="font-label-md text-label-md">
+                    {item.label}
+                  </span>
+                </div>
+                {item.badge && (
+                  <span
+                    className={`font-label-sm text-label-sm px-1.5 py-0.5 rounded-full ${
+                      item.badgeClass ||
+                      "bg-surface-container-highest text-on-surface-variant"
+                    }`}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
       </div>
 
-      {/* User Session Footer */}
-      <div className="p-3 border-t border-slate-800/70 bg-slate-950/40 flex items-center justify-between">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-slate-700 to-slate-800 flex items-center justify-center text-slate-300 border border-slate-700/60 font-semibold text-xs shrink-0">
-            <UserCheck className="w-4 h-4 text-indigo-400" />
-          </div>
-          <div className="min-w-0">
-            <p className="text-xs font-semibold text-slate-200 truncate">
-              {session?.user?.email || "admin@example.com"}
-            </p>
-            <p className="text-[10px] text-indigo-400 font-mono capitalize">
-              {(session?.user as unknown as { role?: string })?.role || "Admin"} • Researcher
-            </p>
+      {/* Bottom Footer: Active Feeds & User Profile */}
+      <div className="p-space-lg flex flex-col gap-space-md border-t border-outline-variant/30">
+        <div className="flex flex-col gap-space-xs">
+          <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
+            Active Ingestion Feeds
+          </span>
+          <div className="flex flex-wrap gap-space-xs">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm border border-outline-variant/30">
+              <span className="h-1.5 w-1.5 rounded-full bg-secondary"></span>Play
+            </span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm border border-outline-variant/30">
+              <span className="h-1.5 w-1.5 rounded-full bg-secondary"></span>Reddit
+            </span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm border border-outline-variant/30">
+              <span className="h-1.5 w-1.5 rounded-full bg-secondary"></span>YT
+            </span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm border border-outline-variant/30">
+              <span className="h-1.5 w-1.5 rounded-full bg-secondary"></span>App Store
+            </span>
           </div>
         </div>
-        <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
-          title="Sign out"
-          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 border border-transparent hover:border-rose-900/40 transition-colors"
-        >
-          <LogOut className="w-4 h-4" />
-        </button>
+
+        <div className="flex items-center justify-between pt-space-xs">
+          <div className="flex items-center gap-space-sm">
+            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+              <span className="material-symbols-outlined text-on-primary text-[18px]">
+                person
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-label-md text-label-md text-on-surface leading-snug">
+                {session?.user?.name || "Dr. Elena Vance"}
+              </span>
+              <span className="font-body-sm text-body-sm text-on-surface-variant leading-none">
+                Lead UX AI
+              </span>
+            </div>
+          </div>
+          <Link
+            href="/evaluation"
+            className="text-on-surface-variant hover:text-on-surface transition-colors p-1"
+            title="System Settings & Evaluation"
+          >
+            <span className="material-symbols-outlined text-[20px]">settings</span>
+          </Link>
+        </div>
       </div>
     </aside>
   );

@@ -233,6 +233,226 @@ async def seed_evaluation_benchmarks() -> None:
         log.warning("seed_evaluation_benchmarks_failed", error=str(exc))
 
 
+async def seed_problems_and_clusters() -> None:
+    """Seed structured problem clusters, evidence links, opportunities, and trends."""
+    from datetime import datetime, timezone, timedelta
+    from app.db.models import (
+        Problem,
+        Cluster,
+        ClusterMembership,
+        Evidence,
+        Opportunity,
+        Trend,
+        Conversation,
+        AIAnalysis,
+    )
+
+    try:
+        async with AsyncSessionLocal() as session:
+            existing_p = (await session.execute(select(func.count(Problem.id)))).scalar() or 0
+            if existing_p >= 4:
+                log.info("seed_problems_skip", reason="problems already exist", count=existing_p)
+                return
+
+            convs = (await session.execute(select(Conversation).limit(60))).scalars().all()
+            if not convs:
+                log.warning("seed_problems_no_convs", reason="seed demo dataset first")
+                return
+
+            now = datetime.now(timezone.utc)
+
+            # Ensure AIAnalysis rows exist for conversations
+            for idx, c in enumerate(convs):
+                existing_a = (
+                    await session.execute(select(AIAnalysis.id).where(AIAnalysis.conversation_id == c.id))
+                ).scalar_one_or_none()
+                if not existing_a:
+                    intents = ["find_photo", "find_screenshot", "find_video", "cleanup_duplicates", "album_organization", "troubleshoot_search"]
+                    memory_sets = [
+                        ["temporal", "visual"],
+                        ["spatial", "social"],
+                        ["text", "temporal"],
+                        ["emotional", "visual"],
+                        ["social", "temporal"],
+                    ]
+                    failure_sets = [
+                        ["keyword_mismatch"],
+                        ["ocr_failure", "unknown_date"],
+                        ["poor_ranking", "false_positive"],
+                        ["face_failure"],
+                        ["temporal_drift", "no_results"],
+                    ]
+                    analysis = AIAnalysis(
+                        id=_uuid(),
+                        conversation_id=c.id,
+                        primary_intent=intents[idx % len(intents)],
+                        memory_types=memory_sets[idx % len(memory_sets)],
+                        failure_modes=failure_sets[idx % len(failure_sets)],
+                        frustration_level=round(0.4 + 0.1 * (idx % 6), 2),
+                        severity=round(0.5 + 0.08 * (idx % 5), 2),
+                        confidence=round(0.85 + 0.02 * (idx % 6), 2),
+                        prompt_version="analysis-v1.1",
+                    )
+                    session.add(analysis)
+            await session.flush()
+
+            # Define 5 problem archetypes
+            problem_archetypes = [
+                {
+                    "title": "Natural Language Query Vocabulary Mismatch in Photo Search",
+                    "statement": "Users describe scenes using subjective, situational, or relational concepts ('my daughter's birthday cake', 'receipt from the plumber') which traditional keyword indices fail to retrieve.",
+                    "taxonomy": ["Semantic Search", "Query Understanding"],
+                    "frequency": 38,
+                    "source_count": 4,
+                    "frustration": 0.82,
+                    "severity": 0.78,
+                    "growth_rate": 0.35,
+                    "is_emerging": True,
+                    "segments": ["Everyday Smartphone Shooters", "Organized Archivists"],
+                    "opportunity": {
+                        "observed": "Users query with natural narrative phrases that return zero or misleading results.",
+                        "need": "Multimodal semantic retrieval capable of cross-referencing OCR, visual context, and chronological anchors.",
+                        "area": "Context-Aware Semantic Embeddings",
+                        "hypothesis": "Providing LLM-guided query rewriting with proactive synonym expansion will reduce zero-result rates by 40%.",
+                    },
+                },
+                {
+                    "title": "Receipt & Document Screenshot Ingestion and OCR Degradation",
+                    "statement": "Critical financial receipts, travel itineraries, and whiteboard diagrams saved as screenshots are lost in the primary camera roll due to incomplete text indexing and lack of document separation.",
+                    "taxonomy": ["OCR & Document Retrieval", "Library Organization"],
+                    "frequency": 29,
+                    "source_count": 3,
+                    "frustration": 0.74,
+                    "severity": 0.70,
+                    "growth_rate": 0.18,
+                    "is_emerging": False,
+                    "segments": ["Students & Researchers", "Expense Managers"],
+                    "opportunity": {
+                        "observed": "Users struggle to locate store receipts months later when text on paper is slightly blurred or folded.",
+                        "need": "Zero-friction document capture segregation with automated fuzzy OCR indexing.",
+                        "area": "Dedicated Document & Screenshot Siloing",
+                        "hypothesis": "Auto-classifying digital screenshots into a distinct utility gallery with searchable line-item entities will eliminate 60% of search friction.",
+                    },
+                },
+                {
+                    "title": "Burst Mode and Near-Duplicate Clutter Obscuring Definitive Memory Photos",
+                    "statement": "Rapid shutter bursts, bracketed exposures, and repeated social media saves flood search results with dozens of identical thumbnails, making discovery of the single best shot arduous.",
+                    "taxonomy": ["Duplicate Detection", "Curation & Decluttering"],
+                    "frequency": 24,
+                    "source_count": 3,
+                    "frustration": 0.68,
+                    "severity": 0.65,
+                    "growth_rate": 0.28,
+                    "is_emerging": True,
+                    "segments": ["Action & Sports Photographers", "Social Media Creators"],
+                    "opportunity": {
+                        "observed": "Search results show 30 near-identical frames of the same jump or expression.",
+                        "need": "Intelligent stack collapsing that algorithmically selects and surfaces the top-rated frame.",
+                        "area": "Smart Burst Stacking & De-duplication",
+                        "hypothesis": "Visual aesthetics scoring to group bursts into a single collapsed hero card will improve retrieval speed by 50%.",
+                    },
+                },
+                {
+                    "title": "Temporal Decay and Vague Chronological Search Failure",
+                    "statement": "When users forget exact calendar dates ('sometime in fall 2023' or 'when my kid was a toddler'), rigid date-filter interfaces fail to surface memories without exhausting manual scrolling.",
+                    "taxonomy": ["Chronological Search", "Memory Anchor Navigation"],
+                    "frequency": 21,
+                    "source_count": 3,
+                    "frustration": 0.72,
+                    "severity": 0.69,
+                    "growth_rate": 0.12,
+                    "is_emerging": False,
+                    "segments": ["Long-term Family Archivists"],
+                    "opportunity": {
+                        "observed": "Users know the relative life chapter but not the calendar month.",
+                        "need": "Milestone-based and relative event navigation.",
+                        "area": "Milestone-Anchored Chronology",
+                        "hypothesis": "Allowing users to navigate memories by life chapters ('College years', 'New house') will resolve 45% of date-drift failures.",
+                    },
+                },
+            ]
+
+            for p_idx, arch in enumerate(problem_archetypes):
+                cluster = Cluster(
+                    id=_uuid(),
+                    label=arch["title"][:80],
+                    description=arch["statement"],
+                    member_count=arch["frequency"],
+                )
+                session.add(cluster)
+                await session.flush()
+
+                prob = Problem(
+                    id=_uuid(),
+                    title=arch["title"],
+                    statement=arch["statement"],
+                    frequency=arch["frequency"],
+                    source_count=arch["source_count"],
+                    frustration_score=arch["frustration"],
+                    severity_score=arch["severity"],
+                    growth_rate=arch["growth_rate"],
+                    cross_source_score=round(arch["source_count"] / 4.0, 2),
+                    evidence_diversity_score=0.88,
+                    confidence=0.89,
+                    is_emerging=arch["is_emerging"],
+                    is_approved=True,
+                    taxonomy_categories=arch["taxonomy"],
+                    user_segments=arch["segments"],
+                )
+                session.add(prob)
+                await session.flush()
+
+                # Link supporting conversations as Evidence
+                assigned_convs = convs[p_idx * 6 : (p_idx + 1) * 6]
+                for c in assigned_convs:
+                    ev = Evidence(
+                        id=_uuid(),
+                        problem_id=prob.id,
+                        conversation_id=c.id,
+                        relevance_score=0.92,
+                        excerpt=(c.cleaned_text or c.text or "")[:200],
+                    )
+                    session.add(ev)
+                    cm = ClusterMembership(
+                        cluster_id=cluster.id,
+                        conversation_id=c.id,
+                        similarity_score=0.85,
+                    )
+                    session.add(cm)
+
+                # Add Opportunity
+                opp_data = arch["opportunity"]
+                opp = Opportunity(
+                    id=_uuid(),
+                    problem_id=prob.id,
+                    observed_problem=opp_data["observed"],
+                    underlying_need=opp_data["need"],
+                    opportunity_area=opp_data["area"],
+                    solution_hypothesis=opp_data["hypothesis"],
+                    confidence=0.86,
+                    is_validated=False,
+                )
+                session.add(opp)
+
+                # Add Trend data points
+                for week in range(4):
+                    t = Trend(
+                        id=_uuid(),
+                        problem_id=prob.id,
+                        period_start=now - timedelta(days=(4 - week) * 7),
+                        period_end=now - timedelta(days=(3 - week) * 7),
+                        conversation_count=int(arch["frequency"] * (0.2 + 0.05 * week)),
+                        growth_rate=arch["growth_rate"],
+                        sources=["reddit", "google_play", "app_store"],
+                    )
+                    session.add(t)
+
+            await session.commit()
+            log.info("seed_problems_and_clusters_completed", count=len(problem_archetypes))
+    except Exception as exc:
+        log.warning("seed_problems_and_clusters_failed", error=str(exc))
+
+
 if __name__ == "__main__":
     import asyncio
 
@@ -242,5 +462,6 @@ if __name__ == "__main__":
         await seed_prompts()
         await seed_demo_dataset()
         await seed_evaluation_benchmarks()
+        await seed_problems_and_clusters()
 
     asyncio.run(_main())

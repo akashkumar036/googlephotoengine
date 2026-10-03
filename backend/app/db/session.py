@@ -7,16 +7,22 @@ from app.config import get_settings
 
 settings = get_settings()
 
-# Convert postgresql:// → postgresql+asyncpg://
-_db_url = settings.database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
-
-engine = create_async_engine(
-    _db_url,
-    echo=(settings.app_env == "development"),
-    pool_size=10,
-    max_overflow=20,
-    pool_timeout=30,
-)
+if "sqlite" in settings.database_url:
+    _db_url = settings.database_url
+    engine = create_async_engine(
+        _db_url,
+        echo=(settings.app_env == "development"),
+    )
+else:
+    # Convert postgresql:// → postgresql+asyncpg://
+    _db_url = settings.database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    engine = create_async_engine(
+        _db_url,
+        echo=(settings.app_env == "development"),
+        pool_size=10,
+        max_overflow=20,
+        pool_timeout=30,
+    )
 
 AsyncSessionLocal = async_sessionmaker(
     bind=engine,

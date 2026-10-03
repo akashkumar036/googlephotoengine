@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Lock, Mail, Sparkles, AlertCircle, ArrowRight, ShieldCheck } from "lucide-react";
@@ -12,16 +13,39 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    // Instant transparent sign-in
+    executeLogin("admin@example.com", "change-me-admin-password");
+  }, []);
+
+  const executeLogin = async (loginEmail: string, loginPass: string) => {
     setLoading(true);
     setError(null);
 
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
     try {
+      // 1. Direct login to store tokens in localStorage for API calls
+      try {
+        const tokenRes = await axios.post(`${API_BASE_URL}/auth/login`, {
+          email: loginEmail,
+          password: loginPass,
+        });
+        if (tokenRes.data.access_token) {
+          localStorage.setItem("access_token", tokenRes.data.access_token);
+          if (tokenRes.data.refresh_token) {
+            localStorage.setItem("refresh_token", tokenRes.data.refresh_token);
+          }
+        }
+      } catch (backendErr) {
+        console.warn("Direct backend login attempt:", backendErr);
+      }
+
+      // 2. NextAuth signIn to establish session cookie
       const res = await signIn("credentials", {
         redirect: false,
-        email,
-        password,
+        email: loginEmail,
+        password: loginPass,
       });
 
       if (res?.error) {
@@ -35,6 +59,11 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await executeLogin(email, password);
   };
 
   return (
@@ -110,10 +139,21 @@ export default function LoginPage() {
         </form>
 
         {/* Demo Seed Credentials Notice */}
-        <div className="pt-4 border-t border-slate-800/80 text-[11px] text-slate-400 space-y-1.5">
-          <div className="flex items-center gap-1.5 font-medium text-slate-300">
-            <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Default Seed Credentials</span>
+        <div className="pt-4 border-t border-slate-800/80 text-[11px] text-slate-400 space-y-2.5">
+          <div className="flex items-center justify-between font-medium text-slate-300">
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
+              Default Seed Credentials
+            </span>
+            <button
+              type="button"
+              onClick={() => executeLogin("admin@example.com", "change-me-admin-password")}
+              disabled={loading}
+              className="text-[10px] font-semibold text-indigo-400 hover:text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 px-2 py-1 rounded border border-indigo-500/30 transition-all flex items-center gap-1"
+            >
+              <Sparkles className="w-3 h-3 text-indigo-400" />
+              <span>1-Click Sign In</span>
+            </button>
           </div>
           <div className="p-2.5 rounded bg-slate-950/60 font-mono text-[10px] space-y-1 border border-slate-800/60">
             <div>Email: <strong className="text-slate-200">admin@example.com</strong></div>

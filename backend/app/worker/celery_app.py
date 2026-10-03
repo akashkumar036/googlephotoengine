@@ -28,3 +28,10 @@ celery_app.conf.update(
     broker_connection_max_retries=1,
     broker_connection_timeout=2,
 )
+
+import os
+if settings.redis_url.startswith("memory") or os.getenv("CELERY_TASK_ALWAYS_EAGER", "").lower() in ("true", "1"):
+    celery_app.conf.update(
+        task_always_eager=True,
+        task_eager_propagates=True,
+    )

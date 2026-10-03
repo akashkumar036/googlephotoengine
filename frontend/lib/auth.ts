@@ -62,6 +62,7 @@ export const authOptions: AuthOptions = {
         (session.user as unknown as { id?: string }).id = token.id as string;
         (session.user as unknown as { role?: string }).role = token.role as string;
         (session as unknown as { accessToken?: string }).accessToken = token.accessToken as string;
+        (session as unknown as { refreshToken?: string }).refreshToken = token.refreshToken as string;
       }
       return session;
     },

@@ -35,6 +35,15 @@ Thumbs.db
 .idea/
 *.swp
 
+# Local DB
+*.db
+*.sqlite
+*.sqlite3
+
+# Vercel
+.vercel/
+frontend/.vercel/
+
 # Secrets — never commit these
 *.pem
 *.key

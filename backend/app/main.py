@@ -49,9 +49,11 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     log.info("startup", env=settings.app_env, ai_provider=settings.ai_provider)
-    # Create tables (Alembic handles migrations; this is a safety net for tests)
+    # Create tables (safety net for SQLite local testing and fresh dev databases)
     async with engine.begin() as conn:
-        pass  # Tables managed via alembic; don't auto-create here
+        if "sqlite" in settings.database_url:
+            from app.db.models import Base
+            await conn.run_sync(Base.metadata.create_all)
     # Seed admin user on every startup (idempotent)
     await seed_admin_user()
     # Seed connector sources (idempotent)
